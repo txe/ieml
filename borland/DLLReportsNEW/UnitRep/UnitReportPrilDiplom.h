@@ -58,6 +58,7 @@ public:		// User declarations
         __fastcall TFormReportPrilDiplom(TComponent* Owner);
         void __fastcall SetIDStudent(int _IDStudent);
         int __fastcall GetIDStudent(void);
+        AnsiString __fastcall ExamForUr() ;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFormReportPrilDiplom *FormReportPrilDiplom;

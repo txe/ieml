@@ -398,7 +398,12 @@ void __fastcall TFormReportPrilDiplom::CreateWordDocument(void)
 
   float itog_oc;
   InitPracticAndItog(PracticaS, itog_oc, ContVIP);
-  ItogGosEkzS = "\n\nМеждисциплинарный экзамен по специальности \"\""+NapravSpecS+"\"\", "+GetEst(itog_oc);
+
+  if (QualificTitleS != "ЮРИСТ")
+    ItogGosEkzS = "\n\nМеждисциплинарный экзамен по специальности \"\""+NapravSpecS+"\"\", "+GetEst(itog_oc);
+  else
+    ItogGosEkzS = "\n\n" + ExamForUr();
+
   VipQualificWorkS = "\"" + VipQualificWorkS + "\"" + ContVIP;
 
   //macros.InsertLine("Selection.Range->InsertAfter(TVariant("\n\n"));
@@ -694,16 +699,26 @@ void __fastcall TFormReportPrilDiplom::CreateWordDocument(void)
   macros.SelectionText("на тему\n"+VipQualificWorkS);
   //macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(20,1).Range.Text= \"" + "на тему\n"+VipQualificWorkS + "\"");
 
-  // Создание 2-й таблицы
-  macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(CountRows,1).Range.Select");
-  macros.InsertLine("Selection.MoveDown Unit:=wdLine, Count:=10, Extend:=wdExtend");
+  /*
+        cоздание 2-й таблицы
+  */
+
+  macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(CountRows) +",1).Range.Select");
+  macros.InsertLine("Selection.MoveDown Unit:=wdLine, Count:=1, Extend:=wdExtend");
   macros.InsertLine("Selection.InsertBreak(wdPageBreak)");
 
   vecDiscip vecComm, vecCurWork, vecCurProj, vecOther;
   InitVectorsOfDisciplines(vecComm, vecCurWork, vecCurProj, vecOther);
 
-  CountRows = vecComm.size() + /*1 + vecCurWork.size() +*/
-        ((vecCurProj.size()) ? (1 + vecCurProj.size()) : 0) + 2;
+  const int MAGIC_COUNT = 68; // max строчек во второй таблице при 3 листах диплома
+  bool is_gener_3th_list = (vecComm.size() + 2 + vecCurProj.size()) > MAGIC_COUNT; // говорит что надо сделать еще третьий лист, необходимо при наличии курсовых проектов
+
+
+  if (is_gener_3th_list)
+    CountRows =  MAGIC_COUNT+2;
+  else
+    CountRows = vecComm.size() + 2;
+
   macros.TablesAdd(CountRows,4);
   macros.TableStyle(WordMacros::StyleNone);
   CountTables++;
@@ -713,7 +728,13 @@ void __fastcall TFormReportPrilDiplom::CreateWordDocument(void)
   macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Columns.Item(3).Width=55");
   macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Columns.Item(4).Width=85");
 
-  // Заполнение 2-й таблицы
+  /*
+        конец cоздания 2-й таблицы
+  */
+  /*
+        Заполнение 2-й таблицы
+  */
+
   macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Select");
   macros.InsertLine("Selection.Font.Italic=true");
   macros.InsertLine("Selection.Font.Size=8.5");
@@ -732,49 +753,147 @@ void __fastcall TFormReportPrilDiplom::CreateWordDocument(void)
 
   int num_all_hours=0;
   int start_row = 2;
-  for (i = 0; i < vecComm.size(); ++i)
+  int count_rows_2th_list = (is_gener_3th_list && vecComm.size() > MAGIC_COUNT)?MAGIC_COUNT:vecComm.size();
+  for (i = 0; i < count_rows_2th_list; ++i, ++start_row)
   {
     num_all_hours+=vecComm[i]->time;
-    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row+i)+",1).VerticalAlignment=wdCellAlignVerticalTop");
-    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row+i)+",2).VerticalAlignment=wdCellAlignVerticalTop");
-    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row+i)+",3).VerticalAlignment=wdCellAlignVerticalBottom");
-    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row+i)+",4).VerticalAlignment=wdCellAlignVerticalBottom");
+    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row)+",1).VerticalAlignment=wdCellAlignVerticalTop");
+    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row)+",2).VerticalAlignment=wdCellAlignVerticalTop");
+    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row)+",3).VerticalAlignment=wdCellAlignVerticalBottom");
+    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row)+",4).VerticalAlignment=wdCellAlignVerticalBottom");
 
-    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row+i)+",1).Range.Text= \"" + AnsiString(i+1)+"." + "\"");
+    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row)+",1).Range.Text= \"" + AnsiString(i+1)+"." + "\"");
     if (vecComm[i]->title.UpperCase().Trim() == "ИНОСТРАННЫЙ ЯЗЫК")
     {
       vecComm[i]->title = vecComm[i]->title + " (" + lang + ")";
     }
-    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row+i)+",2).Range.Text= \"" + vecComm[i]->title + "\"");
-    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row+i)+",3).Range.Text= \"" + AnsiString(vecComm[i]->time) + "\"");
-    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row+i)+",4).Range.Text= \"" + arrOcenk[vecComm[i]->estimation] + "\"");
+    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row)+",2).Range.Text= \"" + vecComm[i]->title + "\"");
+    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row)+",3).Range.Text= \"" + AnsiString(vecComm[i]->time) + "\"");
+    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row)+",4).Range.Text= \"" + arrOcenk[vecComm[i]->estimation] + "\"");
   }
-  start_row+=vecComm.size();
-  /*macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(start_row,2).Range.Select");
-  WordParagraphFormat->Alignment=wdAlignParagraphCenter;
-  macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(start_row,2).Range.Text=TVariant("Курсовые работы");
-  start_row++;
-  for (i = 0; i < vecCurWork.size(); ++i)
+ // start_row+=count_rows_2th_list;
+
+  //  создание третьего листа
+  if (is_gener_3th_list)
   {
-    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(start_row+i,1).Range.Text=TVariant(AnsiString(i+1));
-    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(start_row+i,2).Range.Text=TVariant(vecCurWork[i]->title);
-    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(start_row+i,4).Range.Text=TVariant(arrOcenk[vecCurWork[i]->estimation]);
-  }
-  start_row+=vecCurWork.size();*/
-  if (vecCurProj.size()>0)
-  {
-  macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row)+",2).Range.Select");
+   // macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(CountRows,1).Range.Select");
+    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(CountRows) +",1).Range.Select");
+    macros.InsertLine("Selection.MoveDown Unit:=wdLine, Count:=1, Extend:=wdExtend");
+    macros.InsertLine("Selection.InsertBreak(wdPageBreak)");
+
+    CountRows = 4 + vecComm.size() - count_rows_2th_list + (1 + vecCurWork.size()) +
+                1 + vecCurProj.size() + 1 ;
+
+    macros.TablesAdd(CountRows,4);
+    macros.TableStyle(WordMacros::StyleNone);
+    CountTables++;
+
+    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Columns.Item(1).Width=25");
+    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Columns.Item(2).Width=358");
+    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Columns.Item(3).Width=55");
+    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Columns.Item(4).Width=85");
+
+  //    конец создания третьего листа
+
+  //    создание заголовка треьего листа
+  macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(1,4).Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphCenter");
-  macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row)+",2).Range.Text=\"Курсовые проекты\"");
-  start_row++;
-  for (i = 0; i < vecCurProj.size(); ++i)
-  {
-    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row+i)+",1).Range.Text= \"" + AnsiString(i+1) + "\"");
-    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row+i)+",2).Range.Text= \"" + vecCurProj[i]->title + "\"");
-    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row+i)+",4).Range.Text= \"" + arrOcenk[vecCurProj[i]->estimation] + "\"");
+  macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(1,4).VerticalAlignment=wdCellAlignVerticalCenter");
+  macros.InsertLine("Selection.Font.Bold=true");
+  macros.InsertLine("Selection.Font.Italic=false");
+  macros.InsertLine("Selection.Font.Size=12");
+  macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(1,4).Range.Text= \"" + NumDiplomS + "\"");  //NumDiplomS
+  //macros.SelectionText("XXX 55555" + "\n");
+
+  macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Rows.Item(1).SetHeight RowHeight:=15.00, HeightRule:=wdRowHeightAtLeast");
+
+  macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(2,4).Range.Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphCenter");
+  macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(2,4).VerticalAlignment=wdCellAlignVerticalCenter");
+  macros.InsertLine("Selection.Font.Bold=true");
+  macros.InsertLine("Selection.Font.Italic=false");
+  macros.InsertLine("Selection.Font.Size=10");
+ // macros.InsertLine("Selection.MoveDown Unit:=wdLine, Count:=1, Extend:=wdExtend");
+ // macros.InsertLine("Selection.Cells.Merge");
+  //macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(2,3).Range.Select");
+  macros.SelectionText(RegNumS);
+  //macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(2,4).Range.Text= \"" + RegNumS +"\"");
+  //macros.InsertLine("Selection.MoveDown Unit:=wdLine, Count:=1");
+ // macros.SelectionTypeParagraph();
+
+  //    заполнение третьего листа
+
+    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Select");
+    macros.InsertLine("Selection.Font.Italic=true");
+    macros.InsertLine("Selection.Font.Size=8.5");
+
+    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Columns.Item(1).Select");
+    macros.SelectionParagraphFormat("Alignment=wdAlignParagraphRight");
+    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Columns.Item(2).Select");
+    macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
+    macros.SelectionParagraphFormat("LeftIndent = -5");
+    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Columns.Item(3).Select");
+    macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
+    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Columns.Item(4).Select");
+    macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
+
+    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Rows.Item(4).SetHeight RowHeight:=60.00, HeightRule:=wdRowHeightAtLeast");
+
+    start_row = 5;
+    for (i = MAGIC_COUNT; i < vecComm.size(); ++i, ++start_row)
+    {
+      num_all_hours+=vecComm[i]->time;
+      macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row)+",1).VerticalAlignment=wdCellAlignVerticalTop");
+      macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row)+",2).VerticalAlignment=wdCellAlignVerticalTop");
+      macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row)+",3).VerticalAlignment=wdCellAlignVerticalBottom");
+      macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row)+",4).VerticalAlignment=wdCellAlignVerticalBottom");
+
+      macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row)+",1).Range.Text= \"" + AnsiString(i+1)+"." + "\"");
+      if (vecComm[i]->title.UpperCase().Trim() == "ИНОСТРАННЫЙ ЯЗЫК")
+      {
+        vecComm[i]->title = vecComm[i]->title + " (" + lang + ")";
+      }
+      macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row)+",2).Range.Text= \"" + vecComm[i]->title + "\"");
+      macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row)+",3).Range.Text= \"" + AnsiString(vecComm[i]->time) + "\"");
+      macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row)+",4).Range.Text= \"" + arrOcenk[vecComm[i]->estimation] + "\"");
+    }
+    //start_row+=vecComm.size();
+
+    // заполнение курсовых работ
+
+    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row)+",2).Range.Select");
+    macros.SelectionParagraphFormat("Alignment=wdAlignParagraphCenter");
+    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row)+",2).Range.Text=\"Курсовые работы\"");
+    start_row++;
+    for (i = 0; i < vecCurWork.size(); ++i)
+    {
+        macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row+i)+",1).Range.Text= \"" + AnsiString(i+1) + "\"");
+        macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row+i)+",2).Range.Text= \"" + vecCurWork[i]->title + "\"");
+        macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row+i)+",4).Range.Text= \"" + arrOcenk[vecCurWork[i]->estimation] + "\"");
+    }
+    start_row+=vecCurWork.size();
+
+  // заполнение курсовых проектов
+    if (vecCurProj.size() > 0)
+    {
+        macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row)+",2).Range.Select");
+        macros.SelectionParagraphFormat("Alignment=wdAlignParagraphCenter");
+        macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row)+",2).Range.Text=\"Курсовые проекты\"");
+        start_row++;
+        for (i = 0; i < vecCurProj.size(); ++i)
+        {
+          macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row+i)+",1).Range.Text= \"" + AnsiString(i+1) + "\"");
+          macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row+i)+",2).Range.Text= \"" + vecCurProj[i]->title + "\"");
+          macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row+i)+",4).Range.Text= \"" + arrOcenk[vecCurProj[i]->estimation] + "\"");
+        }
+        start_row+=vecCurProj.size();
+    }                                 
+
   }
-  start_row+=vecCurProj.size();
-  }
+
+  //    конец заполнения третьего листа
+
+  //      генерация конца документа
 
   macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Rows.Item("+IntToStr(start_row)+").Range.Borders.Item(wdBorderTop).LineStyle = wdLineStyleSingle");
   macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Rows.Item("+IntToStr(start_row)+").Range.Borders.Item(wdBorderTop).LineWidth = wdLineWidth050pt");
@@ -815,58 +934,30 @@ void __fastcall TFormReportPrilDiplom::CreateWordDocument(void)
   macros.InsertLine("Selection.Font.Bold = true");
   macros.InsertLine("Selection.TypeText \"Конец документа\"");
 
-//*********Доп печать Курсовых работ на первом листе**************
-  AnsiString ms="";
-  for (i=0;i<vecCurWork.size();++i)
+
+  //      конец генерации конца документа
+
+  //*********Доп печать Курсовых работ на первом листе если они не напечатаны на третьем листе**************
+  if (!is_gener_3th_list)
   {
-    if (i>0) ms += ";";
-    ms += "\n";
-    ms += vecCurWork[i]->title+", "+arrOcenk[vecCurWork[i]->estimation];
+    AnsiString ms="";
+    for (i=0;i<vecCurWork.size();++i)
+    {
+      if (i>0) ms += ";";
+      ms += "\n";
+      ms += vecCurWork[i]->title+", "+arrOcenk[vecCurWork[i]->estimation];
+    }
+    // добавил
+    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(13,1).Range.Select");
+    macros.SelectionText(ms);
+    //macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(13,1).Range.Text= \"" + ms + "\"");
   }
-  // добавил
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(13,1).Range.Select");
-  macros.SelectionText(ms);
-  //macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(13,1).Range.Text= \"" + ms + "\"");
 //***********************
   ClearVectorDiscips(vecComm);
   ClearVectorDiscips(vecCurWork);
   ClearVectorDiscips(vecCurProj);
   ClearVectorDiscips(vecOther);
-//#endif  // нужно убрать
-#if 0 // не убирать
-  // Создание 3-й таблицы
-  macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell("+IntToStr(start_row)+",1).Range.Select");
-  macros.InsertLine("Selection.MoveDown Unit := wdLine, Count := 10, Extend:=wdExtend");
-  macros.InsertLine("Selection.InsertBreak(wdPageBreak)");
 
-  CountRows = 16;
-  //macros.InsertLine("ActiveDocument.Tables.Add(macros.InsertLine("Selection.Range,CountRows,2,EmptyParam,EmptyParam);
-  CountTables++;
-
-  /*macros.InsertLine("ActiveDocument.Tables.Item(CountTables).Columns.Item(1).Width=35;
-  macros.InsertLine("ActiveDocument.Tables.Item(CountTables).Columns.Item(2).Width=340;
-    */
-
-  RangePtr* rp;
-  //WordApplication->ActiveDocument->Range(macros.InsertLine("ActiveDocument.Content->Start, macros.InsertLine("ActiveDocument.Content->Start,rp);
-  //->InsertBreak(wdSectionBreakNextPage);
-
-
-  /*  Selection.InsertBreak Type:=wdPageBreak
-    ActiveDocument.Range(Start:=Selection.Start, End:=Selection.Start). _
-        InsertBreak Type:=wdSectionBreakNextPage
-    Selection.Start = Selection.Start + 1
-  */
-/*
-  macros.InsertLine("ActiveDocument.Range(macros.InsertLine("ActiveDocument.Content->Start, macros.InsertLine("ActiveDocument.Content->End)->InsertBreak(wdSectionBreakNextPage);
-  RangePtr* newRng;
-  macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Select");
-  macros.InsertLine("Selection.Range->PageSetup->set_SectionStart(wdSectionNewPage);
-  macros.InsertLine("Selection.SetRange(macros.InsertLine("Selection.Start, macros.InsertLine("ActiveDocument.Content->End);
-  macros.InsertLine("Selection.Range->PageSetup->Orientation = wdOrientLandscape;*/
-//  macros.InsertLine("ActiveDocument.Range(macros.InsertLine("Selection.Start, macros.InsertLine("ActiveDocument.Content->End)->PageSetup->Orientation = wdOrientLandscape;
-  //->PageSetup->Orientation = wdOrientLandscape;
-#endif
   macros.EndMacros();
   macros.RunMacros();
 }
@@ -1092,7 +1183,40 @@ void __fastcall TFormReportPrilDiplom::InitVectorsOfDisciplines(vecDiscip& vecCo
     case tdCourseWork: InsertIntoVectorDiscips(vecCurWorks, discip);break;
     case tdCourseProject: InsertIntoVectorDiscips(vecCurProj, discip);break;
     default: InsertIntoVectorDiscips(vecOther, discip);break;
-    }                      
+    }
   }
+}
+
+//---------------------------------------------------------------------------
+AnsiString __fastcall TFormReportPrilDiplom::ExamForUr()
+{
+  ZMySqlQuery->SQL->Clear();
+  AnsiString query = "select di.idclass,pr.ball,di.fulltitle from "+opts.DBDisciplines+" as di, "+opts.DBProgress+" as pr where di.deleted=0 and pr.deleted=0 and pr.idstud="+ToStr(AnsiString(idstudent))+" and pr.iddiscip=di.id order by di.fulltitle";
+  ZMySqlQuery->SQL->Add(query);
+  ZMySqlQuery->Active=true;
+
+  if (ZMySqlQuery->RecordCount==0) return "";
+
+  int i;
+  int d_class;
+  bool  second = false;
+  AnsiString itog = "";
+  AnsiString teoria, pravo, other;
+  for (i = 0; i < ZMySqlQuery->RecordCount; ++i)
+  {
+    ZMySqlQuery->RecNo = i+1;
+    d_class = ZMySqlQuery->Fields->FieldByNumber(1)->AsString.ToInt();
+    if (d_class == 5)  // Итоговая аттестация
+    {
+        float itog_oc = ZMySqlQuery->Fields->FieldByNumber(2)->AsString.ToDouble();
+        AnsiString title = ZMySqlQuery->Fields->FieldByNumber(3)->AsString;
+        if (title == "Гражданское право и гражданский процесс")
+            pravo = title + ", "+GetEst(itog_oc);
+        if (title == "Теория государства и права")
+            teoria = title + ", "+GetEst(itog_oc);
+    }
+  }
+    itog =  teoria + ";\n" + pravo;
+    return itog;
 }
 

@@ -152,7 +152,7 @@ AutoIncBuild=1
 MajorVer=1
 MinorVer=0
 Release=0
-Build=2
+Build=3
 Debug=0
 PreRelease=0
 Special=0
@@ -164,7 +164,7 @@ CodePage=1251
 [Version Info Keys]
 CompanyName=
 FileDescription=
-FileVersion=1.0.0.2
+FileVersion=1.0.0.3
 InternalName=
 LegalCopyright=
 LegalTrademarks=
@@ -206,6 +206,11 @@ Item0=$(BCB)\source\vcl
 [HistoryLists\hlConditionals]
 Count=1
 Item0=_DEBUG
+
+[HistoryLists\hlFinalOutputDir]
+Count=2
+Item0=C:\job\borland\test\bin\
+Item1=C:\job\borland\test\bin
 
 [Debugging]
 DebugSourceDirs=$(BCB)\source\vcl
