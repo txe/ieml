@@ -257,13 +257,16 @@ void __fastcall TFormReportCharacteristic::CreateWordDocument(void)
     if (grpName.SubString(1,2) == "МР") caf = "стратегического маркетинга";
     if (grpName.SubString(1,3) == "ПГС") caf = "архитектуры/технологии строительного производства";
     if (grpName.SubString(1,3) == "ТГВ") caf = "теплогазоснабжения";
-    if (grpName.SubString(1,1) == "Ю") caf = "права";
+    if (grpName.SubString(1,1) == "Ю") caf = "предпринимательского права";
 
     float itog_oc;
     InitItog(itog_oc);
 //    MessageBox(0, AnsiString(itog_oc).c_str(),"",0);
     macros.SelectionText("vbTab");
-    macros.SelectionText("Сдал"+AnsiString(isMan?"":"а")+" государственный экзамен по специальности с итоговой оценкой \"\""+GetEst_cur(itog_oc)+"\"\".\n");
+    if (grpName.SubString(1,1) != "Ю")
+        macros.SelectionText("Сдал"+AnsiString(isMan?"":"а")+" государственный экзамен по специальности с итоговой оценкой \"\""+GetEst_cur(itog_oc)+"\"\".\n");
+    else
+        macros.SelectionText(ItogForUr(isMan));
     macros.SelectionText("vbTab");
     macros.SelectionText(AnsiString(isMan?"Прошел":"Прошла")+" специализацию и выполнил"+AnsiString(isMan?"":"а")+" дипломную работу по кафедре " + caf + ".\n");
     macros.SelectionText("vbTab");
@@ -373,4 +376,38 @@ void __fastcall TFormReportCharacteristic::InitItog(float& itog_oc)
 
 }
 //---------------------------------------------------------------------------
+AnsiString __fastcall TFormReportCharacteristic::ItogForUr(bool isMan)
+{
+  ZMySqlQuery->SQL->Clear();
+  AnsiString query = "select di.idclass,pr.ball,di.fulltitle from "+opts.DBDisciplines+" as di, "+opts.DBProgress+" as pr where di.deleted=0 and pr.deleted=0 and pr.idstud="+ToStr(AnsiString(idstudent))+" and pr.iddiscip=di.id order by di.fulltitle";
+  ZMySqlQuery->SQL->Add(query);
+  ZMySqlQuery->Active=true;
+
+  if (ZMySqlQuery->RecordCount==0) return "";
+
+  int i;
+  int d_class;
+  bool  second = false;
+  AnsiString itog = "Сдал"+AnsiString(isMan?"":"а");
+  AnsiString prip = " государственный экзамен по ";
+  for (i = 0; i < ZMySqlQuery->RecordCount; ++i)
+  {
+    ZMySqlQuery->RecNo = i+1;
+    d_class = ZMySqlQuery->Fields->FieldByNumber(1)->AsString.ToInt();
+    if (d_class == 5)  // Итоговая аттестация
+    {
+        float itog_oc = ZMySqlQuery->Fields->FieldByNumber(2)->AsString.ToDouble();
+        itog +=  AnsiString(second?", ":"") + prip;
+        second = true;
+        AnsiString title = ZMySqlQuery->Fields->FieldByNumber(3)->AsString;
+        if (title == "Гражданское право и гражданский процесс")
+            itog += "гражданскому праву и гражданскому процессуальному праву";
+        else
+            itog += "теории государства и права";
+        itog += " с оценкой \"\"" + GetEst_cur(itog_oc) + "\"\"";
+    }
+  }
+    itog +=".\n";
+    return itog;
+}
 

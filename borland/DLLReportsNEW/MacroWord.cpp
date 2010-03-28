@@ -67,7 +67,10 @@ void WordMacros::RunMacros()
         cur_mac = "";
         tamplate = "";
     } catch(...) {
-        Application->MessageBox("Ошибка открытия документа Microsoft Word!",
+        Application->MessageBox("Ошибка открытия документа Microsoft Word!\n"
+                                "Возможно в макросах Word не установлены следующие параметры:\n"
+                                " - низкий уровень безопасности\n"
+                                " - доверять доступ к Visual Basic Project",
                                          "Ошибка",MB_OK+MB_ICONERROR);
         WordApp.OlePropertySet("Visible",true);
     }

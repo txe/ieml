@@ -449,7 +449,7 @@ bool __fastcall  TFormReportUchebKartStud::FileExists(const AnsiString& fname)
     return ::GetFileAttributes((LPCTSTR)fname.c_str()) != DWORD(-1);
 }
 //---------------------------------------------------------------------------
-void __fastcall TFormReportUchebKartStud::StringToAudHours(AnsiString  h[11], AnsiString &str_hours)
+void __fastcall TFormReportUchebKartStud::StringToAudHours(AnsiString  h[12], AnsiString &str_hours)
 {
     int cur_sem = 0;
     int begin = 1;

@@ -31,6 +31,7 @@ USEFORM("UnitRep\UnitSelectYear.cpp", FormSelectYear);
 USEFORM("UnitRep\UnitReportPrilDiplomNepol.cpp", FormReportPrilDiplomNepol);
 USEFORM("UnitRep\UnitReportForma3.cpp", FormReportForma3);
 USEFORM("UnitRep\UnitReportStatOtch.cpp", FormReportStatOtch);
+USEFORM("UnitRep\UnitStatistic.cpp", FormStatistic);
 //---------------------------------------------------------------------------
 This file is used by the project manager only and should be treated like the project file
 

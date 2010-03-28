@@ -24,7 +24,8 @@
       UnitRep\UnitReportUchebKartStud.obj MacroExcel.obj 
       UnitRep\UnitReportAkadSprav.obj UnitRep\UnitReportBULast.obj 
       UnitRep\UnitSelectYear.obj UnitRep\UnitReportPrilDiplomNepol.obj 
-      UnitRep\UnitReportForma3.obj UnitRep\UnitReportStatOtch.obj"/>
+      UnitRep\UnitReportForma3.obj UnitRep\UnitReportStatOtch.obj 
+      UnitRep\UnitStatistic.obj"/>
     <RESFILES value="ReportsDLL.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -47,7 +48,7 @@
       UnitRep\UnitReportUchebKartStud.dfm UnitRep\UnitReportAkadSprav.dfm 
       UnitRep\UnitReportBULast.dfm UnitRep\UnitSelectYear.dfm 
       UnitRep\UnitReportPrilDiplomNepol.dfm UnitRep\UnitReportForma3.dfm 
-      UnitRep\UnitReportStatOtch.dfm"/>
+      UnitRep\UnitReportStatOtch.dfm UnitRep\UnitStatistic.dfm"/>
     <LIBFILES value="mysql.lib"/>
     <LIBRARIES value="bcb2kaxserver.lib ZParseSql.lib ZDbc.lib ZCore.lib ZPlain.lib 
       ZComponent.lib bdertl.lib vclx.lib qrpt.lib dbrtl.lib vcl.lib rtl.lib"/>
@@ -59,7 +60,7 @@
       bcbsmp.bpi vclie.bpi xmlrtl.bpi inet.bpi inetdbbde.bpi inetdbxpress.bpi 
       inetdb.bpi nmfast.bpi bcbie.bpi soaprtl.bpi dclocx.bpi dbexpress.bpi 
       dbxcds.bpi indy.bpi bcb2kaxserver.bpi"/>
-    <PATHCPP value=".;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep"/>
+    <PATHCPP value=".;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep"/>
     <PATHPAS value=".;"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
@@ -69,17 +70,17 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="NO_STRICT"/>
     <MAINSOURCE value="ReportsDLL.bpf"/>
-    <INCLUDEPATH value="&quot;C:\Program Files\Borland\CBuilder6\Projects&quot;;&quot;D:\Garbage\Programm Files\Borland\CBuilder6\Projects&quot;;UnitRep;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\My\ZEOSDBO\src\component;$(BCB)\My\ZEOSDBO\src\core;$(BCB)\My\ZEOSDBO\src\dbc;$(BCB)\My\ZEOSDBO\src\parsesql;$(BCB)\My\ZEOSDBO\src\plain"/>
-    <LIBPATH value="&quot;C:\Program Files\Borland\CBuilder6\Projects&quot;;&quot;D:\Garbage\Programm Files\Borland\CBuilder6\Projects&quot;;UnitRep;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\MyComponents\ZEOSDBO\packages\cbuilder6\build;$(BCB)\Projects\Bpl;$(BCB)\Projects\Lib"/>
+    <INCLUDEPATH value="&quot;C:\Program Files\Borland\CBuilder6\Projects&quot;;&quot;D:\Garbage\Programm Files\Borland\CBuilder6\Projects&quot;;UnitRep;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\My\ZEOSDB\src\component;$(BCB)\My\ZEOSDB\src\core;$(BCB)\My\ZEOSDB\src\dbc;$(BCB)\My\ZEOSDB\src\parsesql;$(BCB)\My\ZEOSDB\src\plain"/>
+    <LIBPATH value="&quot;C:\Program Files\Borland\CBuilder6\Projects&quot;;&quot;D:\Garbage\Programm Files\Borland\CBuilder6\Projects&quot;;UnitRep;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\MyComponents\ZEOSDB\packages\cbuilder6\build;$(BCB)\Projects\Bpl;$(BCB)\Projects\Lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
     <IDLCFLAGS value="-src_suffix cpp -D_DEBUG -I&quot;C:\Program Files\Borland\CBuilder6\Projects&quot; 
       -I&quot;D:\Garbage\Programm Files\Borland\CBuilder6\Projects&quot; -IUnitRep 
-      -I$(BCB)\include -I$(BCB)\include\vcl -I$(BCB)\My\ZEOSDBO\src\component 
-      -I$(BCB)\My\ZEOSDBO\src\core -I$(BCB)\My\ZEOSDBO\src\dbc 
-      -I$(BCB)\My\ZEOSDBO\src\parsesql -I$(BCB)\My\ZEOSDBO\src\plain -boa"/>
+      -I$(BCB)\include -I$(BCB)\include\vcl -I$(BCB)\My\ZEOSDB\src\component 
+      -I$(BCB)\My\ZEOSDB\src\core -I$(BCB)\My\ZEOSDB\src\dbc 
+      -I$(BCB)\My\ZEOSDB\src\parsesql -I$(BCB)\My\ZEOSDB\src\plain -boa"/>
     <CFLAG1 value="-WD -Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- 
       -tWD -tWM -c"/>
     <PFLAGS value="-$Y+ -$W -$O- -$A8 -v -JPHNE -M"/>
@@ -139,6 +140,7 @@
       <FILE FILENAME="UnitRep\UnitReportPrilDiplomNepol.cpp" FORMNAME="FormReportPrilDiplomNepol" UNITNAME="UnitReportPrilDiplomNepol" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="UnitRep\UnitReportForma3.cpp" FORMNAME="FormReportForma3" UNITNAME="UnitReportForma3" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="UnitRep\UnitReportStatOtch.cpp" FORMNAME="FormReportStatOtch" UNITNAME="UnitReportStatOtch" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitRep\UnitStatistic.cpp" FORMNAME="FormStatistic" UNITNAME="UnitStatistic" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
@@ -172,28 +174,30 @@ ProductVersion=1.0.0.0
 Comments=
 
 [HistoryLists\hlIncludePath]
-Count=10
-Item0=C:\Program Files\Borland\CBuilder6\Projects;D:\Garbage\Programm Files\Borland\CBuilder6\Projects;UnitRep;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\My\ZEOSDBO\src\component;$(BCB)\My\ZEOSDBO\src\core;$(BCB)\My\ZEOSDBO\src\dbc;$(BCB)\My\ZEOSDBO\src\parsesql;$(BCB)\My\ZEOSDBO\src\plain
-Item1=C:\Program Files\Borland\CBuilder6\Projects;D:\Garbage\Programm Files\Borland\CBuilder6\Projects;UnitRep;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\MyComponents\ZEOSDBO\src\component;$(BCB)\MyComponents\ZEOSDBO\src\core;$(BCB)\MyComponents\ZEOSDBO\src\dbc;$(BCB)\MyComponents\ZEOSDBO\src\parsesql;$(BCB)\MyComponents\ZEOSDBO\src\plain
-Item2=D:\Garbage\Programm Files\Borland\CBuilder6\Projects;UnitRep;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\MyComponents\ZEOSDBO\src\component;$(BCB)\MyComponents\ZEOSDBO\src\core;$(BCB)\MyComponents\ZEOSDBO\src\dbc;$(BCB)\MyComponents\ZEOSDBO\src\parsesql;$(BCB)\MyComponents\ZEOSDBO\src\plain
-Item3=UnitRep;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\MyComponents\ZEOSDBO\src\component;$(BCB)\MyComponents\ZEOSDBO\src\core;$(BCB)\MyComponents\ZEOSDBO\src\dbc;$(BCB)\MyComponents\ZEOSDBO\src\parsesql;$(BCB)\MyComponents\ZEOSDBO\src\plain
-Item4=UnitRep;$(BCB)\include;$(BCB)\include\vcl;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\component;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\core;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\dbc;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\parsesql;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\plain
-Item5=UnitRep;D:\Garbage\Programm Files\Borland\CBuilder6\Projects;D:\20\TEST\DLLReportsNEW;$(BCB)\include;$(BCB)\include\vcl;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\component;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\core;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\dbc;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\parsesql;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\plain
-Item6=$(BCB)\include;$(BCB)\include\vcl;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\component;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\core;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\dbc;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\parsesql;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\plain
-Item7=$(BCB)\include;$(BCB)\include\vcl;D:\temp\src\component;D:\temp\src\core;D:\temp\src\dbc;D:\temp\src\parsesql;D:\temp\src\plain
-Item8=D:\temp\packages\cbuilder6\build;$(BCB)\include;$(BCB)\include\vcl
-Item9=$(BCB)\include;$(BCB)\include\vcl
+Count=11
+Item0=C:\Program Files\Borland\CBuilder6\Projects;D:\Garbage\Programm Files\Borland\CBuilder6\Projects;UnitRep;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\My\ZEOSDB\src\component;$(BCB)\My\ZEOSDB\src\core;$(BCB)\My\ZEOSDB\src\dbc;$(BCB)\My\ZEOSDB\src\parsesql;$(BCB)\My\ZEOSDB\src\plain
+Item1=C:\Program Files\Borland\CBuilder6\Projects;D:\Garbage\Programm Files\Borland\CBuilder6\Projects;UnitRep;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\My\ZEOSDBO\src\component;$(BCB)\My\ZEOSDBO\src\core;$(BCB)\My\ZEOSDBO\src\dbc;$(BCB)\My\ZEOSDBO\src\parsesql;$(BCB)\My\ZEOSDBO\src\plain
+Item2=C:\Program Files\Borland\CBuilder6\Projects;D:\Garbage\Programm Files\Borland\CBuilder6\Projects;UnitRep;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\MyComponents\ZEOSDBO\src\component;$(BCB)\MyComponents\ZEOSDBO\src\core;$(BCB)\MyComponents\ZEOSDBO\src\dbc;$(BCB)\MyComponents\ZEOSDBO\src\parsesql;$(BCB)\MyComponents\ZEOSDBO\src\plain
+Item3=D:\Garbage\Programm Files\Borland\CBuilder6\Projects;UnitRep;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\MyComponents\ZEOSDBO\src\component;$(BCB)\MyComponents\ZEOSDBO\src\core;$(BCB)\MyComponents\ZEOSDBO\src\dbc;$(BCB)\MyComponents\ZEOSDBO\src\parsesql;$(BCB)\MyComponents\ZEOSDBO\src\plain
+Item4=UnitRep;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\MyComponents\ZEOSDBO\src\component;$(BCB)\MyComponents\ZEOSDBO\src\core;$(BCB)\MyComponents\ZEOSDBO\src\dbc;$(BCB)\MyComponents\ZEOSDBO\src\parsesql;$(BCB)\MyComponents\ZEOSDBO\src\plain
+Item5=UnitRep;$(BCB)\include;$(BCB)\include\vcl;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\component;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\core;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\dbc;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\parsesql;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\plain
+Item6=UnitRep;D:\Garbage\Programm Files\Borland\CBuilder6\Projects;D:\20\TEST\DLLReportsNEW;$(BCB)\include;$(BCB)\include\vcl;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\component;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\core;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\dbc;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\parsesql;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\plain
+Item7=$(BCB)\include;$(BCB)\include\vcl;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\component;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\core;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\dbc;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\parsesql;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\plain
+Item8=$(BCB)\include;$(BCB)\include\vcl;D:\temp\src\component;D:\temp\src\core;D:\temp\src\dbc;D:\temp\src\parsesql;D:\temp\src\plain
+Item9=D:\temp\packages\cbuilder6\build;$(BCB)\include;$(BCB)\include\vcl
+Item10=$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
-Count=8
-Item0=C:\Program Files\Borland\CBuilder6\Projects;D:\Garbage\Programm Files\Borland\CBuilder6\Projects;UnitRep;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\MyComponents\ZEOSDBO\packages\cbuilder6\build;$(BCB)\Projects\Bpl;$(BCB)\Projects\Lib
-Item1=D:\Garbage\Programm Files\Borland\CBuilder6\Projects;UnitRep;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\MyComponents\ZEOSDBO\packages\cbuilder6\build;$(BCB)\Projects\Bpl;$(BCB)\Projects\Lib
-Item2=UnitRep;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\MyComponents\ZEOSDBO\packages\cbuilder6\build;$(BCB)\Projects\Bpl;$(BCB)\Projects\Lib
-Item3=UnitRep;$(BCB)\lib\obj;$(BCB)\lib;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\packages\cbuilder6\build
-Item4=$(BCB)\Projects\Lib;UnitRep;D:\Garbage\Programm Files\Borland\CBuilder6\Projects;D:\20\TEST\DLLReportsNEW;$(BCB)\lib\obj;$(BCB)\lib;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\packages\cbuilder6\build
-Item5=$(BCB)\lib\obj;$(BCB)\lib;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\packages\cbuilder6\build
-Item6=$(BCB)\lib\obj;$(BCB)\lib;D:\temp\packages\cbuilder6\build
-Item7=$(BCB)\lib\obj;$(BCB)\lib
+Count=9
+Item0=C:\Program Files\Borland\CBuilder6\Projects;D:\Garbage\Programm Files\Borland\CBuilder6\Projects;UnitRep;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\MyComponents\ZEOSDB\packages\cbuilder6\build;$(BCB)\Projects\Bpl;$(BCB)\Projects\Lib
+Item1=C:\Program Files\Borland\CBuilder6\Projects;D:\Garbage\Programm Files\Borland\CBuilder6\Projects;UnitRep;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\MyComponents\ZEOSDBO\packages\cbuilder6\build;$(BCB)\Projects\Bpl;$(BCB)\Projects\Lib
+Item2=D:\Garbage\Programm Files\Borland\CBuilder6\Projects;UnitRep;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\MyComponents\ZEOSDBO\packages\cbuilder6\build;$(BCB)\Projects\Bpl;$(BCB)\Projects\Lib
+Item3=UnitRep;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\MyComponents\ZEOSDBO\packages\cbuilder6\build;$(BCB)\Projects\Bpl;$(BCB)\Projects\Lib
+Item4=UnitRep;$(BCB)\lib\obj;$(BCB)\lib;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\packages\cbuilder6\build
+Item5=$(BCB)\Projects\Lib;UnitRep;D:\Garbage\Programm Files\Borland\CBuilder6\Projects;D:\20\TEST\DLLReportsNEW;$(BCB)\lib\obj;$(BCB)\lib;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\packages\cbuilder6\build
+Item6=$(BCB)\lib\obj;$(BCB)\lib;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\packages\cbuilder6\build
+Item7=$(BCB)\lib\obj;$(BCB)\lib;D:\temp\packages\cbuilder6\build
+Item8=$(BCB)\lib\obj;$(BCB)\lib
 
 [HistoryLists\hlDebugSourcePath]
 Count=1
@@ -211,7 +215,7 @@ RunParams=
 Launcher=
 UseLauncher=0
 DebugCWD=
-HostApplication=D:\job\borland\10\DLLReportsNEW\OdoPro.exe
+HostApplication=C:\job\borland\DLLReportsNEW\OdoPro.exe
 RemoteHost=
 RemotePath=
 RemoteLauncher=

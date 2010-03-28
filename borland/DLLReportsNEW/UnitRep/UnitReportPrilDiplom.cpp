@@ -69,12 +69,19 @@ AnsiString GetWithLowerFirst(AnsiString str)
 AnsiString GetDateAsString(const AnsiString& str,bool isYear=true)
 {
   AnsiString res = "";
-  res += str.SubString(9,2);
-  if (res.Length() == 1) res = "0" + res;
-  res += " ";
-  res += MounthNames[(str.SubString(6,2).ToInt()-1) % 12] + " ";
-  res += str.SubString(1,4);
-  if (isYear) res += " года";
+  try
+  {
+        res += str.SubString(9,2);
+        if (res.Length() == 1) res = "0" + res;
+        res += " ";
+        res += MounthNames[(str.SubString(6,2).ToInt()-1) % 12] + " ";
+        res += str.SubString(1,4);
+        if (isYear) res += " года";
+  }
+  catch(...)
+  {
+        res = "<невалидная дата!>";
+  }
   return res;
 }
 AnsiString GetYear(const AnsiString& str)
@@ -222,7 +229,7 @@ void __fastcall TFormReportPrilDiplom::CreateWordDocument(void)
   AnsiString MiscS = "приведены в продолжении приложения к диплому";
   AnsiString PracticaS, ItogGosEkzS;
   AnsiString VipQualificWorkS, ContVIP;
-  AnsiString CityS = "г. Нижний Новгород";
+  AnsiString CityS = "Нижний Новгород";
   AnsiString VUZS = "Государственное\nобразовательное учреждение\nвысшего профессионального\nобразования \"\"Нижегородский\nгосударственный\nархитектурно-строительный\nуниверситет\"\"";
 // изменил -------------------------------------------------------------
   AnsiString NumDiplomS, RegNumS, DataVidachiS, DataQualificS;
@@ -288,7 +295,7 @@ void __fastcall TFormReportPrilDiplom::CreateWordDocument(void)
 
   macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(2,2).Range.Select");
   macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(2,2).VerticalAlignment=wdCellAlignVerticalCenter");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(2,2).Range.Text= \"г. Нижний Новгород\"");
+  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(2,2).Range.Text= \"Нижний Новгород\"");
 
   macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(3,2).Range.Select");
   macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(3,2).VerticalAlignment=wdCellAlignVerticalCenter");

@@ -408,6 +408,11 @@ void PreviewReportByIndex(int index, int _IDGroup, int _IDStudent)
       ((TFormReportStatOtch*)pReportForm)->ToolBtnPreviewClick(pReportForm);
     ((TFormReportStatOtch*)pReportForm)->Free();
       break;
+    case RW_STAT:
+      pReportForm = new TFormStatistic(Application);
+      pReportForm->ShowModal();
+      delete pReportForm;
+      break;
     default:
       break;
    }

@@ -36,6 +36,7 @@ __published:	// IDE-managed Components
         void __fastcall FormDestroy(TObject *Sender);
         void __fastcall GetBallsCount(int& countUDOVL,double& percUDOVL,int& countHOR,double& percHOR,int& countOTL,double& percOTL,AnsiString& AvrgBallStr,AnsiString IDStudStr);
         void __fastcall InitItog(float& itog_oc);
+        AnsiString __fastcall ItogForUr(bool IsMan);
 private:	// User declarations
         int idstudent;
 public:		// User declarations

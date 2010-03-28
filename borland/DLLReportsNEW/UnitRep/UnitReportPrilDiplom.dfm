@@ -192,7 +192,7 @@ object FormReportPrilDiplom: TFormReportPrilDiplom
     Connected = False
     SQLHourGlass = False
     Left = 400
-    Top = 48
+    Top = 56
   end
   object ZMySqlQuery: TZQuery
     Connection = ZMySqlDatabase

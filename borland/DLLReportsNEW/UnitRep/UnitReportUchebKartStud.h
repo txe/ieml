@@ -21,7 +21,7 @@ struct Progress
     //--------------------------
     AnsiString  title;
     int         count_line;
-    AnsiString  hours[11];
+    AnsiString  hours[12];
 };
 
 struct PosPlanSemestr
@@ -65,7 +65,7 @@ public:		// User declarations
     AnsiString GetDateAsString(const AnsiString& str, bool isYear=true);
     void __fastcall UpdateView();
     bool __fastcall  FileExists(const AnsiString& fname);
-    void __fastcall StringToAudHours(AnsiString  h[11], AnsiString &str_hours);
+    void __fastcall StringToAudHours(AnsiString  h[21], AnsiString &str_hours);
 
 };
 //---------------------------------------------------------------------------
