@@ -1,0 +1,176 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="OdoPro.exe"/>
+    <OBJFILES value="OdoPro.obj UnitWorkRepDLL.obj MainUnit.obj UnitAbout.obj UnitAccount.obj 
+      UnitClearDB.obj UnitCommFilter.obj UnitFilterMain.obj UnitInsertVoc.obj 
+      UnitProgress.obj UnitSelected.obj UnitSplash.obj UnitStatistic.obj 
+      UnitWorkDLL.obj UnitIzmSem.obj UnitIzmGraphSem.obj UnitIzmOchenka.obj 
+      UnitDeltaDogovor.obj"/>
+    <RESFILES value="ODOPro.res"/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) MainUnit.dfm UnitAbout.dfm UnitAccount.dfm UnitClearDB.dfm 
+      UnitCommFilter.dfm UnitFilterMain.dfm UnitInsertVoc.dfm UnitProgress.dfm 
+      UnitSelected.dfm UnitSplash.dfm UnitStatistic.dfm UnitIzmSem.dfm 
+      UnitIzmGraphSem.dfm UnitIzmOchenka.dfm UnitDeltaDogovor.dfm"/>
+    <LIBFILES value="mysql.lib"/>
+    <LIBRARIES value="vclx.lib rtl.lib vcl.lib"/>
+    <SPARELIBS value="vcl.lib rtl.lib vclx.lib"/>
+    <PACKAGES value="vcl.bpi rtl.bpi dbrtl.bpi adortl.bpi vcldb.bpi vclx.bpi bdertl.bpi 
+      vcldbx.bpi ibxpress.bpi dsnap.bpi cds.bpi bdecds.bpi qrpt.bpi teeui.bpi 
+      teedb.bpi tee.bpi dss.bpi teeqr.bpi visualclx.bpi visualdbclx.bpi 
+      bcbsmp.bpi vclie.bpi xmlrtl.bpi inet.bpi inetdbbde.bpi inetdbxpress.bpi 
+      inetdb.bpi nmfast.bpi bcbie.bpi soaprtl.bpi dclocx.bpi dbexpress.bpi 
+      dbxcds.bpi indy.bpi bcb2kaxserver.bpi"/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="_DEBUG"/>
+    <SYSDEFINES value="NO_STRICT"/>
+    <MAINSOURCE value="OdoPro.cpp"/>
+    <INCLUDEPATH value="&quot;C:\Program Files\Borland\CBuilder6\Projects&quot;;&quot;D:\Garbage\Programm Files\Borland\CBuilder6\Projects&quot;;$(BCB)\include;$(BCB)\include\vcl;&quot;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\component&quot;;&quot;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\core&quot;;&quot;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\dbc&quot;;&quot;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\parsesql&quot;;&quot;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\plain&quot;"/>
+    <LIBPATH value="&quot;C:\Program Files\Borland\CBuilder6\Projects&quot;;&quot;D:\Garbage\Programm Files\Borland\CBuilder6\Projects&quot;;$(BCB)\lib\obj;$(BCB)\lib;&quot;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\packages\cbuilder6\build&quot;"/>
+    <WARNINGS value="-w-par"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-I&quot;C:\Program Files\Borland\CBuilder6\Projects&quot; 
+      -I&quot;D:\Garbage\Programm Files\Borland\CBuilder6\Projects&quot; -I$(BCB)\include 
+      -I$(BCB)\include\vcl 
+      -I&quot;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\component&quot; 
+      -I&quot;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\core&quot; 
+      -I&quot;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\dbc&quot; 
+      -I&quot;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\parsesql&quot; 
+      -I&quot;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\plain&quot; 
+      -src_suffix cpp -D_DEBUG -boa"/>
+    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
+      -tW -tWM"/>
+    <PFLAGS value="-$Y+ -$W -$O- -$A8 -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zi"/>
+    <LFLAGS value="-D&quot;&quot; -aa -Tpe -x -Gn -v"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0w32.obj sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="OdoPro.cpp" FORMNAME="" UNITNAME="OdoPro" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitWorkRepDLL.cpp" FORMNAME="" UNITNAME="UnitWorkRepDLL.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="MainUnit.cpp" FORMNAME="MainForm" UNITNAME="MainUnit" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitAbout.cpp" FORMNAME="FormAbout" UNITNAME="UnitAbout" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitAccount.cpp" FORMNAME="FormAccount" UNITNAME="UnitAccount" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitClearDB.cpp" FORMNAME="FormClearDB" UNITNAME="UnitClearDB" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitCommFilter.cpp" FORMNAME="FormFilterComm" UNITNAME="UnitCommFilter" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitFilterMain.cpp" FORMNAME="FormFilter" UNITNAME="UnitFilterMain" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitInsertVoc.cpp" FORMNAME="FormInsertVoc" UNITNAME="UnitInsertVoc" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitProgress.cpp" FORMNAME="FormProgress" UNITNAME="UnitProgress" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitSelected.cpp" FORMNAME="FormSelected" UNITNAME="UnitSelected" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitSplash.cpp" FORMNAME="SplashForm" UNITNAME="UnitSplash" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitStatistic.cpp" FORMNAME="FormStatistic" UNITNAME="UnitStatistic" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitWorkDLL.cpp" FORMNAME="" UNITNAME="UnitWorkDLL.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="mysql.lib" FORMNAME="" UNITNAME="mysql.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="ODOPro.res" FORMNAME="" UNITNAME="ODOPro.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitIzmSem.cpp" FORMNAME="FormIzmSem" UNITNAME="UnitIzmSem" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitIzmGraphSem.cpp" FORMNAME="FormIzmGraphSem" UNITNAME="UnitIzmGraphSem" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitIzmOchenka.cpp" FORMNAME="FormIzmOchenka" UNITNAME="UnitIzmOchenka" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitDeltaDogovor.cpp" FORMNAME="FormDeltaDogovor" UNITNAME="UnitDeltaDogovor" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=1
+AutoIncBuild=1
+MajorVer=1
+MinorVer=0
+Release=0
+Build=2
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1049
+CodePage=1251
+
+[Version Info Keys]
+CompanyName=ODO
+FileDescription=
+FileVersion=1.0.0.2
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[HistoryLists\hlIncludePath]
+Count=6
+Item0=C:\Program Files\Borland\CBuilder6\Projects;D:\Garbage\Programm Files\Borland\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\component;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\core;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\dbc;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\parsesql;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\plain
+Item1=D:\Garbage\Programm Files\Borland\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\component;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\core;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\dbc;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\parsesql;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\plain
+Item2=$(BCB)\include;$(BCB)\include\vcl;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\component;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\core;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\dbc;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\parsesql;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\plain
+Item3=$(BCB)\include;$(BCB)\include\vcl;D:\temp\src\component;D:\temp\src\core;D:\temp\src\dbc;D:\temp\src\parsesql;D:\temp\src\plain
+Item4=D:\temp\packages\cbuilder6\build;$(BCB)\include;$(BCB)\include\vcl
+Item5=$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=5
+Item0=C:\Program Files\Borland\CBuilder6\Projects;D:\Garbage\Programm Files\Borland\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\packages\cbuilder6\build
+Item1=D:\Garbage\Programm Files\Borland\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\packages\cbuilder6\build
+Item2=$(BCB)\lib\obj;$(BCB)\lib;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\packages\cbuilder6\build
+Item3=$(BCB)\lib\obj;$(BCB)\lib;D:\temp\packages\cbuilder6\build
+Item4=$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_DEBUG
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteLauncher=
+RemoteCWD=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[CORBA]
+AddServerUnit=1
+AddClientUnit=1
+PrecompiledHeaders=1
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+  </IDEOPTIONS>
+</PROJECT>

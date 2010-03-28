@@ -1,0 +1,161 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="ProgressDLL.dll"/>
+    <OBJFILES value="UnitProgressDefSemestr.obj UnitEditDisciplines.obj UnitFormDLL.obj 
+      UnitFuncs.obj UnitInfoOcenk.obj UnitMainDLL.obj UnitFast.obj"/>
+    <RESFILES value="ProgressDLL.res"/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) UnitProgressDefSemestr.dfm UnitEditDisciplines.dfm 
+      UnitFormDLL.dfm UnitFast.dfm"/>
+    <LIBFILES value="mysql.lib"/>
+    <LIBRARIES value="rtl.lib vcl.lib"/>
+    <SPARELIBS value="vcl.lib rtl.lib"/>
+    <PACKAGES value="vcl.bpi rtl.bpi dbrtl.bpi adortl.bpi vcldb.bpi vclx.bpi bdertl.bpi 
+      vcldbx.bpi ibxpress.bpi dsnap.bpi cds.bpi bdecds.bpi qrpt.bpi teeui.bpi 
+      teedb.bpi tee.bpi dss.bpi teeqr.bpi visualclx.bpi visualdbclx.bpi 
+      bcbsmp.bpi vclie.bpi xmlrtl.bpi inet.bpi inetdbbde.bpi inetdbxpress.bpi 
+      inetdb.bpi nmfast.bpi bcbie.bpi soaprtl.bpi dclocx.bpi dbexpress.bpi 
+      dbxcds.bpi indy.bpi bcb2kaxserver.bpi"/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="_DEBUG"/>
+    <SYSDEFINES value="NO_STRICT"/>
+    <MAINSOURCE value="ProgressDLL.bpf"/>
+    <INCLUDEPATH value="&quot;C:\Program Files\Borland\CBuilder6\Projects&quot;;$(BCB)\include;$(BCB)\include\vcl;&quot;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\component&quot;;&quot;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\core&quot;;&quot;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\dbc&quot;;&quot;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\parsesql&quot;;&quot;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\plain&quot;"/>
+    <LIBPATH value="&quot;C:\Program Files\Borland\CBuilder6\Projects&quot;;$(BCB)\lib\obj;$(BCB)\lib;&quot;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\packages\cbuilder6\build&quot;"/>
+    <WARNINGS value="-w-par"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-I&quot;C:\Program Files\Borland\CBuilder6\Projects&quot; -I$(BCB)\include 
+      -I$(BCB)\include\vcl 
+      -I&quot;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\component&quot; 
+      -I&quot;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\core&quot; 
+      -I&quot;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\dbc&quot; 
+      -I&quot;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\parsesql&quot; 
+      -I&quot;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\plain&quot; 
+      -src_suffix cpp -D_DEBUG -boa"/>
+    <CFLAG1 value="-WD -Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- 
+      -tWD -tWM -c"/>
+    <PFLAGS value="-$Y+ -$W -$O- -$A8 -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zi"/>
+    <LFLAGS value="-D&quot;&quot; -aa -Tpd -x -Gn -Gi -v"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0d32.obj sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="ProgressDLL.bpf" FORMNAME="" UNITNAME="ProgressDLL" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitProgressDefSemestr.cpp" FORMNAME="FormProgressDefSemestr" UNITNAME="UnitProgressDefSemestr" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitEditDisciplines.cpp" FORMNAME="FormDisciplines" UNITNAME="UnitEditDisciplines" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitFormDLL.cpp" FORMNAME="FormDLLProgr" UNITNAME="UnitFormDLL" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitFuncs.cpp" FORMNAME="" UNITNAME="UnitFuncs.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitInfoOcenk.cpp" FORMNAME="" UNITNAME="UnitInfoOcenk.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitMainDLL.cpp" FORMNAME="" UNITNAME="UnitMainDLL.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="mysql.lib" FORMNAME="" UNITNAME="mysql.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="ProgressDLL.res" FORMNAME="" UNITNAME="" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitFast.cpp" FORMNAME="FormFast" UNITNAME="UnitFast" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=1
+AutoIncBuild=1
+MajorVer=1
+MinorVer=0
+Release=0
+Build=1
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1049
+CodePage=1251
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.1
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[HistoryLists\hlIncludePath]
+Count=4
+Item0=$(BCB)\include;$(BCB)\include\vcl;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\component;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\core;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\dbc;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\parsesql;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\src\plain
+Item1=$(BCB)\include;$(BCB)\include\vcl;D:\temp\src\component;D:\temp\src\core;D:\temp\src\dbc;D:\temp\src\parsesql;D:\temp\src\plain
+Item2=D:\temp\packages\cbuilder6\build;$(BCB)\include;$(BCB)\include\vcl
+Item3=$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=3
+Item0=$(BCB)\lib\obj;$(BCB)\lib;D:\Garbage\Programm Files\Borland\CBuilder6\MyComponents\ZEOSDBO\packages\cbuilder6\build
+Item1=$(BCB)\lib\obj;$(BCB)\lib;D:\temp\packages\cbuilder6\build
+Item2=$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_DEBUG
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
+HostApplication=D:\рабочая\ODO Pro v.2\DLLProgress\OdoPro.exe
+RemoteHost=
+RemotePath=
+RemoteLauncher=
+RemoteCWD=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[CORBA]
+AddServerUnit=1
+AddClientUnit=1
+PrecompiledHeaders=1
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+
+[Linker]
+LibPrefix=
+LibSuffix=
+LibVersion=
+  </IDEOPTIONS>
+</PROJECT>

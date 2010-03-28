@@ -1,0 +1,37 @@
+USEFORM("UnitRep\UnitReportVedom.cpp", FormReportVedom);
+USEFORM("UnitRep\UnitReportDogovor.cpp", FormReportDogovor);
+USEFORM("UnitRep\UnitReportEkzZachList.cpp", FormReportEkzZachList);
+USEFORM("UnitRep\UnitReportProtocol.cpp", FormReportProtocol);
+USEFORM("UnitRep\UnitReportSpravka.cpp", FormReportSpravka);
+USEFORM("UnitRep\UnitReportSpravCard.cpp", FormReportSpravCard);
+USEFORM("UnitRep\UnitReportDolgsForGroup.cpp", FormReportDolgsForGroup);
+USEFORM("UnitRep\UnitOptsOplataForm.cpp", FormOptsOplata);
+USEFORM("UnitRep\UnitReportListStudDogovor.cpp", FormReportListStudDogovor);
+USEFORM("UnitRep\UnitListGroups.cpp", FormListGroup);
+USEFORM("UnitRep\UnitReportActPriemSdachaDel.cpp", FormReportActPriemSdachaDel);
+USEFORM("UnitRep\UnitReportDocDopuskVstupIspit.cpp", FormReportDocDopuskVstupIspit);
+USEFORM("UnitRep\UnitReportDocZachislenie.cpp", FormReportDocZachislenie);
+USEFORM("UnitRep\UnitReportSvodnVedom.cpp", FormReportSvodnVedom);
+USEFORM("UnitRep\UnitSelectSemestr.cpp", FormSelectSemestr);
+USEFORM("UnitRep\UnitReportVedomWord.cpp", FormReportVedomWord);
+USEFORM("UnitRep\UnitReportBUCityMounth.cpp", FormReportBUCityMounth);
+USEFORM("UnitRep\UnitReportBUCityDay.cpp", FormReportBUCityDay);
+USEFORM("UnitRep\UnitSelectCurrDate.cpp", FormSelectDate);
+USEFORM("UnitRep\UnitReportBUGlobalPlanDolgs.cpp", FormReportBUGlobalPlanDolgs);
+USEFORM("UnitRep\UnitReportBUPlanDolgsSemestr.cpp", FormReportBUPlanDolgsSemestr);
+USEFORM("UnitRep\UnitReportAvrgBallInGroup.cpp", FormReportAvrgBallInGroup);
+USEFORM("UnitRep\UnitReportStudsCandRedDiplom.cpp", FormReportStudsCandRedDiplom);
+USEFORM("UnitRep\UnitReportPrilDiplom.cpp", FormReportPrilDiplom);
+USEFORM("UnitRep\UnitDataForDiplom.cpp", FormDataForDiplom);
+USEFORM("UnitRep\UnitReportCharacteristic.cpp", FormReportCharacteristic);
+USEFORM("UnitRep\UnitReportUchebKartStud.cpp", FormReportUchebKartStud);
+USEFORM("UnitRep\UnitReportAkadSprav.cpp", FormReportAkadSprav);
+USEFORM("UnitRep\UnitReportBULast.cpp", FormReportBULast);
+USEFORM("UnitRep\UnitSelectYear.cpp", FormSelectYear);
+USEFORM("UnitRep\UnitReportPrilDiplomNepol.cpp", FormReportPrilDiplomNepol);
+USEFORM("UnitRep\UnitReportForma3.cpp", FormReportForma3);
+USEFORM("UnitRep\UnitReportStatOtch.cpp", FormReportStatOtch);
+//---------------------------------------------------------------------------
+This file is used by the project manager only and should be treated like the project file
+
+DllEntryPoint 
