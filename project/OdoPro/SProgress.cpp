@@ -29,11 +29,10 @@ void SProgress::Init(htmlayout::dom::element root)
 	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "prog-bt-progress"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "prog-bt-discip"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 	
-	// присоединяем процедуру, отвлавливающую выбор строки со студентом
+	// присоединяем процедуру, отвлавливающую выбор строки с дисциплиной
 	HTMLayoutAttachEventHandlerEx(_discip, ElementEventProcForDiscip, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
 	// присоединяем процедуру, отвлавливающую выбор строки с баллом
 	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "prog-estim"), ElementEventProcForBall, this, HANDLE_ALL);
-
 
 	// заполняем список дисциплин
 	LoadListDiscip();
@@ -42,9 +41,11 @@ void SProgress::Init(htmlayout::dom::element root)
 // заполняем список дисциплин
 void SProgress::LoadListDiscip(void)
 {
+	long cur_didcip_id = GetIDSelectedDiscip();
+
 	// удаляем все строки
-	while (_discip.children_count())
-		HTMLayoutDetachElement(_discip.child(0));
+	while (_discip.children_count() > 1)
+		HTMLayoutDetachElement(_discip.child(1));
 
 	string_t query = string_t() +
 		"SELECT id, fulltitle, shorttitle, idclass " 
@@ -60,15 +61,28 @@ void SProgress::LoadListDiscip(void)
 	mybase::MYFASTROW	row;
 
 	while ((row = res.fetch_row()))	
-		buf += "<option value=" + row["id"] + ">" + row["fulltitle"] + " [" + row["shorttitle"] + "]" + "</option>";
+		buf += "<tr value=" + row["id"] + ">" 
+			+  "<td>" + row["id"] + "</td>"
+			+  "<td>" + row["fulltitle"] + "[" + row["shorttitle"] + "]" + "</td>"
+			+  "</tr>";
 
 	assert(_mbslen(buf));
 	if (_mbslen(buf))
-		_discip.set_html(buf, _mbslen(buf), SIH_REPLACE_CONTENT);
+		_discip.set_html(buf, _mbslen(buf), SIH_APPEND_AFTER_LAST);
 	
 	_discip.update();
+
+	// если в таблице есть хотя бы одна дисциплина, то делаем текущей
+	// или ранее выбранную или первого в списке
 	if (_discip.children_count() > 1)
-		htmlayout::dom::element(_discip.child(0)).set_state(STATE_CURRENT | STATE_CHECKED);
+	{
+		string_t selector = string_t() + "tr[value=" + aux::itow(cur_didcip_id) + "]";
+		htmlayout::dom::element find = _discip.find_first(selector.c_str());
+		if (!find.is_valid())
+			find = _discip.child(1);
+		find.set_state(STATE_CURRENT);
+		find.scroll_to_view();
+	}
 	
 	_discip.update();
 }
@@ -123,18 +137,29 @@ void SProgress::UpdateView(void)
 // получает выбранную дисциплину
 long SProgress::GetIDSelectedDiscip(void)
 {
-	return t::GetSelectedRow(_discip).get_attribute_int("value", -1);
+	// ищем выбранного студента
+	assert(_discip.is_valid());
+	htmlayout::dom::element row;
+	for (UINT i = 1; i < _discip.children_count(); ++i)
+	{
+		htmlayout::dom::element t = _discip.child(i);
+		if (t.get_state(STATE_CURRENT))
+			return t.get_attribute_int("value", -1);
+	}	
+
+	return -1;
 }
+
 // обновляет таблицу оценок для выбранного предмета
 void SProgress::UpdateViewEstimForDiscip()
 {
-	htmlayout::dom::element ball_table		= LiteWnd::link_element(_root, "prog-estim"); 
+	htmlayout::dom::element ball_table	= LiteWnd::link_element(_root, "prog-estim"); 
 	// удаляем все строки
 	while (ball_table.children_count() > 2)
 		HTMLayoutDetachElement(ball_table.child(2));
 
-	long discip_id;
-	if ((discip_id = GetIDSelectedDiscip()) == -1)
+	long discip_id = GetIDSelectedDiscip();
+	if (discip_id == -1)
 		return;
 
 	string_t query = string_t() +
@@ -153,10 +178,11 @@ void SProgress::UpdateViewEstimForDiscip()
 		string_t type_estim = aux::itow(t::cod2type(aux::wtoi(row["estimation"], -1)));
 		buf += "<tr value=" + row["id"] + ">";
 		buf += string_t() +
-		+  "<td>" + row["numplansemestr"]				+ "</td>"
-		+  "<td>" + row["numgraphsemestr"]				+ "</td>"
-		+  "<td estim=" + type_estim + ">" + t::cod2text(row["estimation"])		+ "</td>"
-		+  "<td>" + row["ball"]							+ "</td>"
+		+  "<td>" + row["numplansemestr"]	+ "</td>"
+		+  "<td>" + row["numgraphsemestr"]	+ "</td>"
+		+  "<td estim=" + type_estim + ">" + t::cod2text(row["estimation"])	+ "</td>"
+		+  "<td>" + row["ball"]				+ "</td>"
+		+  "<td>7777<\td>"
 		+  "</tr>";
 	}
 
@@ -164,19 +190,30 @@ void SProgress::UpdateViewEstimForDiscip()
 		ball_table.set_html(buf, _mbslen(buf), SIH_APPEND_AFTER_LAST);
 	
 	ball_table.update();
+
 	if (ball_table.children_count() > 2)
+	{
 		htmlayout::dom::element(ball_table.child(2)).set_state(STATE_CURRENT);
-
-	// зададим сверху текущее название дисциплины
-	string_t txt = "Оценка: " + json::get_caption(_discip);
-	htmlayout::dom::element title	= LiteWnd::link_element(_root, "prog-discip-title");
-	title.set_text(txt);
-	title.update(false);
-
+		UpdateEditFromBall(ball_table.child(2));
+	}
 
 	ball_table.update();
 }
 
+// обновляет контролы для редактирования оценки
+void SProgress::UpdateEditFromBall(htmlayout::dom::element row)
+{
+	htmlayout::dom::element plan   = row.child(0);
+	htmlayout::dom::element graph  = row.child(1);
+	htmlayout::dom::element estim  = row.child(2);
+	htmlayout::dom::element ball   = row.child(3);
+
+	json::t2v(LiteWnd::link_element(_root, "prog-plan-sem"),  string_t(plan.get_text()));
+	json::t2v(LiteWnd::link_element(_root, "prog-graph-sem"), string_t(graph.get_text()));
+	json::t2v(LiteWnd::link_element(_root, "prog-est"),       string_t(estim.get_attribute("estim")));
+}
+
+//
 // обрабатывает выбор дисциплины
 BOOL CALLBACK SProgress::ElementEventProcForDiscip(LPVOID tag, HELEMENT he, UINT evtg, LPVOID prms)
 {
@@ -184,7 +221,7 @@ BOOL CALLBACK SProgress::ElementEventProcForDiscip(LPVOID tag, HELEMENT he, UINT
 		return FALSE;
 
 	BEHAVIOR_EVENT_PARAMS* pr = static_cast<BEHAVIOR_EVENT_PARAMS*>(prms);
-	if (pr->cmd != SELECT_SELECTION_CHANGED)
+	if (pr->cmd != TABLE_ROW_CLICK)
 		return FALSE;
 
 	SProgress* dlg = static_cast<SProgress*>(tag);
@@ -314,14 +351,7 @@ BOOL CALLBACK SProgress::ElementEventProcForBall(LPVOID tag, HELEMENT he, UINT e
 
 	// обновим значения семестров, значения берем из выбранной строки с балом
 	htmlayout::dom::element row = htmlayout::dom::element(he).child(pr->reason);
-	htmlayout::dom::element plan = row.child(0);
-	htmlayout::dom::element graph = row.child(1);
-	htmlayout::dom::element estim = row.child(2);
-	htmlayout::dom::element ball = row.child(3);
-	
-	json::t2v(LiteWnd::link_element(dlg->_root, "prog-plan-sem"), string_t(plan.get_text()));
-	json::t2v(LiteWnd::link_element(dlg->_root, "prog-graph-sem"), string_t(graph.get_text()));
-	json::t2v(LiteWnd::link_element(dlg->_root, "prog-est"), string_t(estim.get_attribute("estim")));
+	dlg->UpdateEditFromBall(row);
 
 	return FALSE;
 }

@@ -2,6 +2,78 @@
 <head>
     <style>
         @import url(treeview.css) screen;
+         /* настройки таблицы - грида со студентами*/@import url(main-table.css);
+
+        /*----------------------------------------*/
+        #prog-discip
+        {
+            border: 1px solid #bdbccc;
+            overflow: auto;
+            width: 100%%;
+            height: 100%%;
+            behavior: grid;
+            background-color: white;
+        }
+        #prog-discip th
+        {
+            color: white;
+            font-family: "Century Gothic" , "Verdana";
+            font-size: 9pt;
+            border: none;
+            padding: 4px;
+            background-color: #DDD;
+            background-image: url(header.png);
+            background-repeat: expand stretch-left stretch-right stretch-middle;
+            background-position: 3px 3px 3px 3px;
+            white-space:nowrap;
+            
+        }
+        #prog-discip th:hover
+        {
+            color: #ffe598;
+            transition: blend;
+            background-image: url(header-hover.png);
+        }
+        #prog-discip tr:nth-child(odd)
+        {
+            background-color: white;
+        }
+        /* each odd row */
+        #prog-discip tr:nth-child(even)
+        {
+            background-color: #F4F3F9;
+        }
+        /* each even row */
+        
+        #prog-discip td 
+        { 
+            padding:2px; 
+            padding-left:6px;
+            font-family:"Verdana"; 
+	        font-size:8pt;  
+	        border:1pt;
+	        text-align:left;
+        }
+        #prog-discip td:nth-child(1) { font-weight:bold; text-align:center;} /* first column */
+        #prog-discip td:nth-child(2) 
+        { 
+            text-align:left;
+            overflow:hidden;        /* three line below - ellipsis */
+            text-overflow:ellipsis;
+            white-space:nowrap;
+        } 
+        #prog-discip tr:current /* current row */ 
+        { 
+            background-color:#bdbccc;
+            color:black;
+        } 
+        
+        #prog-discip option:current
+        {
+        	 background-color:#bdbccc;
+            color:black;
+        }
+             
         /*----------------------------------------*/
         #table-ege-discip
         {
@@ -600,29 +672,24 @@
         <div name="panel-id5">
             <div style="flow: horizontal; height: 100%%">
                 <div style="padding: 4px; height: 100%%">
-                    Дисциплины<br />
-                    <widget type="select" id="prog-discip" style="width: 100%%; height: 100%%;transition:slide;">
-                    </widget>
+                   <table id="prog-discip" fixedrows="1" cellspacing="0">
+                      <tr><th>#</th><th>Дисциплина</th></tr>
+                   </table>
                 </div>
-                <div style="padding: 4px; width: 50%; height: 100%%">
-                    <div id = "prog-discip-title" style ="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-                        Оценки
-                    </div>
+                <div style="padding: 4px; width: 200px; height: 100%%">
                     <div style="height:100%%;width:100%%">
                         <table style="width:100%%" id="prog-estim" fixedrows="2" cellspacing="0">
-                            <tr><th colspan="2">Семестр<th rowspan="2"> Оценка<th rowspan="2">Балл</th></tr>
-                            <tr><th>по плану<th>по графику</tr>
-                            <tr><td>по плану</td></tr>
-                            <tr><td>по плану</td></tr>
+                            <tr><th colspan="2">Семестр<th rowspan="2">Оценка<th rowspan="2">Балл<th rowspan="2">#</th></tr>
+                            <tr><th>план<th>график</tr>
                         </table>
                     </div>
                     <div style="padding-top:4px;">
                         <div style="border: 1px solid #bdbccc;">
-                            <div style="flow:grid;padding-bottom:4px;white-space: nowrap;">
+                            <div style="flow:grid;padding:4px;white-space: nowrap;">
                                 <div style="left:1#;right:4#;top:1#;padding:2px; width:50%%">Семестр</div>
-                                <div style="left:1#;top:2#;padding:2px;">по плану</div>
+                                <div style="left:1#;top:2#;padding:2px;">план</div>
                                 <div style="left:2#;top:2#;padding:2px;"><input type="number" id="prog-plan-sem" value="1" size="6" step="1" minvalue="1" maxvalue="12" /></div>
-                                <div style="left:1#;top:3#;padding:2px;">по графику</div>
+                                <div style="left:1#;top:3#;padding:2px;">график</div>
                                 <div style="left:2#;top:3#;padding:2px;"><input type="number" id="prog-graph-sem" value="1" size="6" step="1" minvalue="1" maxvalue="12" /></div>                 
                         
                                 <div style="left:3#;top:2#;padding:2px">балл</div>
@@ -644,7 +711,7 @@
                                     </select>
                                 </div>                
                             </div>
-                            <div style="flow:horizontal;padding-top:4px">
+                            <div style="flow:horizontal;padding:4px">
                                 <div align="left"><button id="prog-bt-del" value="Удалить"/></div>
                                 <div align="right"><button id="prog-bt-save" value="Сохранить"/></div>
                             </div>

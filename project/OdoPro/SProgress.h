@@ -30,6 +30,8 @@ private:
 	long GetIDSelectedDiscip(void);
 	// обновляет таблицу оценок для выбранного предмета
 	void UpdateViewEstimForDiscip();
+	// обновляет контролы для редактирования оценки
+	void UpdateEditFromBall(htmlayout::dom::element row);
 	// сохраняет оценку для дисциплины текущего студента
 	void SaveBall(void);
 	// удаляет выбранный балл
