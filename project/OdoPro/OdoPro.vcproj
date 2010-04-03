@@ -41,6 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..\dev\mysql\include&quot;;&quot;$(ProjectDir)\..\dev\HTMLayoutSDK\include&quot;;&quot;$(ProjectDir)\..\dev\boost&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -62,6 +63,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="htmlayout.lib libmysql.lib Ws2_32.lib"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)\..\dev\HTMLayoutSDK\lib&quot;;&quot;$(ProjectDir)\..\dev\mysql\lib&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -286,11 +288,11 @@
 				Name="behavior"
 				>
 				<File
-					RelativePath="..\..\HTMLayoutSDK\include\behaviors\behavior_accesskeys.cpp"
+					RelativePath="..\dev\HTMLayoutSDK\include\behaviors\behavior_accesskeys.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\HTMLayoutSDK\include\behaviors\behavior_actions.cpp"
+					RelativePath="..\dev\HTMLayoutSDK\include\behaviors\behavior_actions.cpp"
 					>
 				</File>
 				<File
@@ -298,19 +300,19 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\HTMLayoutSDK\include\behaviors\behavior_expandable_list.cpp"
+					RelativePath="..\dev\HTMLayoutSDK\include\behaviors\behavior_expandable_list.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\HTMLayoutSDK\include\behaviors\behavior_grid.cpp"
+					RelativePath="..\dev\HTMLayoutSDK\include\behaviors\behavior_grid.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\HTMLayoutSDK\include\behaviors\behavior_popup.cpp"
+					RelativePath="..\dev\HTMLayoutSDK\include\behaviors\behavior_popup.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\HTMLayoutSDK\include\behaviors\behavior_tabs.cpp"
+					RelativePath="..\dev\HTMLayoutSDK\include\behaviors\behavior_tabs.cpp"
 					>
 				</File>
 			</Filter>
