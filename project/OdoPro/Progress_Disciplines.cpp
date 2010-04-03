@@ -172,6 +172,7 @@ void CManagDisciplinesDlg::UpdateViewDiscipTable(void)
 			" idclass=" + row["idclass"] + " >";
 		buf += string_t() +
 			"<td>" + aux::itow(pos++)	+ "</td>"
+			"<td>" + row["id"]	        + "</td>"
 			"<td>" + row["fulltitle"]	+ "</td>"
 			"<td>" + row["shorttitle"]	+ "</td>"
 			"<td>" + row["num_hours"]	+ "</td>"
@@ -194,10 +195,10 @@ void CManagDisciplinesDlg::UpdateViewDiscipData(void)
 {
 	element discip = t::GetSelectedRow(discip_table_);
 
-	json::t2v(fulltitle_,  json::v2t(element(discip.child(1)).get_value()));
-	json::t2v(shorttitle_, json::v2t(element(discip.child(2)).get_value()));
-	json::t2v(num_hours_,  json::v2t(element(discip.child(3)).get_value()));
-	json::t2v(scan_namber_,json::v2t(element(discip.child(5)).get_value()));
+	json::t2v(fulltitle_,  json::v2t(element(discip.child(2)).get_value()));
+	json::t2v(shorttitle_, json::v2t(element(discip.child(3)).get_value()));
+	json::t2v(num_hours_,  json::v2t(element(discip.child(4)).get_value()));
+	json::t2v(scan_namber_,json::v2t(element(discip.child(6)).get_value()));
 	
 	std::wstring hours = discip.get_attribute("sem_hours");
 	std::vector<std::wstring> hs;
