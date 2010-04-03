@@ -3,7 +3,6 @@
 #include <json-aux.h>
 #include "string_t.h"
 #include <boost\algorithm\string.hpp>
-#include <boost\lexical_cast.hpp>
 #include <vector>
 #include <float.h>
 #include "SingeltonApp.h"

@@ -4,11 +4,10 @@
 #include "SingeltonApp.h"
 #include <iostream>
 #include <fstream>
-#include <boost/program_options.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ini_parser.hpp>
 #include "json-aux.h"
 #include "logger.h"
-
-namespace po = boost::program_options;
 
 
 mybase::MyBase::MyBase(void):m_con(NULL)
@@ -57,25 +56,22 @@ bool mybase::MyBase::Connect(void)
 bool mybase::MyBase::LoadSetting( const string_t& cfg_name )
 {
 	LOG_DEBUG << "Чтение параметров из конфиг. файла";
-	// необходимо включить проверку на валидность
-	try {
-		po::options_description generic("Generic options");
-		generic.add_options()
-			("host", po::value<std::string>(&sHost)->default_value("127.0.0.1"), "")
-			("login", po::value<std::string>(&sLogin)->default_value("app_user"), "")
-			("password", po::value<std::string>(&sPassword)->default_value("-Nu(q$j0Xnxk"), "")
-			("dbname", po::value<std::string>(&sBaseName)->default_value("test"), "")
-			("port", po::value<std::string>(&sPort)->default_value("3306"), "")
-			;
-		po::variables_map vm;        
-		std::ifstream ifs(cfg_name.c_str());
-		if (ifs.fail())
-		{
-			LOG_WARNING << "Конфиг. файл '" << cfg_name << "'не найден, использованы параметры по умолчанию";
-			assert(FALSE);
-		}
-		store(parse_config_file(ifs, generic), vm);
-		notify(vm);
+	// TODO: необходимо включить проверку на валидность
+	try
+	{
+		// Create an empty property tree object
+		using boost::property_tree::ptree;
+		ptree pt;
+
+		// Load the XML file into the property tree. If reading fails
+		// (cannot open file, parse error), an exception is thrown.
+		read_ini(cfg_name.c_str(), pt);
+
+		sHost     = pt.get("host",     "127.0.0.1");
+		sLogin    = pt.get("login",    "app_user");
+		sPassword = pt.get("password", "-Nu(q$j0Xnxk");
+		sBaseName = pt.get("dbname",   "test");
+		sPort     = pt.get("port",     "3306");
 	}
 	catch (...)
 	{
