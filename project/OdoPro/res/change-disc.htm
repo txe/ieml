@@ -1,0 +1,93 @@
+<html>
+<head>
+    <style>        
+        table
+        {
+            border: 1px solid #bdbccc;
+            overflow: auto ;
+            overflow-y:scroll;
+            overflow-x:hidden;
+            width: 100%%;
+            height: 100%%;
+            behavior: grid;
+            background-color: white;
+        }
+        table th
+        {
+            color: white;
+            font-family: "Century Gothic" , "Verdana";
+            font-size: 9pt;
+            border: none;
+            padding: 4px;
+            background-color: #DDD;
+            background-image: url(header.png);
+            background-repeat: expand stretch-left stretch-right stretch-middle;
+            background-position: 3px 3px 3px 3px;
+            
+           // overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
+            
+        }
+        table th:hover
+        {
+            color: #ffe598;
+            transition: blend;
+            background-image: url(header-hover.png);
+        }
+        table tr:nth-child(odd)
+        {
+            background-color: white;
+        }
+        table tr:nth-child(even)
+        {
+            background-color: #F4F3F9;
+        }
+       
+        table td 
+        { 
+            padding:2px; 
+            padding-left:6px;
+            font-family:"Verdana"; 
+	        font-size:8pt;  
+	        border:1pt;
+	        text-align:left;
+        }
+        table tr:current /* current row */ 
+        { 
+            background-color:#bdbccc;
+            color:black;
+        } 
+        
+        table td:nth-child(1) { font-weight:bold; text-align:center; width:8px;} /* first column */
+        table td:nth-child(2) { text-align:center; width:15px;}
+        table td:nth-child(3)
+        { 
+        	overflow:hidden;        /* three line below - ellipsis */
+            text-overflow:ellipsis;
+            white-space:nowrap;
+        }
+
+    </style>
+</head>
+<body>
+  <div style="padding: 4px; height: 100%%">
+    Исходная дисциплина</br>
+    <table id="table1" style="width:*;height:*" fixedrows="1" cellspacing="0">
+        <tr><th>№</th><th>#</th><th>Дисциплина</th><th>Абривиатура</th></tr>
+    </table>
+  </div>
+  <div style="padding: 4px; height: 100%%">
+    Установить дисциплину</br>
+    <table id="table2" style="width:*;height:*" fixedrows="1" cellspacing="0">
+         <tr><th>№</th><th>#</th><th>Дисциплина</th><th>Абривиатура</th></tr>
+    </table>
+  </div>
+  <div align="left" style="flow: horizontal; width: 100%; white-space: nowrap;">
+        <div align="right" style="padding-top: 10px; padding-bottom: 0px">
+            <button id="bt-run">Запустить</button>
+            <button id="bt-close">Выйти</button>
+        </div>
+    </div>
+</body>
+</html>

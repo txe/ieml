@@ -66,7 +66,6 @@ END
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\ODOPro.ico"
 
-
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version
@@ -108,54 +107,41 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// DESIGNINFO
-//
-
-#ifdef APSTUDIO_INVOKED
-#endif    // APSTUDIO_INVOKED
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
 // HTML
 //
 
-IDR_HTML_STAT	            HTML                    "res\\statistic.htm"
-IDR_HTML_MAIN               HTML                    "res\\main.htm"
-IDR_HTML_CHANGE_SEM         HTML                    "res\\change-sem.htm"
-IDR_HTML_CHANGE_ESTIM       HTML                    "res\\change-estimation.htm"
-IDR_HTML_DICTIONARY		    HTML                    "res\\dictionary.htm"
-HEADER.PNG                  HTML                    "res\\header.png"
-HEADER-HOVER.PNG            HTML                    "res\\header-hover.png"
-STD-MENU.CSS                HTML                    "res\\std-menu.css"
-MENU-BAR.CSS                HTML                    "res\\menu-bar.css"
-MAIN-TABLE.CSS              HTML                    "res\\main-table.css"
-GROUP-PANEL.CSS             HTML                    "res\\group-panel.css"
-FOLDER.GIF                  HTML                    "res\\folder.gif"
-TAB-HOVER.PNG               HTML                    "res\\tab-hover.png"
-TAB.PNG                     HTML                    "res\\tab.png"
-FON.JPG                     HTML                    "res\\fon.jpg"
-PROGRESS.GIF                HTML                    "res\\progress.gif"
-IDR_HTML_PROP               HTML                    "res\\property.htm"
-FOCUSLED.PNG                HTML                    "res\\focusled.png"
-LOGO.PNG                    HTML                    "res\\logo.png"
-STRIPBACK.PNG               HTML                    "res\\stripback.png"
-TABBACK.PNG                 HTML                    "res\\tabback.png"
-TOOLBARBACK.PNG             HTML                    "res\\toolbarback.png"
-IDR_HTML_FAST_INPUT         HTML                    "res\\fast-input.htm"
-IDR_HTML_PROGRESS_FOR_SEM   HTML                    "res\\progress-for-sem.htm"
-IDR_HTML_DISCIPLINES        HTML                    "res\\discip.htm"
-TREEVIEW.CSS                HTML                    "res\\treeview.css"
-LIST-ITEM-ICON-MINUS.PNG    HTML                    "res\\list-item-icon-minus.png"
-LIST-ITEM-ICON-PLUS.PNG     HTML                    "res\\list-item-icon-plus.png"
-SYMBOL-HELP.PNG             HTML                    "res\\symbol-help.png"
-/////////////////////////////////////////////////////////////////////////////
-//
-// PNG
-//
-
-ARROW-RIGHT.PNG                HTML                     "res\\arrow-right.png"
-ARROW-LEFT.PNG                 HTML                     "res\\arrow-left.png"
+IDR_HTML_STAT           HTML                    "res\\statistic.htm"
+IDR_HTML_MAIN           HTML                    "res\\main.htm"
+IDR_HTML_CHANGE_SEM     HTML                    "res\\change-sem.htm"
+IDR_HTML_CHANGE_ESTIM   HTML                    "res\\change-estimation.htm"
+IDR_HTML_DICTIONARY     HTML                    "res\\dictionary.htm"
+HEADER.PNG              HTML                    "res\\header.png"
+HEADER-HOVER.PNG        HTML                    "res\\header-hover.png"
+STD-MENU.CSS            HTML                    "res\\std-menu.css"
+MENU-BAR.CSS            HTML                    "res\\menu-bar.css"
+MAIN-TABLE.CSS          HTML                    "res\\main-table.css"
+GROUP-PANEL.CSS         HTML                    "res\\group-panel.css"
+FOLDER.GIF              HTML                    "res\\folder.gif"
+TAB-HOVER.PNG           HTML                    "res\\tab-hover.png"
+TAB.PNG                 HTML                    "res\\tab.png"
+FON.JPG                 HTML                    "res\\fon.jpg"
+PROGRESS.GIF            HTML                    "res\\progress.gif"
+IDR_HTML_PROP           HTML                    "res\\property.htm"
+FOCUSLED.PNG            HTML                    "res\\focusled.png"
+LOGO.PNG                HTML                    "res\\logo.png"
+STRIPBACK.PNG           HTML                    "res\\stripback.png"
+TABBACK.PNG             HTML                    "res\\tabback.png"
+TOOLBARBACK.PNG         HTML                    "res\\toolbarback.png"
+IDR_HTML_CHANGE_DISC    HTML                    "res\\change-disc.htm"
+IDR_HTML_FAST_INPUT     HTML                    "res\\fast-input.htm"
+IDR_HTML_PROGRESS_FOR_SEM HTML                  "res\\progress-for-sem.htm"
+IDR_HTML_DISCIPLINES    HTML                    "res\\discip.htm"
+TREEVIEW.CSS            HTML                    "res\\treeview.css"
+LIST-ITEM-ICON-MINUS.PNG HTML                    "res\\list-item-icon-minus.png"
+LIST-ITEM-ICON-PLUS.PNG HTML                    "res\\list-item-icon-plus.png"
+SYMBOL-HELP.PNG         HTML                    "res\\symbol-help.png"
+ARROW-RIGHT.PNG         HTML                    "res\\arrow-right.png"
+ARROW-LEFT.PNG          HTML                    "res\\arrow-left.png"
 #endif    // Russian resources
 /////////////////////////////////////////////////////////////////////////////
 

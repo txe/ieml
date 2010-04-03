@@ -49,4 +49,6 @@ public:
 	void ProgressForSem(void);
 	// показывает диалог редактирования дисциплин
 	void EditDiscip(void);
+	// показывает диалог переноса оценок из одной дисциплины в другую
+	void ChangeDiscip();
 };

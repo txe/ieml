@@ -7,6 +7,7 @@
 #include "FastInput.h"
 #include "ProgressForSem.h"
 #include "Progress_Disciplines.h"
+#include "ChangeDisc.h"
 
 SProgress::SProgress(void)
 {
@@ -28,7 +29,8 @@ void SProgress::Init(htmlayout::dom::element root)
 	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "prog-bt-fast-input"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "prog-bt-progress"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "prog-bt-discip"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
-	
+	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "prog-bt-change-disc"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+
 	// присоединяем процедуру, отвлавливающую выбор строки с дисциплиной
 	HTMLayoutAttachEventHandlerEx(_discip, ElementEventProcForDiscip, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
 	// присоединяем процедуру, отвлавливающую выбор строки с баллом
@@ -123,6 +125,11 @@ BOOL CALLBACK SProgress::ElementEventProcBt(LPVOID tag, HELEMENT he, UINT evtg, 
 		dlg->EditDiscip();
 		return TRUE;
 	}
+	if (aux::wcseq(id, L"prog-bt-change-disc"))
+	{	
+		dlg->ChangeDiscip();
+		return TRUE;
+	}
 
 	MessageBox(::GetActiveWindow(), L"Еще не работает", L"Предупреждение", 0);
 	return FALSE;
@@ -163,7 +170,7 @@ void SProgress::UpdateViewEstimForDiscip()
 		return;
 
 	string_t query = string_t() +
-		"SELECT id, numplansemestr, numgraphsemestr, estimation, ball "
+		"SELECT id, numplansemestr, numgraphsemestr, estimation, ball, from_disc "
 		" FROM progress "
 		" WHERE idstud = " + aux::itow(theApp.GetCurrentStudentID()) + 
 		" AND iddiscip = " + aux::itow(discip_id) + " AND deleted=0 ORDER BY numplansemestr";
@@ -182,7 +189,7 @@ void SProgress::UpdateViewEstimForDiscip()
 		+  "<td>" + row["numgraphsemestr"]	+ "</td>"
 		+  "<td estim=" + type_estim + ">" + t::cod2text(row["estimation"])	+ "</td>"
 		+  "<td>" + row["ball"]				+ "</td>"
-		+  "<td>7777<\td>"
+		+  "<td>" + row["from_disc"] + "<\td>"
 		+  "</tr>";
 	}
 
@@ -370,4 +377,12 @@ void SProgress::EditDiscip(void)
 {
 	CManagDisciplinesDlg dlg;
 	dlg.DoModal();
+}
+
+// показывает диалог переноса оценок из одной дисциплины в другую
+void SProgress::ChangeDiscip()
+{
+	ChangeDisc dlg;
+	dlg.DoModal();
+	UpdateViewEstimForDiscip();
 }
