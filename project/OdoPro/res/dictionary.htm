@@ -1,0 +1,135 @@
+﻿<html>
+<head>
+    <style>        
+        table
+        {
+            border: 1px solid #bdbccc;
+            overflow: auto;
+            width: 100%%;
+            height: 100%%;
+            behavior: sortable-grid;
+            background-color: white;
+        }
+        table th
+        {
+            color: white;
+            font-family: "Century Gothic" , "Verdana";
+            font-size: 9pt;
+            border: none;
+            padding: 4px;
+            background-color: #DDD;
+            background-image: url(header.png);
+            background-repeat: expand stretch-left stretch-right stretch-middle;
+            background-position: 3px 3px 3px 3px;
+            
+            //overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
+            
+        }
+        table th:hover
+        {
+            color: #ffe598;
+            transition: blend;
+            background-image: url(header-hover.png);
+        }
+        table tr:nth-child(odd)
+        {
+            background-color: white;
+        }
+        table tr:nth-child(even)
+        {
+            background-color: #F4F3F9;
+        }
+       
+        table td 
+        { 
+            padding:2px; 
+            padding-left:6px;
+            font-family:"Verdana"; 
+	        font-size:8pt;  
+	        border:1pt;
+	        text-align:center;
+        }
+        table tr:current /* current row */ 
+        { 
+            background-color:#bdbccc;
+            color:black;
+        } 
+        
+        table td:nth-child(1) { font-weight:bold; text-align:center; width:10px;} /* first column */
+        /* second column */
+        table td:nth-child(2)  { font-weight:bold; text-align:center; width:10px;}
+        table td:nth-child(3)  
+        {
+        	text-align:left;
+            overflow:hidden;        /* three line below - ellipsis */
+            text-overflow:ellipsis;
+            white-space:nowrap;
+        } 
+        div
+        { 
+       //    border:1px solid red;
+        }
+        
+        input:empty
+        {
+            color: #333365;
+        }
+        input[negative]
+        {
+            color: blue;
+        }
+        input[invalid]
+        {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div style="width:*;height:*">
+         <table id="table" fixedrows="1" cellspacing="0">
+            <tr><th>Ключ</th><th>Номер</th><th>Название</th></tr>
+            <tr><td>Ключ</td><td>Номер</td><td>Название</td></tr>
+            <tr><td>Ключ</td><td>Номер</td><td>Название</td></tr>
+            <tr><td>Ключ</td><td>Номер</td><td>Название</td></tr>
+            <tr><td>Ключ</td><td>Номер</td><td>Название</td></tr>
+         </table>
+         <div style="flow:grid;width:100%%;white-space: nowrap;padding-top:4px">
+                <div style="left:1#;top:1#;width:100px"/>
+                <div style="left:1#;top:1#;padding:2px;">Название</div>
+                <div style="left:2#;top:1#;right:4#;padding:2px;vertical-align: middle;"><input type="text" id="title" style="width:*" novalue="<нет значения!>"/></div>
+                <div style="left:1#;top:2#;padding:2px;">Номер</div>
+                <div style="left:2#;top:2#;padding:2px;vertical-align: middle"><input type="number" id="num" value="0" size="6" step="1" minvalue="0" maxvalue="12000"/></div>                 
+                <div style="left:1#;top:3#;padding:2px;">Фильтр по ключу</div>
+                <div style="left:2#;top:3#;right:4#;padding:2px;vertical-align: middle">
+                    <select id="filter" style="width:100%%; text-align: center;">
+                        <option value="%" selected>все</option>
+                        <option value="grp">группы (grp)</option>
+                        <option value="city">города (city)</option>
+                        <option value="spec">специальности (spec)</option>
+                        <option value="specializ">специализации (specializ)</option>
+                        <option value="qualific">квалификации (qualific)</option>
+                        <option value="dogshifr">шифры договоров (dogshifr)</option>
+                        <option value="dogfast">скорость обучения (dogfast)</option>
+                        <option value="dogyear">года заключения договоров (dogyear)</option>
+                        <option value="education">образования (education)</option>
+                        <option value="edudoc">документы об образовании (edudoc)</option>
+                        <option value="eduform">формы обучения (eduform)</option>
+                        <option value="language">языки (language)</option>
+                        <option value="falseedudocinfo">номера фальшивых документов (falseedudocinfo)</option>
+                        <option value="shifrspec">шифры специальностей (shifrspec)</option>
+                        <option value="discipclassific">классификация дисциплин (discipclassific)</option>
+                    </select>
+                </div>
+         </div>
+         <br>
+         <div align="right" style="flow:horizontal;vertical-align:middle">
+            <button id="bt-add" style="margin:2px" title="Добавляет запись в данную категорию словаря" >Добавить</button>
+            <button id="bt-del" style="margin:2px" title="Удаляет запись из словаря">Удалить</button>
+            <button id="bt-save" style="margin:2px" title="Сохраняет изменения выбраной записи">Изменить</button>
+            <button id="bt-close" style="margin:2px">Выход</button>
+         </div>                      
+    </div>
+</body>
+</html>

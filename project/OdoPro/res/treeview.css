@@ -1,0 +1,65 @@
+#payment-table
+{
+	  width:*;
+    height:*;
+    FONT-FAMILY: Verdana; 
+    FONT-SIZE:8pt;
+}
+	
+#payment-table options
+ {
+    margin:0;
+    margin-left:18px;    
+    padding:0;
+    foreground-repeat: no-repeat;
+    foreground-position: -13px 3px;  
+}
+
+#payment-table options
+{
+    foreground-image:url(symbol-help.png);
+}
+
+
+#payment-table option
+{
+    margin:0 0 0 21px;
+    padding:0;
+    background-color:transparent; 
+    color:windowtext; 
+}
+
+#payment-table options:expanded
+{
+    foreground-image:url(theme:tree-view-glyph-open);
+} 
+
+#payment-table options:collapsed
+{
+    foreground-image:url(theme:tree-view-glyph-closed);
+} 
+     
+#payment-table caption
+{
+    margin:0;    
+    background-color:transparent; 
+    color:windowtext; 
+    foreground-image-cursor: pointer;
+}
+
+#payment-table :current > caption
+{ 
+    background-color:Silver; 
+    color:highlighttext; 
+}
+
+#payment-table options > option:current > caption
+{ 
+    background-color:Yellow;  
+}
+
+#payment-table options > option > caption
+{ 
+    color:green;
+}
+  

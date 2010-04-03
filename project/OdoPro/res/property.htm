@@ -1,0 +1,613 @@
+<html>
+<head>
+    <style>
+        @import url(treeview.css) screen;
+        #prog-estim
+        {
+            border: 1px solid #bdbccc;
+            overflow: auto;
+            width: 100%%;
+            height: 100%%;
+            behavior: grid;
+            background-color: white;
+        }
+        #prog-estim th
+        {
+            color: white;
+            font-family: "Century Gothic" , "Verdana";
+            font-size: 9pt;
+            border: none;
+            padding: 4px;
+            background-color: #DDD;
+            background-image: url(header.png);
+            background-repeat: expand stretch-left stretch-right stretch-middle;
+            background-position: 3px 3px 3px 3px;
+            white-space:nowrap;
+            
+        }
+        #prog-estim th:hover
+        {
+            color: #ffe598;
+            transition: blend;
+            background-image: url(header-hover.png);
+        }
+        #prog-estim tr:nth-child(odd)
+        {
+            background-color: white;
+        }
+        /* each odd row */
+        #prog-estim tr:nth-child(even)
+        {
+            background-color: #F4F3F9;
+        }
+        /* each even row */
+        
+        #prog-estim td 
+        { 
+            padding:2px; 
+            padding-left:6px;
+            font-family:"Verdana"; 
+	        font-size:8pt;  
+	        border:1pt;
+	        text-align:center;
+        }
+        #prog-estim tr:current /* current row */ 
+        { 
+            background-color:#bdbccc;
+            color:black;
+        } 
+        
+        #prog-discip option:current
+        {
+        	 background-color:#bdbccc;
+            color:black;
+        }
+        
+        html
+        {
+            background-color: #C4C2C3;
+            behavior: actions;
+        }
+        body
+        {
+            overflow: hidden;
+            color: #333365;
+            margin-top: 3px;
+        }
+        .tabs 
+        { 
+            behavior:tabs;
+            width:100%%;
+            height:100%%;
+        }
+
+.tabs .strip
+{ 
+  flow:horizontal;
+  font: 8.5pt Tahoma;
+  padding-top:3px;
+  padding-left:20px;
+  background-image: url(stripback.png);
+  background-position:0px 0px 0px 0px; /*top right bottom left  offsets - we will stretch image in full*/
+  background-repeat:expand stretch-middle; /* h-smile specific */
+}
+
+.tabs .strip [panel] /* tab in normal state */
+{ 
+  padding: 4px 8px;
+  color:#333365;
+  max-width:auto; /* take only as much as really needed */
+}
+
+.tabs .strip [panel]:hover 
+{ 
+  color:#a55f00;
+}
+
+.tabs .strip [panel][selected] /* selected tab */
+{ 
+  background-color: gold;
+  background-image: url(tabback.png);
+  background-position:2px 2px 0px 2px; /*top right bottom left offsets*/
+  background-repeat:expand stretch-middle stretch-left stretch-top stretch-right;
+  color:#a55f00;
+}
+
+.tabs:focus .strip
+{
+	foreground-image: url(focusled.png);
+	foreground-position:6px 50%; 
+	foreground-repeat:no-repeat;
+}
+
+
+.tabs > [name] /* panel */
+{ 
+  height:100%%;
+  display: none;
+  padding: 10px;
+  border:1px solid #888;
+}
+
+.tabs > [name][selected] /* selected panel */
+{ 
+  display:block;
+  background-color:#ffffff;
+  background-image: url(toolbarback.png);
+  background-position:60px 8px 0px 8px; /*top right bottom left offsets - we will stretch image in full*/
+  background-repeat:expand; /* h-smile specific */
+  
+}
+
+        input.my
+        {
+            width: 100%%;
+            font-size: 10pt;
+            font-family: Tahoma, Arial;
+        }
+        widget[type="textarea"]
+        {
+            width: 100%%;
+            height: 60px;
+            overflow-x: auto;
+            overflow-y: scroll;
+            font-family: Verdana;
+            font-size: 10pt;
+        }
+        div
+        { 
+       // 	border:1px solid red;
+        }
+        input:empty
+        {
+            color: #333365;
+        }
+        input[negative]
+        {
+            color: blue;
+        }
+        input[invalid]
+        {
+            color: red;
+        }
+        #pay-pay > caption
+        {
+        	behavior:~number;
+        }
+    </style>
+</head>
+<body>
+    <div align="left" style="flow: horizontal; width: 100%; padding-right: 10px; white-space: nowrap;">
+        <div style="vertical-align: middle">
+            Студент: <span id="sb-header"></span>
+        </div>
+        <div align="right" style="padding-bottom: 3px;">
+            <button id="bt-prev" style="width: 40px; height: 15px;">
+                Пред.</button>
+            <button id="bt-next" style="width: 40px; height: 15px;">
+                След.</button>
+        </div>
+    </div>
+    <div class="tabs">
+        <div class="strip">
+            <!-- our tab strip, can be placed on any side of tab container. -->
+            <div panel="panel-id1" selected="true" accesskey="S">
+                <u>Л</u>ичные данные</div>
+            <div panel="panel-id2" accesskey="I">
+                <u>О</u>бразование</div>
+            <div panel="panel-id3" accesskey="P">
+                <u>О</u>бучение</div>
+            <div panel="panel-id4" accesskey="P">
+                <u>В</u>ыпуск</div>
+            <div panel="panel-id5" accesskey="P">
+                <u>У</u>спеваемось</div>
+            <div panel="panel-id6" accesskey="P">
+                <u>О</u>плата за обучение</div>
+        </div>
+        <!-- -- --  --  --  --  --  -- TAB 1  --  --  --  --  --  --  --  --   -->
+        <div name="panel-id1" selected="true">
+            <div style="flow: horizontal;">
+                <div style="padding: 4px">
+                    Фамилия<br>
+                    <input type="text" id="secondname" class="my" maxlength="20" novalue="<нет значения!>">
+                </div>
+                <div style="padding: 4px">
+                    Имя<br>
+                    <input type="text" id="firstname" class="my" maxlength="20" novalue="<нет значения!>">
+                </div>
+                <div style="padding: 4px;">
+                    Отчество<br>
+                    <input type="text" id="thirdname" class="my" maxlength="20" novalue="<нет значения!>">
+                </div>
+            </div>
+            <div style="padding-top: 8px; padding: 4px; padding-bottom: 0px; width: 100%%">
+                <div style="flow: horizontal; text-align: right">
+                    Пол:
+                    <div style="padding-left: 10px; width: 90px">
+                        <select id="sex" class="my" style="width: 100%%; text-align: center;">
+                            <option value="М" selected>Мужской</option>
+                            <option value="Ж">Женский</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="flow: horizontal; text-align: right; padding-top: 8px">
+                    Дата рождения:
+                    <div style="padding-left: 10px; width: 90px">
+                        <input type="date" id="bdate" class="my" style="width: 100%%">
+                    </div>
+                </div>
+            </div>
+            <div style="padding-left: 4px; padding-right: 4px">
+                <fieldset style="border: 1px solid #bdbccc;">
+                    <legend style="color: black;">Паспорт</legend>
+                    <div style="flow: horizontal;">
+                        <div style="vertical-align: middle; width: 70px; height: 70px">
+                            <img style="padding: 4px" src="logo.png" width="70;height: 70px">
+                        </div>
+                        <div style="vertical-align: middle; padding-right: 4px; padding-left: 4px">
+                            <div style="flow: horizontal;">
+                                <div style="padding-right: 4px; padding-left: 4px">
+                                    серия<br>
+                                    <input type="text" id="passseries" class="my" maxlength="12" novalue="<нет значения!>">
+                                </div>
+                                <div style="padding-right: 4px; padding-left: 4px">
+                                    номер<br>
+                                    <input type="text" id="passnum" class="my" maxlength="6" novalue="<нет значения!>">
+                                </div>
+                                <div style="padding-right: 4px; padding-left: 4px">
+                                    дата выдачи<br>
+                                    <input type="date" id="passdate" class="my"  value="0000-00-00" />
+                                </div>
+                            </div>
+                            <div style="padding-right: 4px; padding-left: 4px">
+                                кем выдан<br>
+                                <input type="text" id="passplace" class="my" maxlength="255" novalue="<нет значения!>">
+                            </div>
+                            &nbsp;
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div style="padding: 4px">
+                Адрес по прописке:<br>
+                <input type="text" class="my" maxlength="255" id="addr" novalue="<нет значения!>">
+            </div>
+            <div style="padding: 4px">
+                Адрес фактического проживания:<br>
+                <input type="text" class="my" maxlength="255" id="liveaddr" novalue="<нет значения!>">
+            </div>
+            <div style="flow: horizontal">
+                <div style="padding-right: 4px; padding-left: 4px">
+                    Телефоны:<br>
+                    <input type="text" class="my" maxlength="255" id="phones" novalue="<нет значения!>">
+                </div>
+                <div style="padding-right: 4px; padding-left: 4px">
+                    E-mail:<br>
+                    <input type="text" class="my" maxlength="50" id="email" novalue="<нет значения!>">
+                </div>
+            </div>
+        </div>
+        <!-- -- --  --  --  --  --  -- TAB 2  --  --  --  --  --  --  --  --   -->
+        <div name="panel-id2">
+            <div style="flow: horizontal">
+                <div style="padding: 4px">
+                    Образование<br>
+                    <select id="educationid" class="my" style="width: 100%%; text-align: center;">
+                    </select>
+                </div>
+                <div style="padding: 4px">
+                    Специальность<br>
+                    <input type="text" id="eduspec" class="my" size="20" maxlength="255" novalue="<нет значения!>">
+                </div>
+            </div>
+            <div style="flow: horizontal">
+                <div style="padding: 4px">
+                    Диплом об образовании<br>
+                    <select id="edudocid" class="my" style="width: 100%%; text-align: center;">
+                    </select>
+                </div>
+                <div style="padding: 4px">
+                    Серия и номер документа<br>
+                    <input type="text" id="edudocinfo" class="my" size="20" maxlength="255" novalue="<нет значения!>">
+                </div>
+            </div>
+            <div style="padding: 4px">
+                Наименование учебного заведения<br>
+                <input type="text" id="eduplace" class="my" size="20" maxlength="255" novalue="<нет значения!>">
+            </div>
+            <div style="flow: horizontal;">
+                <div style="padding: 4px">
+                    Год окончания<br>
+                    <input type="text" id="eduenddate" class="my" size="5" novalue="<нет значения!>">
+                </div>
+                <div style="padding: 4px">
+                    Язык<br>
+                    <select id="languageid" class="my" style="width: 100%%; text-align: center;">
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!-- -- --  --  --  --  --  -- TAB 3  --  --  --  --  --  --  --  --   -->
+        <div name="panel-id3">
+            <div style="flow: horizontal">
+                <div style="padding: 4px; width: 20%%">
+                    Группа<br>
+                    <select id="grpid" class="my" style="width: 100%%; text-align: center;">
+                    </select>
+                </div>
+                <div style="padding: 4px; width: 80%%;">
+                    Специальность<br>
+                    <select class="my" id="specid" style="overflow: hidden; width: 100%%;">
+                    </select>
+                </div>
+            </div>
+            <div style="padding: 4px; width: 100%%;">
+                Форма обучения<br>
+                <select id="eduformid" class="my" style="overflow: hidden; width: 100%%;">
+                </select>
+            </div>
+            <div style="flow: horizontal">
+                <div style="padding: 4px">
+                    Номер зачетной книжки<br>
+                    <input type="text" id="znum" class="my" size="20" maxlength="8" novalue="<нет значения!>">
+                </div>
+                <div style="padding: 4px">
+                    Город<br>
+                    <select id="cityid" class="my" disabled style="width: 100%%; text-align: center;">
+                    </select>
+                </div>
+            </div>
+            <div style="padding-left: 4px; padding-right: 4px;">
+                <fieldset style="border: 1px solid #bdbccc;">
+                    <legend style="color: black;">Приказ о зачислении:</legend>
+                    <div style="flow: horizontal;">
+                        <div style="width: 10%">
+                        </div>
+                        <div>
+                            <div style="padding: 4px">
+                                номер<br>
+                                <input type="text" id="enternum" class="my" size="5" maxlength="255" novalue="<нет значения!>">
+                            </div>
+                            <div style="padding: 4px;">
+                                <div>
+                                    шифр договора
+                                </div>
+                                <div style="flow: horizontal;">
+                                    <div style="padding-right: 8px">
+                                        <select id="dogshifrid" class="my" style="width: 100%%; text-align: center;">
+                                        </select>
+                                    </div>
+                                    <div style="width: 40%%;">
+                                        <select id="dogfastid" class="my" style="width: 100%%; text-align: center;">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="padding: 4px">
+                                дата<br>
+                                <input type="date" class="my" size="5" id="enterdate">
+                            </div>
+                            <div style="flow: horizontal;">
+                                <div style="width: 40%; padding: 4px">
+                                    год<br>
+                                    <select id="dogyearid" class="my" style="width: 100%%; text-align: center;">
+                                    </select>
+                                </div>
+                                <div style="padding: 4px">
+                                    <span style="font-size: 12">номер договора</span><br>
+                                    <input type="text" id="dognum" class="my" size="5" maxlength="7" novalue="<нет значения!>"
+                                        format="fdigits:0; leading-zero:true; decimal-sep:','; negative-sign:false">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+        <!-- -- --  --  --  --  --  -- TAB 4  --  --  --  --  --  --  --  --   -->
+        <div name="panel-id4">
+            <div style="padding: 4px">
+                Примечание
+                <widget id="misc" class="my" style="padding: 4px" type="textarea"></widget>
+            </div>
+            <div style="padding: 4px">
+                <fieldset style="border: 1px solid #bdbccc;">
+                    <legend style="color: black;">Приказ об отчислении</legend>
+                    <div style="flow: horizontal">
+                        <div style="wight: 30px">
+                        </div>
+                        <div style="padding: 4px">
+                            номер<br>
+                            <input type="text" id="exitnum" class="my" size="20" maxlength="255" novalue="<нет значения!>">
+                        </div>
+                        <div style="padding: 4px">
+                            дата<br>
+                            <input type="date" id="exitdate" class="my" size="20" novalue="<нет значения!>">
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div style="flow: horizontal">
+                <div>
+                    <div style="padding: 4px">
+                        Диплом №<br>
+                        <input type="text" id="edunumdiplom" class="my" size="20" maxlength="11" novalue="<нет значения!>">
+                    </div>
+                    <div style="padding: 4px">
+                        Регистрационный номер<br>
+                        <input type="text" id="edunumreg" class="my" size="20" maxlength="6" novalue="<нет значения!>">
+                    </div>
+                    <div style="flow: horizontal;">
+                        <div>
+                            <br>
+                            <input type="checkbox" id="edudiplomotl" class="my">
+                            Диплом с отличием
+                        </div>
+                        <div style="width: 50%%;">
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div style="padding: 4px">
+                        Дата выдачи диплома<br>
+                        <input type="date" id="edudatediplom" class="my">
+                    </div>
+                    <div style="padding: 4px">
+                        Дата присуждения квалификации<br>
+                        <input type="date" id="edudatequalif" class="my">
+                    </div>
+                    <div style="padding: 4px">
+                        Номер протокола ГАК<br>
+                        <input type="text" id="edunumprotgak" class="my" size="20" maxlength="10" novalue="<нет значения!>">
+                    </div>
+                </div>
+            </div>
+            <div style="padding: 4px">
+                Выпускная квалификационная работа на тему<br>
+                <input type="text" id="vkr_title" class="my" maxlength="255" novalue="<нет значения!>">
+            </div>
+        </div>
+        <!-- -- --  --  --  --  --  -- TAB 5  --  --  --  --  --  --  --  --   -->
+        <div name="panel-id5">
+            <div style="flow: horizontal; height: 100%%">
+                <div style="padding: 4px; height: 100%%">
+                    Дисциплины<br />
+                    <widget type="select" id="prog-discip" style="width: 100%%; height: 100%%;transition:slide;">
+                    </widget>
+                </div>
+                <div style="padding: 4px; width: 50%; height: 100%%">
+                    <div id = "prog-discip-title" style ="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                        Оценки
+                    </div>
+                    <div style="height:100%%;width:100%%">
+                        <table style="width:100%%" id="prog-estim" fixedrows="2" cellspacing="0">
+                            <tr><th colspan="2">Семестр<th rowspan="2"> Оценка<th rowspan="2">Балл</th></tr>
+                            <tr><th>по плану<th>по графику</tr>
+                            <tr><td>по плану</td></tr>
+                            <tr><td>по плану</td></tr>
+                        </table>
+                    </div>
+                    <div style="padding-top:4px;">
+                        <div style="border: 1px solid #bdbccc;">
+                            <div style="flow:grid;padding-bottom:4px;white-space: nowrap;">
+                                <div style="left:1#;right:4#;top:1#;padding:2px; width:50%%">Семестр</div>
+                                <div style="left:1#;top:2#;padding:2px;">по плану</div>
+                                <div style="left:2#;top:2#;padding:2px;"><input type="number" id="prog-plan-sem" value="1" size="6" step="1" minvalue="1" maxvalue="12" /></div>
+                                <div style="left:1#;top:3#;padding:2px;">по графику</div>
+                                <div style="left:2#;top:3#;padding:2px;"><input type="number" id="prog-graph-sem" value="1" size="6" step="1" minvalue="1" maxvalue="12" /></div>                 
+                        
+                                <div style="left:3#;top:2#;padding:2px">балл</div>
+                                <div style="left:4#;top:2#;padding:2px;">
+                                    <select id="prog-ball" type="select-dropdown"  editable style="overflow: hidden; width: 100%%;text-align: center;">
+                                        <option selected>2.5</option>
+                                        <option>3.0</option>
+                                        <option>3.5</option>
+                                        <option>4.0</option>
+                                        <option>4.5</option>
+                                        <option>5.0</option>
+                                    </select>
+                                </div>
+                                <div style="left:3#;top:3#;padding:2px">оценка</div>
+                                <div style="left:4#;top:3#;padding:2px">
+                                    <select id="prog-est" readonly style="width:100%%; text-align: center;">
+                                        <option value="0" selected>экз.</option>
+                                        <option value="1">зач.</option>
+                                    </select>
+                                </div>                
+                            </div>
+                            <div style="flow:horizontal;padding-top:4px">
+                                <div align="left"><button id="prog-bt-del" value="Удалить"/></div>
+                                <div align="right"><button id="prog-bt-save" value="Сохранить"/></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding-top:4px" align="right">
+                        <div style="padding-top:4px"><button id="prog-bt-fast-input"  value="Быстрый ввод ..."/></div>
+                        <div style="padding-top:4px"><button id="prog-bt-progress" value="Успеваемость за семестр ..."/></div>
+                        <div style="padding-top:4px"><button id="prog-bt-discip"   value="Дисциплины ..."/></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- -- --  --  --  --  --  -- TAB 6  --  --  --  --  --  --  --  --   -->
+        <div name="panel-id6">
+            <div style="flow:horizontal;width:*;height:*">
+                <div style="width:100%%;height:100%%;">
+                    Оплаты студента по категориям <br/>
+                    <widget type="select" id="payment-table"/>
+                </div>
+                <div style="padding-left:10px;width:150px;height:*">
+                     <br/><br/>
+                    <fieldset>
+                    <legend style="color: black;">Ввод оплаты</legend>
+                        <div style="flow:grid;white-space: nowrap;">
+                            <div style="left:1#;top:1#;padding:2px; width:50%%">дата оплаты</div>
+                            <div style="left:2#;right:3#;top:1#;padding:2px; width:50%%"><input type="date" id="pay-date" style="width:*"></div>
+                            <div style="left:1#;top:2#;padding:2px; width:50%%">сумма оплаты</div>
+                            <div style="left:2#;right:3#;top:2#;padding:2px;"><select id="pay-pay" style="overflow: hidden; width: 100%%;"/></div>
+                            
+                        </div> 
+                        <div style="padding-top:4px" align="right">
+                            <div style="padding-top:4px"><button id="pay-save"  value="Сохранить"/></div>
+                        </div>
+                    </fieldset>
+                    <div style="padding-top:4px" disabled pay-cat-lock align="left">
+                        <div style="padding-top:4px"><button id="pay-del"  value="Удалить"/></div>
+                    </div>
+                    <div style="flow:horizontal;padding-top:4px" align="right">
+                            <div style="padding-top:4px"><button id="pay-show-only-pay" title="Тревожная кнопочка :)" value="Показать только выплаты"/></div>
+                    </div>
+                    <div style="width:100%%;height:100%%;vertical-align:bottom">
+                    <fieldset disabled pay-cat-lock>
+                    <legend style="color: black;">Управление категориями</legend>
+                        <div style="flow:grid;white-space: nowrap;">
+                            <div style="left:1#;top:1#;padding:2px; width:50%%">тип</div>
+                            <div style="left:2#;right:3#;top:1#;padding:2px;">
+                                <select id="pay-cat-manth" readonly style="width:100%%; text-align: center;">
+                                        <option value="02" selected>февраль</option>
+                                        <option value="09">сентябрь</option>
+                                </select>
+                            </div>
+                            <div style="left:1#;top:2#;padding:2px; width:50%%">год</div>
+                            <div style="left:2#;right:3#;top:2#;padding:2px;">
+                                <select id="pay-cat-year" readonly style="width:100%%; text-align: center;">
+                                        <option value="2001" selected>2001 - 2002</option>
+                                        <option value="2002">2002 - 2003</option>
+                                        <option value="2003">2003 - 2004</option>
+                                        <option value="2004">2004 - 2005</option>
+                                        <option value="2005">2005 - 2006</option>
+                                        <option value="2006">2006 - 2007</option>
+                                        <option value="2007">2007 - 2008</option>
+                                        <option value="2008">2008 - 2009</option>
+                                        <option value="2009">2009 - 20010</option>
+                                        <option value="2010">2010 - 20011</option>
+                                </select>
+                            </div>
+                            <div style="left:1#;top:3#;padding:2px; width:50%%">сумма</div>
+                            <div style="left:2#;top:3#;padding:2px;"><input type="number" value="0" id="pay-cat-money" size="7"/></div>
+                            <div style="left:3#;top:3#;padding:2px; width:50%%">руб.</div>
+                        </div> 
+                        <div style="flow:horizontal;padding-top:4px" align="right">
+                            <div style="padding-top:4px"><button id="pay-cat-add" value="Добавить"/></div>
+                            <div style="padding-top:4px"><button id="pay-cat-save" value="Сохранить"/></div>
+                        </div>
+                    </fieldset>
+                    <div style="flow:horizontal;padding-top:4px" align="right">
+                        <button id="switch"  type="checkbox"  checked  action="copy-state: disabled, [pay-cat-lock], checked, #switch" >Блокировка</button>
+                        <div style="padding-top:4px"><button id="pay-cat-del" disabled pay-cat-lock value="Удалить"/></div>
+                    </div>
+                    </div>
+                </div>   
+            </div>
+        </div>
+    </div>
+    <div align="left" style="flow: horizontal; width: 100%; white-space: nowrap;">
+        <div align="right" style="padding-top: 10px; padding-bottom: 0px">
+            <button id="bt-save">Сохранить</button>
+            <button id="bt-close">Выйти</button>
+        </div>
+    </div>
+</body>
+</html>

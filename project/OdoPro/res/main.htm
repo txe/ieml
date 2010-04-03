@@ -1,0 +1,197 @@
+<html>
+<head>
+    <style>
+        /* общие настройки менюхи */@import url(std-menu.css);
+        /* настройки меню-бара */@import url(menu-bar.css);
+        /* настройки таблицы - грида со студентами*/@import url(main-table.css);
+        /* настройки боковой панели со списком групп */@import url(group-panel.css);
+        /* общие настройки*/
+        html
+        {
+            //background-color: #C4C2C3;
+            behavior: actions accesskeys;
+        }
+        body
+        {
+            margin: 0px;
+            margin-bottom: 1px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div style="flow: horizontal">
+        <!-- менюха -->
+        <div>
+            <ul id="menu-bar">
+                <!-- top level - menu bar, it must match ul#menu-bar selector, see std-menu.css -->
+                <li>Файл
+                    <menu class="cool">
+                        <li id="run-update" title="Обновление программы">Обновление</li>
+                        <li id="exit" title="Выход из программы">Выход</li>
+                    </menu>
+                </li>
+                <li>Действия
+                    <menu class="cool">
+                        <li id="show-statistic" title="Отображение статистики по выбранным критериям">Статистика...</li>
+                        <li id="change-plan-sem" title="Изменение семестра по плану для предметов группы">Изменение план-семестра...</li>
+                        <li id="change-graph-sem" title="Изменение семестра по графику для предметов группы">Изменение граф-семестра...</li>
+                        <li id="change-estim" title="Изменение типа оценки">Изменение типа оценки...</li>
+                        <li title="Изменяет и сохраняет смещение для 'Договора'">Смещ. в договоре
+                             <menu class="cool">
+                                <li title="Для вертикального смещения 'Договора'">Верт.:
+                                    <input type="number"  id="vert-delta"  size="4"  step="1"  minvalue="-100"  maxvalue="100"  value="0"/>
+                                </li>
+                             </menu>
+                        </li>
+                        <li id="load-fio" title="Загружает список ФИО и зачеток в буфер обмена">Загрузить ФИО</li>
+                    </menu>
+                </li>
+            </ul>
+        </div>
+        <!-- прогресс обновления --> 
+        <div align="right" style="flow:horizontal;vertical-align: middle; padding-right: 10px; white-space: nowrap;">
+            <div id="check-update-panel" style="visibility:collapse">проверка наличия обновления <img style="padding: 2px" src="PROGRESS.GIF" width="10;height:10px"></div>
+            <div id="download-update-panel" style="visibility:collapse">
+                <span id="download-status">/OdoPro.exe</span>
+                <input id="download-progress" type="progress" maxvalue=100 value=20>
+            </div>
+        </div>
+    </div>
+    <div style="width: 100%%; height: 100%%; flow: horizontal">
+        <!-- прокручивающийся список групп -->
+        <div style="width: 110px; height: 100%;">
+            <ul id="thebar">
+                <li default>
+                    <p class="caption" style="foreground-image: url(folder.gif)">
+                        БУ</p>
+                    <div class="content">
+                        <widget type="select" id="group-bu">
+                    </widget>
+                    </div>
+                </li>
+                <li>
+                    <p class="caption" style="foreground-image: url(folder.gif)">
+                        МО</p>
+                    <div class="content">
+                        <widget type="select" id="group-mo">
+                    </widget>
+                    </div>
+                </li>
+                <li>
+                    <p class="caption" style="foreground-image: url(folder.gif)">
+                        МР</p>
+                    <div class="content">
+                        <widget type="select" id="group-mr">
+                    </widget>
+                    </div>
+                </li>
+                <li>
+                    <p class="caption" style="foreground-image: url(folder.gif)">
+                        Ю</p>
+                    <div class="content">
+                        <widget type="select" id="group-u">
+                    </widget>
+                    </div>
+                </li>
+                <li>
+                    <p class="caption" style="foreground-image: url(folder.gif)">
+                        ЭУН</p>
+                    <div class="content">
+                        <widget type="select" id="group-eun">
+                    </widget>
+                    </div>
+                </li>
+                <li>
+                    <p class="caption" style="foreground-image: url(folder.gif)">
+                        ПГС</p>
+                    <div class="content">
+                        <widget type="select" id="group-pgs">
+                    </widget>
+                    </div>
+                </li>
+                <li>
+                    <p class="caption" style="foreground-image: url(folder.gif)">
+                        ТГВ</p>
+                    <div class="content">
+                        <widget type="select" id="group-tgv">
+                    </widget>
+                    </div>
+                </li>
+                <li>
+                    <p class="caption" style="foreground-image: url(folder.gif)">
+                        Остальные</p>
+                    <div class="content">
+                        <widget type="select" size="1" id="group-otch">
+                    </widget>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!-- таблица студентов -->
+        <div style="width: 100%%; height: 100%%;">
+            <table class="stud-grid" id="main-grid" fixedrows="1" cellspacing="0">
+                <tr>
+                    <th>
+                        №<th>
+                            Фамилия<th>
+                                Имя
+                            </th>
+                            <th>
+                                Отчество
+                            </th>
+                            <th>
+                                № зачетки
+                            </th>
+                            <th>
+                                Группа
+                            </th>
+                            <th>
+                                Город
+                            </th>
+                </tr>
+            </table>
+            <!-- кнопки -->
+            <div style="flow:horizontal">
+                <div align="left" style="padding: 3px; padding-left: 15px">
+                    <button id="bt-create" disabled bt-lock >Создать</button>
+                    <button id="bt-delete" disabled bt-lock >Удалить</button>
+                    <button id="bt-dictionary" disabled bt-lock >Словарь</button>
+                    <button id="switch" type="checkbox"  checked  action="copy-state: disabled, [bt-lock], checked, #switch" >Блокировка</button>
+                </div>
+                <div align="right" style="padding: 3px;">
+                    <select id="find_type" style="width:50px; text-align: center;">
+                        <option value="fio" selected>поиск фио\зачетки</option>
+                        <option value="text">поиск подстроки</option>
+                    </select>
+                    <input type="text" id="find" style="overflow: hidden; width: 150px;" />
+                    <button accesskey="!RETURN" id="bt-find">Go</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="width: 100%">
+        <!-- статус бар -->
+        <div style="width: 100%%; height: 24px;">
+            <table class="status-bar">
+                <tr>
+                    <td style="width: 165px;">
+                        Host: <span id="sb-host"></span>
+                    </td>
+                    <td style="width: 100px;">
+                        User: <span id="sb-login"></span>
+                    </td>
+                    <td style="width: 100px;">
+                        DB: <span id="sb-bd" style="color: red"></span>
+                    </td>
+                    <td>
+                    <div>Build: <span id="sb-build"></span></div>
+                    </td>
+                    <td style="width: 120px">
+                        <span class="progress">Записей: </span><span id="sb-count"></span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+</body>
+</html>

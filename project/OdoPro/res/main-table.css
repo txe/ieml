@@ -1,0 +1,95 @@
+ /* css lk*/
+ table.stud-grid 
+  { 
+      border:1px solid #bdbccc; 
+      overflow: auto;
+      width:100%%;
+      height:100%%;
+      behavior:grid;
+      overflow-y:scroll;
+      overflow-x:hidden;
+  }
+  .stud-grid th 
+  { 
+    color: white;
+    font-family:"Century Gothic","Verdana"; 
+    font-size:9pt; 
+    border:none; 
+    padding:3px; 
+    background-color:#DDD; 
+    background-image:url(header.png);
+    background-repeat:expand stretch-left stretch-right stretch-middle;
+	background-position:3px 3px 3px 3px;
+  }
+ .stud-grid th:hover 
+  { 
+	color: #ffe598;
+    transition:blend;
+	background-image:url(header-hover.png);
+  }
+  
+  .stud-grid tr:nth-child(odd)  { background-color:white; } /* each odd row */
+  .stud-grid tr:nth-child(even) { background-color:#F4F3F9; } /* each even row */
+  
+  .stud-grid tr:current /* current row */ 
+  { 
+    background-color:#bdbccc;
+    color:black;
+  } 
+  
+  .stud-grid td 
+  { 
+    padding:2px; 
+    padding-left:6px;
+    font-family:"Verdana"; 
+	font-size:8pt;  
+	border:1pt;
+  }
+  
+  .stud-grid td:nth-child(1) { font-weight:bold; text-align:center; width:10px;} /* first column */
+  .stud-grid td:nth-child(2) {  } /* second column */
+  .stud-grid td:nth-child(3) 
+  { 
+     text-align:left;
+     overflow:hidden;        /* three line below - ellipsis */
+     text-overflow:ellipsis;
+     white-space:nowrap;
+  } 
+  
+ .stud-grid tr:checked /* checked row */ 
+  { 
+    color:red;
+  } 
+
+  /* //////////////////////////////////////////////////////////*/
+	table.status-bar
+	{ 
+		border:1px solid #bdbccc; 
+		overflow: auto;
+		width:100%%;
+		height:100%%;
+		overflow:hidden-scroll;
+	}	
+	.status-bar td 
+	{ 
+		padding:2px; 
+		padding-left:6px;
+		font-family:"Verdana"; 
+		font-size:8pt;
+		border:1pt;
+	//	text-overflow:ellipsis;
+		white-space:nowrap;
+	}
+/* //////////////////////////////////////////////////////////*/
+	span.progress 
+	{
+        padding-left:24px;
+        display:inline-block;
+        foreground-image: url(progress.gif);
+        foreground-repeat: no-repeat;
+        foreground-position:2px 50%;
+	}
+	span.stat-bar
+	{
+		font-weight:bold;	
+	}

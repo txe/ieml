@@ -1,0 +1,80 @@
+<html>
+<head>
+    <style>    
+        html
+        {
+      //      background-color: #C4C2C3;
+            behavior: actions;
+        }
+        body
+        {
+            overflow: hidden;
+        //    color: #333365;
+            margin-top: 3px;
+        }
+        input.my
+        {
+            width: 100%%;
+            font-size: 10pt;
+            font-family: Tahoma, Arial;
+        }
+       
+        div
+        { 
+        //	border:1px solid red;
+        }
+    </style>
+</head>
+<body>
+    <fieldset>
+    <legend style="color: black;">Критерии формирования статистических данных</legend>
+        <div style="flow:grid;white-space: nowrap; padding-top:5px">
+            <div style="left:1#;top:1#;padding:2px; width:min-intrinsic">
+            <button id="switch-sex" type="checkbox"  action="copy-state: disabled, #sex, !checked, #switch-sex">Пол</button></div>
+            <div style="left:2#;top:1#;padding:2px;">
+                <select id="sex" style="width:100%%; text-align: center;" disabled>
+                    <option value="М" selected>Мужской</option>
+                    <option value="Ж">Женский</option>
+                 </select>
+            </div>               
+            
+            <div style="left:1#;top:2#;padding:2px; width:min-intrinsic">
+            <button id="switch-year" type="checkbox"  action="copy-state: disabled, #year, !checked, #switch-year">Год рождения</button></div>
+            <div style="left:2#;top:2#;padding:2px;"><input id="year" type="number"  value="1984" size="6" disabled/></div>               
+            
+            <div style="left:1#;top:3#;padding:2px; width:min-intrinsic">
+            <button id="switch-educationid" type="checkbox"  action="copy-state: disabled, #educationid, !checked, #switch-educationid">Образование</button></div>
+            <div style="left:2#;top:3#;padding:2px;"><select id="educationid" style="width:100%%; text-align: center;" disabled/></div>               
+            
+            <div style="left:1#;top:4#;padding:2px; width:min-intrinsic">
+            <button id="switch-languageid" type="checkbox"  action="copy-state: disabled, #languageid, !checked, #switch-languageid">Язык</button></div>
+            <div style="left:2#;top:4#;padding:2px;"><select id="languageid" style="width:100%%; text-align: center;" disabled/></div>               
+            
+            <div style="left:1#;top:5#;padding:2px; width:min-intrinsic">
+            <button id="switch-dogyearid" type="checkbox"  action="copy-state: disabled, #dogyearid, !checked, #switch-dogyearid">Год поступления</button></div>
+            <div style="left:2#;top:5#;padding:2px;"><select id="dogyearid" style="width:100%%; text-align: center;" disabled/></div>               
+            
+            <div style="left:1#;top:6#;padding:2px; width:min-intrinsic">
+            <button id="switch-grpid" type="checkbox"  action="copy-state: disabled, #grpid, !checked, #switch-grpid">Группа</button></div>
+            <div style="left:2#;top:6#;padding:2px;"><select id="grpid" style="width:100%%; text-align: center;" disabled/></div>               
+            
+            <div style="left:1#;top:7#;padding:2px; width:min-intrinsic">
+            <button id="switch-specid" type="checkbox"  action="copy-state: disabled, #specid, !checked, #switch-specid">Специальность</button></div>
+            <div style="left:2#;top:7#;padding:2px;"><select id="specid" style="width:100%%; text-align: center;" disabled/></div>               
+            
+            <div style="left:1#;top:8#;padding:2px; width:min-intrinsic">
+            <button id="switch-eduformid" type="checkbox"  action="copy-state: disabled, #eduformid, !checked, #switch-eduformid">Форма обучения</button></div>
+            <div style="left:2#;top:8#;padding:2px;"><select id="eduformid" style="width:100%%;" disabled/></div>               
+            
+            <div style="left:1#;top:9#;padding:2px; width:min-intrinsic">
+            <button id="switch-dogfastid" type="checkbox"  action="copy-state: disabled, #dogfastid, !checked, #switch-dogfastid">Скорость обучения</button></div>
+            <div style="left:2#;top:9#;padding:2px;"><select id="dogfastid" style="width:100%%; text-align: center;" disabled/></div>               
+        </div>
+    </fieldset> 
+    <div align="right" style="flow:grid;white-space: nowrap">
+            <div style="left:1#;top:1#;padding:2px; width:min-intrinsic"><button id="switch-ignore" type="checkbox" checked>Игнорировать отчисленных</button></div>
+            <div style="left:2#;top:1#;padding:2px;"><button id="bt-show">Вывести статистику</button></div>               
+            <div style="left:2#;top:2#;padding:2px;"><button id="bt-close">Закрыть</button></div>
+    </div>           
+</body>
+</html>

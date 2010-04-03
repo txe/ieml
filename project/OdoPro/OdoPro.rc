@@ -1,0 +1,183 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Russian resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
+#ifdef _WIN32
+LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
+#pragma code_page(1251)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)\r\n"
+    "LANGUAGE 25, 1\r\n"
+    "#pragma code_page(1251)\r\n"
+    "#include ""res\\ODOPro.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""     // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\ODOPro.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 3,0,0,6
+ PRODUCTVERSION 3,0,0,6
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904e4"
+        BEGIN
+            VALUE "CompanyName", "ИЭУП ННГАСУ"
+            VALUE "FileDescription", "Программа для работы с базой данных студентов"
+            VALUE "FileVersion", "3.0.0.6"
+            VALUE "InternalName", "ODOPro.exe"
+            VALUE "LegalCopyright", "(c) ИЭУП ННГАСУ.  All rights reserved."
+            VALUE "OriginalFilename", "ODOPro.exe"
+            VALUE "ProductName", "OdoPro"
+            VALUE "ProductVersion", "3.0.0.6"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// HTML
+//
+
+IDR_HTML_STAT	            HTML                    "res\\statistic.htm"
+IDR_HTML_MAIN               HTML                    "res\\main.htm"
+IDR_HTML_CHANGE_SEM         HTML                    "res\\change-sem.htm"
+IDR_HTML_CHANGE_ESTIM       HTML                    "res\\change-estimation.htm"
+IDR_HTML_DICTIONARY		    HTML                    "res\\dictionary.htm"
+HEADER.PNG                  HTML                    "res\\header.png"
+HEADER-HOVER.PNG            HTML                    "res\\header-hover.png"
+STD-MENU.CSS                HTML                    "res\\std-menu.css"
+MENU-BAR.CSS                HTML                    "res\\menu-bar.css"
+MAIN-TABLE.CSS              HTML                    "res\\main-table.css"
+GROUP-PANEL.CSS             HTML                    "res\\group-panel.css"
+FOLDER.GIF                  HTML                    "res\\folder.gif"
+TAB-HOVER.PNG               HTML                    "res\\tab-hover.png"
+TAB.PNG                     HTML                    "res\\tab.png"
+FON.JPG                     HTML                    "res\\fon.jpg"
+PROGRESS.GIF                HTML                    "res\\progress.gif"
+IDR_HTML_PROP               HTML                    "res\\property.htm"
+FOCUSLED.PNG                HTML                    "res\\focusled.png"
+LOGO.PNG                    HTML                    "res\\logo.png"
+STRIPBACK.PNG               HTML                    "res\\stripback.png"
+TABBACK.PNG                 HTML                    "res\\tabback.png"
+TOOLBARBACK.PNG             HTML                    "res\\toolbarback.png"
+IDR_HTML_FAST_INPUT         HTML                    "res\\fast-input.htm"
+IDR_HTML_PROGRESS_FOR_SEM   HTML                    "res\\progress-for-sem.htm"
+IDR_HTML_DISCIPLINES        HTML                    "res\\discip.htm"
+TREEVIEW.CSS                HTML                    "res\\treeview.css"
+LIST-ITEM-ICON-MINUS.PNG    HTML                    "res\\list-item-icon-minus.png"
+LIST-ITEM-ICON-PLUS.PNG     HTML                    "res\\list-item-icon-plus.png"
+SYMBOL-HELP.PNG             HTML                    "res\\symbol-help.png"
+/////////////////////////////////////////////////////////////////////////////
+//
+// PNG
+//
+
+ARROW-RIGHT.PNG                HTML                     "res\\arrow-right.png"
+ARROW-LEFT.PNG                 HTML                     "res\\arrow-left.png"
+#endif    // Russian resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
+LANGUAGE 25, 1
+#pragma code_page(1251)
+#include "res\ODOPro.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"     // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

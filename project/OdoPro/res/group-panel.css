@@ -1,0 +1,86 @@
+#thebar 
+{
+	overflow:auto; 
+	height:100%%; 
+	width:100%%;	  
+	margin:0;
+    padding:0;
+	border:1px solid #bdbccc;
+	overflow:auto;
+	behavior:expandable-list;
+	overflow-y:hidden;
+    background-color: #fff #e9e8f3 #e9e8f3 #fff;
+}
+#thebar > li 
+{
+	color:black;
+	transition:none; /* sliding! */
+} 
+
+#thebar > li > .caption
+{
+	font-weight:bold; 
+	font-family:"Century Gothic","Verdana"; 
+    font-size:9pt;
+	color:white;
+	padding:3px;
+	margin:-1px;
+	text-align:center;
+	//padding-left:40px; /* space for icon */
+	foreground-repeat:no-repeat; /* space for icon */
+	foreground-position:2px 50%; /* icon */
+	background-image:url(header.png);
+	background-repeat:expand stretch-left stretch-right stretch-middle;
+	background-position:3px 3px 3px 3px;
+	margin:0;
+} 
+
+#thebar > li > .caption:hover
+{	
+	color: #ffe598;
+	transition:blend;
+	background-image:url(header-hover.png);
+} 
+	
+#thebar > li:current
+{
+	height:100%%; /* whole idea - it takes all available space */ 	  
+}
+	
+/*#thebar > li:current > .caption
+{
+
+}*/
+
+#thebar > li > .content 
+{
+	visibility:collapse;	 /* hidden by default */  
+	//display:none;
+	padding:0px;
+	font-size:80%;
+	height:100%%; 
+	overflow-y:hidden;
+	//  margin:2px;
+	//  margin-right:4px;	  
+}
+#thebar > li:expanded > .content 
+{
+	visibility:visible;   /* expanded means visible */  
+    	//display:block;
+}
+
+widget[type="select"] 
+{
+	width:100%%;
+    height:100%%;
+    behavior: select;
+    padding-left:4px;
+}
+
+option:nth-child(odd)  { background-color:white; } /* each odd row */
+option:nth-child(even) { background-color:#F4F3F9; } /* each even row */
+option:checked /* checked row */ 
+{ 
+    background-color:#bdbccc;
+    color:black;
+} 

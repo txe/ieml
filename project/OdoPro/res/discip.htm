@@ -1,0 +1,150 @@
+<html>
+<head>
+    <style>        
+        table
+        {
+            border: 1px solid #bdbccc;
+            overflow: auto;
+            width: 100%%;
+            height: 100%%;
+            behavior: grid;
+            background-color: white;
+        }
+        table th
+        {
+            color: white;
+            font-family: "Century Gothic" , "Verdana";
+            font-size: 9pt;
+            border: none;
+            padding: 4px;
+            background-color: #DDD;
+            background-image: url(header.png);
+            background-repeat: expand stretch-left stretch-right stretch-middle;
+            background-position: 3px 3px 3px 3px;
+            
+            //overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
+            
+        }
+        table th:hover
+        {
+            color: #ffe598;
+            transition: blend;
+            background-image: url(header-hover.png);
+        }
+        table tr:nth-child(odd)
+        {
+            background-color: white;
+        }
+        table tr:nth-child(even)
+        {
+            background-color: #F4F3F9;
+        }
+        table tr:current /* current row */ 
+        { 
+            background-color:#bdbccc;
+            color:black;
+        }
+        table td
+        { 
+            padding:2px; 
+            padding-left:6px;
+            font-family:"Verdana"; 
+	        font-size:8pt;  
+	        border:1pt;
+	        text-align:left;   
+        }
+         
+        table td:nth-child(1) { font-weight:bold; text-align:center; width:8px;} /* first column */
+        table td:nth-child(2), table td:nth-child(3), table td:nth-child(5) 
+        { 
+        	overflow:hidden;        /* three line below - ellipsis */
+            text-overflow:ellipsis;
+            white-space:nowrap;
+        }
+        input
+        { 
+        	border:1px solid red;
+        }
+        
+        input:empty
+        {
+            color: #333365;
+        }
+        input[negative]
+        {
+            color: blue;
+        }
+        input[invalid]
+        {
+            color: red;
+        }
+        div.buttons >  div
+        {
+        	padding-top:7px;
+        }
+        
+    </style>
+</head>
+<body>
+    <div style="width:*;height:*">
+            <table id="discip-table" fixedrows="1" cellspacing="0">
+            <tr><th>№</th><th>Полное наименование</th><th>Абривиатура</th><th>Час.\нед.</th><th>Назначение</th><th>Пр.№</th></tr>
+            <tr><td>№</td><td>Полное наименование</td><td>Абривиатура</td><td>Часов\недель</td><td>Назначение</td><td>Пор. №</td></tr>
+            <tr><td>№</td><td>Полное наименование</td><td>Абривиатура</td><td>Часов\недель</td><td>Назначение</td><td>Пор. №</td></tr>
+            <tr><td>№</td><td>Полное наименование</td><td>Абривиатура</td><td>Часов\недель</td><td>Назначение</td><td>Пор. №</td></tr>
+            <tr><td>№</td><td>Полное наименование</td><td>Абривиатура</td><td>Часов\недель</td><td>Назначение</td><td>Пор. №</td></tr>
+            <tr><td>№</td><td>Полное наименование</td><td>Абривиатура</td><td>Часов\недель</td><td>Назначение</td><td>Пор. №</td></tr>
+            <tr><td>№</td><td>Полное наименование</td><td>Абривиатура</td><td>Часов\недель</td><td>Назначение</td><td>Пор. №</td></tr>
+         </table>
+         <div style="flow:horizontal">
+            <div>
+                <div style="flow:grid;width:100%%;white-space: nowrap;padding-top:4px">
+                    <div style="left:1#;top:1#;padding:2px;">Название дисциплины</div>
+                    <div style="left:1#;right:2#;top:2#;padding:2px"><input type="text" id="fulltitle" style="width:100%%" novalue="<нет значения!>"></div>
+                    <div style="left:3#;top:1#;padding:2px;width:50px">Сокращение</div>
+                    <div style="left:3#;top:2#;padding:2px;"><input type="text" id="shorttitle" style="width:100%%" novalue="<нет значения!>"></div>
+                
+                    <div style="left:1#;top:3#;padding:2px;">Назначение дисциплины</div>
+                    <div style="left:1#;top:4#;padding:2px;">
+                        <select id="discip_class" style="width: 100%%; text-align: left;">
+                        </select>
+                    </div>
+                    <div style="left:2#;top:3#;padding:2px;width:30px">Пор.№</div>
+                    <div style="left:2#;top:4#;padding:2px;"><input type="number" id="scan_namber" value="0" size="6" step="1" minvalue="0" maxvalue="10000" /></div>
+                    <div style="left:3#;top:3#;padding:2px;">Продолжительность</div>
+                    <div style="left:3#;top:4#;padding:2px;"><input type="number" id="num_hours" value="0" size="6" step="1" minvalue="0" maxvalue="10000" />  часов</div>          
+                </div>
+                <div style="padding:2px">
+                 <fieldset style="border: 1px solid #bdbccc;">
+                    <legend style="color: black;">Общие часы на каждый семестр</legend>
+                <div id="hours" style="flow:horizontal">
+                    <div>1<br/><input type="number" value="0" size="3" maxlength=3/></div>
+                    <div>2<br/><input type="number" value="0" size="3" maxlength=3/></div>
+                    <div>3<br/><input type="number" value="0" size="3" maxlength=3/></div>
+                    <div>4<br/><input type="number" value="0" size="3" maxlength=3/></div>
+                    <div>5<br/><input type="number" value="0" size="3" maxlength=3/></div>
+                    <div>6<br/><input type="number" value="0" size="3" maxlength=3/></div>
+                    <div>7<br/><input type="number" value="0" size="3" maxlength=3/></div>
+                    <div>8<br/><input type="number" value="0" size="3" maxlength=3/></div>
+                    <div>9<br/><input type="number" value="0" size="3" maxlength=3/></div>
+                    <div>10<br/><input type="number" value="0" size="3" maxlength=3/></div>
+                    <div>11<br/><input type="number" value="0" size="3" maxlength=3/></div>
+                    <div>12<br/><input type="number" value="0" size="3" maxlength=3/></div>    
+                </div>
+                
+                </fieldset>
+                </div>
+                <div>Специальность: <select id="spec" disabled style="width:100%%; text-align: center"></select></div>                
+            </div>
+            <div align="right" class="buttons" style="width:100px;vertical-align:bottom">
+                <div ><button id="bt-add">Добавить</button></div>
+                <div ><button id="bt-update">Изменить</button></div>
+                <div ><button id="bt-del">Удалить</button></div>
+                <div ><button id="bt-close">Выход</button></div>            
+            </div>
+         </div>
+    </div>
+</body>
+</html>
