@@ -40,7 +40,10 @@ BOOL CALLBACK SData::CallbackAtachElement(HELEMENT he, LPVOID param)
 // инициализирует дом объекты и все такое
 void SData::Init(htmlayout::dom::element root)
 {
-	root_	= root;
+	root_ = root;
+	sel_egediscip_		= LiteWnd::link_element(root_, "sel-egediscip");
+	table_ege_discip_	= LiteWnd::link_element(root_, "table-ege-discip");
+	ege_ball_			= LiteWnd::link_element(root_, "ege-ball");
 
 	// ищет все элементы на вкладке и добавляет их в список
 	map_elements_.clear();
@@ -57,9 +60,17 @@ void SData::Init(htmlayout::dom::element root)
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "dogfastid"),		"dogfast");
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "dogyearid"),		"dogyear");
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "cityid"),		"city");
+	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "sel-egediscip"),	"egediscip");
 
 	// подключим изменение города относительно группы
 	HTMLayoutAttachEventHandlerEx(map_elements_["grpid"], ElementEventProcChangedGroup, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
+
+	// выбор в таблице еге дисциплин
+	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(root_, "table-ege-discip"), ElementEventProcEgeDiscip, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
+
+	// связывает с событиями кнопок
+	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(root_, "bt-change-ege-disp"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(root_, "bt-delete-ege-disp"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 }
 
 // обновляет  дом элементы для текущего студента (отображает на экране)
@@ -92,6 +103,8 @@ void SData::UpdateView(void)
 	json::t2v(map_elements_["eduenddate"], t::get_year(row["eduenddate"]));
 
 	map_elements_["grpid"].send_event(SELECT_SELECTION_CHANGED);
+
+	UpdateEgeTable();
 	
 	root_.update();
 }
@@ -425,7 +438,7 @@ void SData::get_current_value(std::map<string_t, string_t>& value)
 		string_t new_value	= json::v2t(el.get_value());
 		string_t old_value  = el.get_attribute("old-value");
 		
-		if (id == "edudatediplom" || id == "edudatequalif" || id == "exitdate")
+		if (id == "edudatediplom" || id == "edudatequalif" || id == "exitdate" || id == "egedate")
 			t::date2t(new_value, new_value);
 		if (id == "eduenddate" && !new_value.empty())
 			new_value += "-01-01";
@@ -498,3 +511,231 @@ BOOL CALLBACK SData::ElementEventProcChangedGroup(LPVOID tag, HELEMENT he, UINT 
 	return TRUE;	
 }
 
+// обрабатывает кнопки
+BOOL CALLBACK SData::ElementEventProcBt(LPVOID tag, HELEMENT he, UINT evtg, LPVOID prms)
+{
+	BEHAVIOR_EVENT_PARAMS* pr = static_cast<BEHAVIOR_EVENT_PARAMS*>(prms);
+	if (pr->cmd != BUTTON_CLICK)
+		return FALSE;
+
+	SData*		    data = static_cast<SData*>(tag);
+	const wchar_t*	id	 = htmlayout::dom::element(he).get_attribute("id");
+
+	if (aux::wcseq(id, L"bt-change-ege-disp"))
+	{
+		data->AddEgeDiscip();
+		return TRUE;
+	}
+	if (aux::wcseq(id, L"bt-delete-ege-disp"))
+	{
+		data->DeleteEgeDiscip();
+		return TRUE;
+	}
+	return FALSE;
+}
+
+// обрабатывает выбор предмета ЕГЭ
+BOOL CALLBACK SData::ElementEventProcEgeDiscip(LPVOID tag, HELEMENT he, UINT evtg, LPVOID prms)
+{
+	if (evtg != HANDLE_BEHAVIOR_EVENT)
+		return FALSE;
+
+	BEHAVIOR_EVENT_PARAMS* pr = static_cast<BEHAVIOR_EVENT_PARAMS*>(prms);
+	if (pr->cmd != TABLE_ROW_CLICK)
+		return FALSE;
+
+	SData* data = static_cast<SData*>(tag);
+	
+	htmlayout::dom::element row = data->GetCurEgeDiscip();
+	if (row.is_valid())
+	{
+		json::t2v(data->sel_egediscip_, string_t(aux::itoa(row.get_attribute_int("iddiscip", -1))));
+		json::t2v(data->ege_ball_, string_t(aux::itoa(row.get_attribute_int("ball", -1))));
+	}
+
+	return TRUE;
+}
+
+// обновляет таблицу предметов по ЕГЭ
+void SData::UpdateEgeTable()
+{
+	htmlayout::dom::element list = table_ege_discip_;
+	
+	// найдем ранее испльзованную дисциплину
+	int cur_discip = GetCurEgeDiscip().get_attribute_int("iddiscip", -1);
+
+	// удаляем все строки
+	while (list.children_count() > 1)
+		HTMLayoutDetachElement(list.child(1));
+
+	string_t query = string_t() +
+		"  SELECT pr.id, gr.iddiscip, v.title, pr.ball FROM ege_for_group AS gr " 
+		"  LEFT JOIN ege_progress AS pr ON gr.iddiscip = pr.iddiscip AND pr.idstud = " + aux::itow(theApp.GetCurrentStudentID()) + 
+		"  AND pr.deleted = 0 "
+		"  LEFT JOIN voc AS v ON gr.iddiscip = v.num AND v.deleted = 0 AND v.vkey = 'egediscip' "
+		"  WHERE gr.deleted = 0 AND gr.grpid = "  + aux::itow(theApp.GetCurrentGroupID()) +
+		"  ORDER BY v.title ";
+
+	mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
+
+	string_t			buf;
+	mybase::MYFASTROW	row;
+
+	int count = 0;
+	while (row = res.fetch_row())	
+	{
+		// помни бал и номер строк  могут не прийти
+		buf += "<tr iddiscip=" + row["iddiscip"] + " ball=" + row["ball"] + ">" +
+			   "<td>" + aux::itow(++count)	+ "</td>"
+			   "<td>" + row["title"]	    + "</td>" +
+			   (row["ball"].empty() ? "<td style=\"color:red\">0</td>" : "<td>" + row["ball"] + "</td>") +
+			   "</tr>";
+	}
+
+	if (_mbslen(buf))
+	{
+		list.set_html(buf, _mbslen(buf), SIH_APPEND_AFTER_LAST);
+		list.update();
+		if (list.children_count() > 1)
+		{
+			string_t selector = string_t() + "tr[iddiscip=" + aux::itow(cur_discip) + "]";
+			htmlayout::dom::element find = list.find_first(selector.c_str());
+			if (!find.is_valid())
+				find = list.child(1);
+			find.set_state(STATE_CURRENT);
+			list.send_event(TABLE_ROW_CLICK);
+		}
+	}
+	list.update();
+}
+
+// добавляет\изменяет оценку предмета по ЕГЭ
+void SData::AddEgeDiscip()
+{
+	string_t iddiscip = json::v2t(sel_egediscip_);
+	string_t ball     = json::v2t(ege_ball_);
+	string_t idstud   = aux::itow(theApp.GetCurrentStudentID());
+	string_t idgroup  = aux::itow(theApp.GetCurrentGroupID());
+
+	// если предмет не выбрали
+	if (iddiscip.empty())
+	{
+		MessageBox(::GetActiveWindow(), L"Для добавления или изменения оценки по дисциплине требуется выбрать дисциплину.", 
+			L"Предупреждение", MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
+		return;
+	}
+
+	// если предмет отсутствует в списке предметов для группы
+	string_t find_query = string_t() +
+		" SELECT id FROM ege_for_group " 
+		" WHERE deleted = 0 AND grpid = " + idgroup + " AND iddiscip = " + iddiscip;
+
+	mybase::MYFASTRESULT find_res = theApp.GetCon().Query(find_query);
+	if (!find_res.fetch_row())
+	{
+		string_t info = "Выбранная дисциплина отсутствует в списке дисциплин для этой группы.\n"
+				        "Для добавления оценки требуется добавить дисциплину в список.\n"
+				        "Нажмите ОК, если хотите продолжить.";
+		if (IDOK != MessageBox(::GetActiveWindow(), info, 
+			L"Предупреждение", MB_OKCANCEL | MB_ICONINFORMATION | MB_APPLMODAL))
+				return;
+		try
+		{
+			string_t query = string_t() +
+				" INSERT INTO ege_for_group (grpid, iddiscip, deleted) "
+				" VALUES(" + idgroup + ", " + iddiscip + ", 0)";
+			theApp.GetCon().Query(query);	
+		}
+		catch (...)
+		{
+			theApp.ExceptionManage();
+			return;
+		}
+	}
+	try
+	{
+		// если оценка по предмету отсутствует у студента, то добавим иначе просто изменим
+		find_query = " SELECT id FROM ege_progress " 
+			         " WHERE deleted = 0 AND idstud = " + idstud + " AND iddiscip = " + iddiscip;
+		find_res = theApp.GetCon().Query(find_query);
+		if (mybase::MYFASTROW row = find_res.fetch_row())
+		{
+			string_t query = string_t() +
+				" UPDATE ege_progress "
+				" SET ball = " + ball + " WHERE id = " + row["id"];
+			theApp.GetCon().Query(query);	
+		}
+		else
+		{
+			string_t query = string_t() +
+				" INSERT INTO ege_progress (idstud, iddiscip, ball, deleted) "
+				" VALUES(" + idstud + ", " + iddiscip + ", " + ball + ", 0)";
+			theApp.GetCon().Query(query);	
+		}
+	}
+	catch (...)
+	{
+		theApp.ExceptionManage();
+	}
+
+
+	UpdateEgeTable();
+}
+
+// удаляет оценку предмета по ЕГЭ
+void SData::DeleteEgeDiscip()
+{
+	// найдем выбранную дисциплину 
+	int cur_discip = GetCurEgeDiscip().get_attribute_int("iddiscip", -1);
+
+	// если предмет не выбрали
+	if (cur_discip == -1)
+	{
+		MessageBox(::GetActiveWindow(), L"Для удаления дисциплины из списка дисциплин группы требуется выбрать дисциплину.", 
+			L"Предупреждение", MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
+		return;
+	}
+
+	string_t info = "Вы удаляете дисциплину из списка дисциплин группы.\n"
+					"Оценки по данной дисциплине в базе сохранятся,\n"
+					"при возвращении дисциплины оценки снова будут отображаться.\n"
+					"Нажмите ОК, если хотите продолжить.";
+	if (IDOK != MessageBox(::GetActiveWindow(), info, 
+		L"Предупреждение", MB_OKCANCEL | MB_ICONINFORMATION | MB_APPLMODAL))
+			return;
+
+	try
+	{
+		string_t query = string_t() +
+			" UPDATE ege_for_group "
+			" SET deleted = 1 "
+			" WHERE grpid = " + aux::itow(theApp.GetCurrentGroupID()) +
+			" AND iddiscip = " + aux::itow(cur_discip) + 
+			" AND deleted = 0";
+		theApp.GetCon().Query(query);	
+	}
+	catch (...)
+	{
+		theApp.ExceptionManage();
+		return;
+	}
+
+	UpdateEgeTable();	
+}
+
+// возвращает текущую дисциплину по еге в таблице
+htmlayout::dom::element SData::GetCurEgeDiscip()
+{
+	htmlayout::dom::element list = table_ege_discip_;
+	htmlayout::dom::element row;
+	for (UINT i = 1; i < list.children_count(); ++i)
+	{
+		htmlayout::dom::element t = list.child(i);
+		if (t.get_state(STATE_CURRENT))
+		{
+			row = t;
+			break;
+		}
+	}	
+	return row;
+}

@@ -2,6 +2,68 @@
 <head>
     <style>
         @import url(treeview.css) screen;
+        /*----------------------------------------*/
+        #table-ege-discip
+        {
+            border: 1px solid #bdbccc;
+            overflow: auto;
+            width: 100%%;
+            height: 100%%;
+            behavior: grid;
+            background-color: white;
+        }
+        #table-ege-discip th
+        {
+            color: white;
+            font-family: "Century Gothic" , "Verdana";
+            font-size: 9pt;
+            border: none;
+            padding: 4px;
+            background-color: #DDD;
+            background-image: url(header.png);
+            background-repeat: expand stretch-left stretch-right stretch-middle;
+            background-position: 3px 3px 3px 3px;
+            white-space:nowrap;
+            
+        }
+        #table-ege-discip th:hover
+        {
+            color: #ffe598;
+            transition: blend;
+            background-image: url(header-hover.png);
+        }
+        #table-ege-discip tr:nth-child(odd)
+        {
+            background-color: white;
+        }
+        /* each odd row */
+        #table-ege-discip tr:nth-child(even)
+        {
+            background-color: #F4F3F9;
+        }
+        /* each even row */
+        
+        #table-ege-discip td 
+        { 
+            padding:2px; 
+            padding-left:6px;
+            font-family:"Verdana"; 
+	        font-size:8pt;  
+	        border:1pt;
+	        text-align:center;
+        }
+        #table-ege-discip tr:current /* current row */ 
+        { 
+            background-color:#bdbccc;
+            color:black;
+        } 
+        
+        #table-ege-discip option:current
+        {
+        	 background-color:#bdbccc;
+            color:black;
+        }
+        /*----------------------------------------*/
         #prog-estim
         {
             border: 1px solid #bdbccc;
@@ -156,7 +218,7 @@
         }
         div
         { 
-       // 	border:1px solid red;
+      //  	border:1px solid red;
         }
         input:empty
         {
@@ -195,6 +257,8 @@
                 <u>Л</u>ичные данные</div>
             <div panel="panel-id2" accesskey="I">
                 <u>О</u>бразование</div>
+            <div panel="panel-id7" accesskey="I">
+                <u>Е</u>гэ</div>
             <div panel="panel-id3" accesskey="P">
                 <u>О</u>бучение</div>
             <div panel="panel-id4" accesskey="P">
@@ -326,6 +390,69 @@
                     </select>
                 </div>
             </div>
+        </div>
+        <!-- -- --  --  --  --  --  -- TAB 7  --  --  --  --  --  --  --  --   -->
+        <div name="panel-id7">
+            <div style="flow: horizontal">
+                <div style="padding: 4px">
+                    № свидетельства<br>
+                    <input type="masked" mask="##-########-##" id="egereg" class="my" size="20" maxlength="255" novalue="00-00000000-00">
+                </div>
+                <div style="padding: 4px">
+                    Дата выдачи<br>
+                    <input type="date" id="egedate" class="my" size="20" maxlength="255" value="0000-00-00">
+                </div>
+                <div style="padding: 4px">
+                    Документ<br>
+                    <select id="egedoc" class="my" style="width: 100%%; text-align: center;">
+                        <option value="0">Оригинал</option>
+                        <option value="1" selected>Копия</option>
+                    </select>
+                </div>
+            </div>
+            <div style="flow: horizontal">
+                <div style="padding: 4px">
+                    Период сдачи<br>
+                    <select id="egeperiod" class="my" style="width: 100%%; text-align: center;">
+                        <option value="0" selected>Первая волна</option>
+                        <option value="1">Вторая волна</option>
+                    </select>
+                </div>
+            </div>
+            <div style="padding: 4px">
+                Результаты<br>
+            </div>
+            <div style="height:100%%;width:100%%">
+                <table style="width:100%%" id="table-ege-discip" fixedrows="1" cellspacing="0">
+                    <tr><th style="width:15">№<\th><th>Дисциплина<\th><th style="width:20%">Балл</th></tr>
+                </table>
+            </div>
+            <div style="flow: horizontal">
+               <fieldset>
+                    <legend style="color: black">Задать дисциплину</legend>
+                    <div style="flow: horizontal">
+                         <div style="padding: 4px;" >
+                             <select id="sel-egediscip" pay-lock disabled style="width: 100%%; text-align: center;">
+                             </select>
+                         </div>
+                         <div style="padding: 4px;width: 10%%;">
+                             <input type="number" id="ege-ball" pay-lock disabled value="0" size="6" step="1" minvalue="0" maxvalue="100" />
+                         </div> 
+                         <div style="width: 20%%;padding: 1px">
+                             <button id="bt-change-ege-disp"  pay-lock disabled align="right"  value="Изменить"/>
+                         </div> 
+                      </div>
+               </fieldset>        
+               <div style="width:10%%; padding: 4px;">  
+                  <div style="padding: 4px">
+                    <button id="bt-delete-ege-disp" pay-lock disabled align="right"  value="Удалить"/>
+                  </div>
+                  <div style="padding: 4px">
+                    <button id="switch-ege"  type="checkbox" align="right"  checked  action="copy-state: disabled, [pay-lock], checked, #switch-ege" >Блокировка</button>  
+                  </div>
+                </div>         
+            </div>
+
         </div>
         <!-- -- --  --  --  --  --  -- TAB 3  --  --  --  --  --  --  --  --   -->
         <div name="panel-id3">

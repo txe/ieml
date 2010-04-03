@@ -11,6 +11,9 @@ private:
 	std::map<string_t, htmlayout::dom::element>	map_elements_;
 
 	htmlayout::dom::element	root_;
+	htmlayout::dom::element	sel_egediscip_;
+	htmlayout::dom::element	table_ege_discip_;
+	htmlayout::dom::element	ege_ball_;
 public:
 	SData(void);
 	~SData(void);
@@ -24,7 +27,19 @@ private:
 	static BOOL CALLBACK CallbackAtachElement(HELEMENT he, LPVOID param);
 	// выбирает город при изменении группы
 	static BOOL CALLBACK ElementEventProcChangedGroup(LPVOID tag, HELEMENT he, UINT evtg, LPVOID prms);
+	// обрабатывает кнопки
+	static BOOL CALLBACK ElementEventProcBt(LPVOID tag, HELEMENT he, UINT evtg, LPVOID prms);
+	// обрабатывает выбор предмета ≈√Ё
+	static BOOL CALLBACK ElementEventProcEgeDiscip(LPVOID tag, HELEMENT he, UINT evtg, LPVOID prms);
 private:
+	// обновл€ет таблицу предметов по ≈√Ё
+	void UpdateEgeTable();
+	// добавл€ет\измен€ет оценку предмета по ≈√Ё
+	void AddEgeDiscip();
+	// возвращает текущую дисциплину по еге в таблице
+	htmlayout::dom::element GetCurEgeDiscip();
+	// удал€ет оценку предмета по ≈√Ё
+	void DeleteEgeDiscip();
 	// провер€ет наличие существующего номера договора
 	bool IsExistsDorovorNumber(void);
 	// провер€ет на наличие номера зачетки
