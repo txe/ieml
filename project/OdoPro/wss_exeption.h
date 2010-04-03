@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <boost\preprocessor\stringize.hpp>
 namespace wss
 {
 
@@ -30,9 +29,13 @@ public:
 	std::string location_;
 };
 
-#define CURR_LOCATION() wss::location(__FILE__, __LINE__)
-#define THIS_LOCATION() wss::location(wss::location::file_basename(__FILE__), __LINE__)
-#define FULL_LOCATION() wss::location(wss::location::file_basename(__FILE__), BOOST_PP_STRINGIZE(__LINE__), __FUNCSIG__)
+// преобразование числа в строку
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+
+#define CURR_LOCATION() wss::location(__FILE__, TOSTRING(__LINE__))
+#define THIS_LOCATION() wss::location(wss::location::file_basename(__FILE__), TOSTRING(__LINE__))
+#define FULL_LOCATION() wss::location(wss::location::file_basename(__FILE__), TOSTRING(__LINE__), __FUNCSIG__)
 
 class reason_message
 {

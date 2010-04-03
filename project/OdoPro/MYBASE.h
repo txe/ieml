@@ -4,7 +4,7 @@
 #include <map>
 #include <vector>
 #include <mysql.h>
-#include <boost\shared_ptr.hpp>
+#include <memory>
 #include "string_t.h"
 #include "wss_exeption.h"
 
@@ -13,13 +13,13 @@ namespace mybase
 
 typedef std::map<string_t, int>		        COLUMS;
 typedef std::vector<string_t>				ROW;
-typedef boost::shared_ptr<ROW>				PtrRow;
+typedef std::tr1::shared_ptr<ROW>				PtrRow;
 typedef std::vector<PtrRow>					TABLE;
 typedef std::pair<string_t, int>			Col_Pair;
-typedef boost::shared_ptr<COLUMS>			PtrCol;
-typedef boost::shared_ptr<TABLE>			PtrTab;
+typedef std::tr1::shared_ptr<COLUMS>			PtrCol;
+typedef std::tr1::shared_ptr<TABLE>			PtrTab;
 class WRAPPER_RES;
-typedef boost::shared_ptr<WRAPPER_RES>		PtrRes;
+typedef std::tr1::shared_ptr<WRAPPER_RES>		PtrRes;
 
 //////////////////////////////////////////////////////////////////////////
 

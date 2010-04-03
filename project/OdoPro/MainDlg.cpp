@@ -6,7 +6,6 @@
 #include "MainDlg.h"
 #include "PropertyDlg.h"
 #include "Dictionary.h"
-#include <boost\shared_ptr.hpp>
 #include "json-aux-ext.h"
 #include "logger.h"
 
