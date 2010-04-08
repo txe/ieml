@@ -33,7 +33,10 @@ void __fastcall TFormReportBULast::ToolBtnPreviewClick(TObject *Sender)
         firstyear = form->ComboBoxFirstYear->Text;
         secondyear = AnsiString(firstyear.ToInt() + 1);
         CreateBuhData();
-        CreateWordDocument();
+        if (buh_data.size())
+          CreateWordDocument();
+        else
+          MessageBox(Handle, "Произошла ошибка. Обратитесь к разработчику.","Ошибка",MB_OK|MB_ICONERROR);
         DestroyBuhData();
     }
   }
@@ -120,9 +123,9 @@ void __fastcall TFormReportBULast::CreateWordDocument(void)
     for(int i = 2; i <= 26; i++)
         macros.InsertLine("Columns(" + IntToStr(i) + ").ColumnWidth =12.5");
 // цветовые полосы
-    for (int i = 0; i < buh_data.size() - 1; i+=2)
+    for (int i = 0; i < buh_data.size(); i+=3)
     {
-        macros.Cells(i+4, 1, i+4, 27, "Select");
+        macros.Cells(i+3, 1, i+3, 27, "Select");
         macros.InsertLine("With Selection.Interior");
         macros.InsertLine("    .ColorIndex = 15");
         macros.InsertLine("    .Pattern = xlSolid");
@@ -214,7 +217,8 @@ void __fastcall TFormReportBULast::CreateQuery(void)
 
     mysql_query(mysql,"CREATE TEMPORARY TABLE city TYPE = HEAP SELECT num , title FROM voc "
         " WHERE voc.vkey = 'city' AND voc.deleted = 0 ");
-    mysql_query(mysql,"INSERT city VALUES(0, 'Отчисленные') ");
+    mysql_query(mysql,"INSERT city VALUES(0, 'Отчисл.') ");
+    mysql_query(mysql,"UPDATE city SET city.title = 'Отчисл.' WHERE city.num = 0 ");
 
     mysql_query(mysql,"CREATE TEMPORARY TABLE temp "
         " ( "
@@ -282,30 +286,39 @@ void __fastcall TFormReportBULast::CreateBuhData(void)
     MYSQL_ROW row;
 
 //# делаем выборку по городам
-    mysql_query(mysql," (SELECT city.title, SUM(pay), SUM(plan) "
-        " FROM temp, city "
-        " WHERE city.num = temp.cityid AND city.num != 0 "
-        " GROUP BY temp.cityid "
-        " ORDER BY city.title) "
-        " UNION "
-        " (SELECT city.title, SUM(pay), SUM(plan) "
-        " FROM temp, city "
-        " WHERE city.num = temp.cityid AND city.num = 0"
-        " GROUP BY temp.cityid "
-        " ORDER BY city.title) ");
+// т.к. union не работает со временными таблицами сделаем это по раздельности
+    mysql_query(mysql," SELECT city.title, SUM(pay), SUM(plan) "
+                      " FROM temp, city "
+                      " WHERE city.num = temp.cityid AND city.num != 0 "
+                      " GROUP BY temp.cityid "
+                      " ORDER BY city.title ");
 
-    result = mysql_store_result(mysql);
-    if (result && mysql_num_rows(result))
-    {
-        while (row = mysql_fetch_row(result))
+    if (result = mysql_store_result(mysql))
+      while (row = mysql_fetch_row(result))
         {
-            opl_data* data = new opl_data;
-            data->title = row[0];
-            data->plan = AnsiString(row[2]).ToInt();
-            data->pay = AnsiString(row[1]).ToInt();
-            buh_data.push_back(data);
+          opl_data* data = new opl_data;
+          data->title = row[0];
+          data->plan = AnsiString(row[2]).ToInt();
+          data->pay = AnsiString(row[1]).ToInt();
+          buh_data.push_back(data);
         }
-    }
+    mysql_free_result(result);
+
+    mysql_query(mysql, " SELECT city.title, SUM(pay), SUM(plan) "
+                       " FROM temp, city "
+                       " WHERE city.num = temp.cityid AND city.num = 0"
+                       " GROUP BY temp.cityid "
+                       " ORDER BY city.title ");
+
+    if (result = mysql_store_result(mysql))
+      while (row = mysql_fetch_row(result))
+      {
+        opl_data* data = new opl_data;
+        data->title = row[0];
+        data->plan = AnsiString(row[2]).ToInt();
+        data->pay = AnsiString(row[1]).ToInt();
+        buh_data.push_back(data);
+      }
     mysql_free_result(result);
 
     DestroyQuery();
