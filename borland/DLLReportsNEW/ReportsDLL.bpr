@@ -25,7 +25,7 @@
       UnitRep\UnitReportAkadSprav.obj UnitRep\UnitReportBULast.obj 
       UnitRep\UnitSelectYear.obj UnitRep\UnitReportPrilDiplomNepol.obj 
       UnitRep\UnitReportForma3.obj UnitRep\UnitReportStatOtch.obj 
-      UnitRep\UnitStatistic.obj"/>
+      UnitRep\UnitStatistic.obj UnitRep\UnitReportEge.obj"/>
     <RESFILES value="ReportsDLL.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -48,7 +48,8 @@
       UnitRep\UnitReportUchebKartStud.dfm UnitRep\UnitReportAkadSprav.dfm 
       UnitRep\UnitReportBULast.dfm UnitRep\UnitSelectYear.dfm 
       UnitRep\UnitReportPrilDiplomNepol.dfm UnitRep\UnitReportForma3.dfm 
-      UnitRep\UnitReportStatOtch.dfm UnitRep\UnitStatistic.dfm"/>
+      UnitRep\UnitReportStatOtch.dfm UnitRep\UnitStatistic.dfm 
+      UnitRep\UnitReportEge.dfm"/>
     <LIBFILES value="mysql.lib"/>
     <LIBRARIES value="bcb2kaxserver.lib ZParseSql.lib ZDbc.lib ZCore.lib ZPlain.lib 
       ZComponent.lib bdertl.lib vclx.lib qrpt.lib dbrtl.lib vcl.lib rtl.lib"/>
@@ -60,7 +61,7 @@
       bcbsmp.bpi vclie.bpi xmlrtl.bpi inet.bpi inetdbbde.bpi inetdbxpress.bpi 
       inetdb.bpi nmfast.bpi bcbie.bpi soaprtl.bpi dclocx.bpi dbexpress.bpi 
       dbxcds.bpi indy.bpi bcb2kaxserver.bpi"/>
-    <PATHCPP value=".;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep"/>
+    <PATHCPP value=".;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep"/>
     <PATHPAS value=".;"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
@@ -141,6 +142,10 @@
       <FILE FILENAME="UnitRep\UnitReportForma3.cpp" FORMNAME="FormReportForma3" UNITNAME="UnitReportForma3" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="UnitRep\UnitReportStatOtch.cpp" FORMNAME="FormReportStatOtch" UNITNAME="UnitReportStatOtch" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="UnitRep\UnitStatistic.cpp" FORMNAME="FormStatistic" UNITNAME="UnitStatistic" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitRep\UnitReportEge.cpp" FORMNAME="FormReportEge" UNITNAME="UnitReportEge" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitRep\UnitReportEge.ddp" FORMNAME="" UNITNAME="UnitReportEge.ddp" CONTAINERID="" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitRep\UnitReportEge.dfm" FORMNAME="" UNITNAME="UnitReportEge.dfm" CONTAINERID="" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitRep\UnitReportEge.h" FORMNAME="" UNITNAME="UnitReportEge.h" CONTAINERID="" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
@@ -220,7 +225,7 @@ RunParams=
 Launcher=
 UseLauncher=0
 DebugCWD=
-HostApplication=C:\job\borland\DLLReportsNEW\OdoPro.exe
+HostApplication=C:\Users\txe\Desktop\New folder (2)\ieml\borland\Debug\OdoPro.exe
 RemoteHost=
 RemotePath=
 RemoteLauncher=

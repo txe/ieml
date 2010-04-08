@@ -35,6 +35,7 @@
 #include ".\\UnitRep\\UnitReportForma3.h"
 #include ".\\UnitRep\\UnitReportStatOtch.h"
 #include ".\\UnitRep\\UnitStatistic.h"
+#include ".\\UnitRep\\UnitReportEge.h"
 //---------------------------------------------------------------------------
 enum TTypeReport{
                  RQ_VEDOMOST=0,             // экзаменационная ведомость на группу
@@ -63,8 +64,9 @@ enum TTypeReport{
                  RE_UCHEBKARTSTUD=23,
                  RW_PRILDIPLOMNEPOL=24,     // Приложение к диплому о неполном высшем
                  RW_FORMA3=25,              // Форма 3
-                 RW_STATOTCH=26,              //
-                 RW_STAT=27              //
+                 RW_STATOTCH=26,            //
+                 RW_STAT=27,                //
+                 RW_EGE=28                  // отчет по ЕГЕ
                 };
 
 extern const int CountOfReports;

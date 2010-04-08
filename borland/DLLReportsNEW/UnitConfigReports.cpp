@@ -3,7 +3,7 @@
 
 #include "UnitConfigReports.h"
 //---------------------------------------------------------------------------
-const int CountOfReports = 28;
+const int CountOfReports = 29;
 
 AnsiString arrTitlesOfReports[CountOfReports] = {
         "Ведомость на группу (Quick)",
@@ -30,10 +30,11 @@ AnsiString arrTitlesOfReports[CountOfReports] = {
         "Характеристика студента (MS Word)",
         "ОТЧЕТ ДЛЯ БУХГАЛТЕРИИ (MS Excel)",
         "Учебная карточка студента (MS Excel)",
-        "Приложение к диплому о неполоном высшем(MS Word)",
+        "Приложение к диплому о неполоном высшем (MS Word)",
         "Форма №3 - (MS Excel)",
         "Статистика по оценкам группы",
-        "Статистика"
+        "Статистика",
+        "Отчет по ЕГЭ (MS Word)"
 };
 
 AnsiString arrHintsOfReports[CountOfReports] = {
@@ -64,7 +65,8 @@ AnsiString arrHintsOfReports[CountOfReports] = {
         "Приложение к диплому о неполоном высшем(MS Word)",
         "Форма №3 - Для подготовки данных о выданных дипломах дипломированнного специалиста(MS Excel)",
         "Статистика по оценкам группы",
-        "Статистика"
+        "Статистика",
+        "Отчет по ЕГЭ (MS Word)"
 };
 //---------------------------------------------------------------------------
 

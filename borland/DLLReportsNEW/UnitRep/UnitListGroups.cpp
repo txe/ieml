@@ -52,6 +52,16 @@ AnsiString __fastcall TFormListGroup::GetWHEREStrForVoc(void)
   return WhereStr;
 }
 //---------------------------------------------------------------------------
+std::vector<AnsiString> __fastcall TFormListGroup::GetGrpList()
+{
+  std::vector<AnsiString> lst;
+  for (int i=0;i<CheckListBox->Items->Count;i++)
+    if (CheckListBox->Checked[i])
+      lst.push_back(AnsiString(WCGetNumForKeyTitle(GROUPS, CheckListBox->Items->Strings[i])));
+  return lst;
+
+}
+//---------------------------------------------------------------------------
 void __fastcall TFormListGroup::SpeedBtnGoClick(TObject *Sender)
 {
   Close();

@@ -9,6 +9,7 @@
 #include <Forms.hpp>
 #include <CheckLst.hpp>
 #include <Buttons.hpp>
+#include <vector>
 //---------------------------------------------------------------------------
 class TFormListGroup : public TForm
 {
@@ -22,6 +23,7 @@ public:		// User declarations
         __fastcall TFormListGroup(TComponent* Owner);
         AnsiString __fastcall GetWHEREStr(void);
         AnsiString __fastcall GetWHEREStrForVoc(void);
+        std::vector<AnsiString> __fastcall GetGrpList();
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFormListGroup *FormListGroup;

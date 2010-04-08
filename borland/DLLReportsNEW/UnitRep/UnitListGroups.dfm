@@ -2,7 +2,7 @@ object FormListGroup: TFormListGroup
   Left = 278
   Top = 197
   BorderStyle = bsDialog
-  Caption = 'Список групп'
+  Caption = #1057#1087#1080#1089#1086#1082' '#1075#1088#1091#1087#1087
   ClientHeight = 215
   ClientWidth = 129
   Color = clBtnFace
@@ -22,7 +22,7 @@ object FormListGroup: TFormListGroup
     Top = 192
     Width = 129
     Height = 22
-    Caption = 'Готово'
+    Caption = #1043#1086#1090#1086#1074#1086
     Flat = True
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
