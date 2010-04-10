@@ -37,7 +37,7 @@ int __fastcall TFormReportVedomWord::GetIDGroup(void)
 void __fastcall TFormReportVedomWord::InitReportQuery(void)
 {
   ZMySqlQuery->SQL->Clear();
-  ZMySqlQuery->SQL->Add("select secondname,firstname,thirdname,specid,znum,id from "+opts.DBStudTable+" where deleted=0 and grpid="+ToStr(AnsiString(idgroup))+" order by specid,secondname,firstname");
+  ZMySqlQuery->SQL->Add("select secondname,firstname,thirdname,specid,znum,id from "+opts.DBStudTable+" where deleted=0 and grpid="+ToStr(AnsiString(idgroup))+" order by specid,secondname,firstname,thirdname");
   ZMySqlQuery->Active=true;
 }
 //---------------------------------------------------------------------------

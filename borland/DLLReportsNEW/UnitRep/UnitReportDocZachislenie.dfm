@@ -20,7 +20,7 @@ object FormReportDocZachislenie: TFormReportDocZachislenie
   object ToolBar: TToolBar
     Left = 0
     Top = 0
-    Width = 588
+    Width = 580
     Height = 29
     Caption = 'ToolBar'
     Flat = True

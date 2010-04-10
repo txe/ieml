@@ -51,14 +51,14 @@ void __fastcall TFormReportVedom::Connect(void)
 void __fastcall TFormReportVedom::InitReportQuery(void)
 {
   ZMySqlQuery->SQL->Clear();
-  ZMySqlQuery->SQL->Add("select secondname,firstname,thirdname,znum,specid from "+opts.DBStudTable+" where deleted=0 and grpid="+ToStr(idgroup)+" order by specid,secondname");
+  ZMySqlQuery->SQL->Add("select secondname,firstname,thirdname,znum,specid from "+opts.DBStudTable+" where deleted=0 and grpid="+ToStr(idgroup)+" order by specid,secondname,firstname,thirdname");
   ZMySqlQuery->Active=true;
 }
 //---------------------------------------------------------------------------
 void __fastcall TFormReportVedom::InitReportQueryForSpec(int specid)
 {
   ZMySqlQuery->SQL->Clear();
-  ZMySqlQuery->SQL->Add("select secondname,firstname,thirdname,znum,specid from "+opts.DBStudTable+" where deleted=0 and grpid="+ToStr(idgroup)+"and specid="+ToStr(specid)+" order by secondname");
+  ZMySqlQuery->SQL->Add("select secondname,firstname,thirdname,znum,specid from "+opts.DBStudTable+" where deleted=0 and grpid="+ToStr(idgroup)+"and specid="+ToStr(specid)+" order by secondname,firstname,thirdname");
   ZMySqlQuery->Active=true;
 }
 //---------------------------------------------------------------------------

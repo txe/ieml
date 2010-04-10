@@ -27,7 +27,7 @@ void __fastcall TFormReportListStudDogovor::InitReportQuery(void)
 {
   ZMySqlQuery->SQL->Clear();
   AnsiString WhereStr=pFormList->GetWHEREStr();
-  ZMySqlQuery->SQL->Add("select CONCAT(secondname,\' \',firstname,\' \',thirdname),specid,dogshifrid,dognum,dogyearid,dogfastid,grpid from "+opts.DBStudTable+" where deleted=0 "+WhereStr+" order by specid,dogfastid,secondname");
+  ZMySqlQuery->SQL->Add("select CONCAT(secondname,\' \',firstname,\' \',thirdname) as fullname,specid,dogshifrid,dognum,dogyearid,dogfastid,grpid from "+opts.DBStudTable+" where deleted=0 "+WhereStr+" order by specid,dogfastid,fullname");
   ZMySqlQuery->Active=true;
 }
 //---------------------------------------------------------------------------

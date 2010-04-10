@@ -20,7 +20,7 @@ object FormReportDocDopuskVstupIspit: TFormReportDocDopuskVstupIspit
   object ToolBar: TToolBar
     Left = 0
     Top = 0
-    Width = 572
+    Width = 564
     Height = 29
     Caption = 'ToolBar'
     Flat = True

@@ -26,7 +26,7 @@ void __fastcall TFormReportDocZachislenie::InitReportQuery(void)
 {
   ZMySqlQuery->SQL->Clear();
   AnsiString WhereStr=pFormList->GetWHEREStr();
-  ZMySqlQuery->SQL->Add("select secondname,firstname,thirdname,specid,eduformid,dogshifrid,dognum,dogyearid,dogfastid from "+opts.DBStudTable+" where deleted=0 "+WhereStr+" order by specid,eduformid,secondname");
+  ZMySqlQuery->SQL->Add("select secondname,firstname,thirdname,specid,eduformid,dogshifrid,dognum,dogyearid,dogfastid from "+opts.DBStudTable+" where deleted=0 "+WhereStr+" order by specid,eduformid,secondname,firstname,thirdname");
   ZMySqlQuery->Active=true;
 }
 //---------------------------------------------------------------------------
