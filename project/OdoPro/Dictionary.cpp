@@ -214,9 +214,11 @@ void CDictionary::Add(void)
 	}
 	if (IsExistsTitleForKey())
 	{
-		string_t msg = "Такая запись уже существует в словаре.\nДобавления не произошло.";
-		MessageBox(m_hWnd, msg, L"Сообщение", MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
-		return;
+		string_t msg =  "Такая запись уже есть в словаре.\n" 
+					    "Нажмите ОК, если хотите продолжить.\n"
+					    "Нажмите CANCEL, если хотите отменить.";
+		if (IDOK != MessageBox(m_hWnd, msg, L"Сообщение", MB_OKCANCEL | MB_ICONINFORMATION | MB_APPLMODAL))
+			return;
 	}
 	
 	string_t title	= json::v2t(_title);
@@ -258,21 +260,22 @@ void CDictionary::Save(void)
 		MessageBox(m_hWnd, msg, L"Сообщение", MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
 		return;
 	}
-	if (IsExistsTitleForKey(true))
-	{
-		string_t msg = "Такая запись уже существует в словаре.\nИзменение не произошло.";
-		MessageBox(m_hWnd, msg, L"Сообщение", MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
-		return;
-	}
 	if (IsExistsNumForKey(true))
 	{
-		string_t msg = "Такая номер уже используется в словаре.\nИзменение не произошло.";
+		string_t msg = "Такой номер уже используется в словаре.\nИзменение не произошло.";
 		MessageBox(m_hWnd, msg, L"Сообщение", MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
 		return;
 	}
+	if (IsExistsTitleForKey(true))
+	{
+		string_t msg =  "Такая запись уже есть в словаре.\n" 
+						"Нажмите ОК, если хотите продолжить.\n"
+						"Нажмите CANCEL, если хотите отменить.";
+		if (IDOK != MessageBox(m_hWnd, msg, L"Сообщение", MB_OKCANCEL | MB_ICONINFORMATION | MB_APPLMODAL))
+			return;
+	}
 
-	string_t msg = "Все записи, содержащие данное значение в своих полях будут изменены!\n"
-		"Вы действительно хотите редактировать эту запись словаря?";
+	string_t msg = "Вы действительно хотите сохранить изменения?";
 	if (IDNO == MessageBox(m_hWnd, msg, L"Сообщение", MB_YESNO | MB_ICONINFORMATION | MB_APPLMODAL))
 		return;
 
@@ -280,7 +283,7 @@ void CDictionary::Save(void)
 	if (aux::streq(id, ""))
 	{
 		string_t msg = "Нет записи для редактирования.\n"
-			"Действие отменено.";
+		  	"Действие отменено.";
 		MessageBox(m_hWnd, msg, L"Сообщение", MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
 		return;
 	}
