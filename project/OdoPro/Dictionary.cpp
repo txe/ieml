@@ -246,7 +246,7 @@ string_t CDictionary::GetNextNumForKey( const string_t& vkey, const string_t def
 		" SELECT MAX(num) as max FROM voc "
 		" WHERE deleted = 0 AND vkey='" + vkey + "'";
 	mybase::MYFASTRESULT res = theApp.GetCon().Query(query, false); // можут вернуть NULL ввиде "", тогда вернем 0
-	return string_t(aux::itow(aux::wtoi(mybase::MYFASTROW(res.fetch_row())["max"], -1) + 1));
+	return string_t(aux::itow(aux::wtoi(mybase::MYFASTROW(res.fetch_row())["max"], 0) + 1));
 }
 
 

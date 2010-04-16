@@ -384,15 +384,20 @@
                             <div style="flow: horizontal;">
                                 <div style="padding-right: 4px; padding-left: 4px">
                                     серия<br>
-                                    <input type="text" id="passseries" class="my" maxlength="12" novalue="<нет значения!>">
+                                    <input type="text" id="passseries" class="my" size="8" maxlength="12" novalue="<нет значения!>">
                                 </div>
                                 <div style="padding-right: 4px; padding-left: 4px">
                                     номер<br>
-                                    <input type="text" id="passnum" class="my" maxlength="6" novalue="<нет значения!>">
+                                    <input type="text" id="passnum" class="my" size="15" maxlength="6" novalue="<нет значения!>">
                                 </div>
                                 <div style="padding-right: 4px; padding-left: 4px">
                                     дата выдачи<br>
                                     <input type="date" id="passdate" class="my"  value="0000-00-00" />
+                                </div>
+                                <div style="padding-right: 4px; padding-left: 4px">
+                                    гражданство<br>
+                                    <select id="citizenryid" class="my" style="width: 100%%; text-align: center;">
+                                    </select>
                                 </div>
                             </div>
                             <div style="padding-right: 4px; padding-left: 4px">
@@ -529,14 +534,21 @@
         <!-- -- --  --  --  --  --  -- TAB 3  --  --  --  --  --  --  --  --   -->
         <div name="panel-id3">
             <div style="flow: horizontal">
-                <div style="padding: 4px; width: 20%%">
+                <div style="padding: 4px; width: 15%%">
                     Группа<br>
                     <select id="grpid" class="my" style="width: 100%%; text-align: center;">
                     </select>
                 </div>
-                <div style="padding: 4px; width: 80%%;">
+                <div style="padding: 4px; width: 65%%;">
                     Специальность<br>
                     <select class="my" id="specid" style="overflow: hidden; width: 100%%;">
+                    </select>
+                </div>
+                <div style="padding: 4px; width: 20%%;">
+                    Категория<br>
+                    <select  id="category_num" class="my" style="overflow: hidden; width: 100%%; text-align: center;">
+                        <option value="0" selected>студент</option>
+                        <option value="1">слушатель</option>
                     </select>
                 </div>
             </div>

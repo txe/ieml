@@ -1,3 +1,13 @@
 - перед комипиляцией отчетов в Borland требуется установить zeosdb по пути "$(BCB)\My\ZEOSDB";
 - т.к. zeosdb использует старые версии клиента MySql, то в конфигурации Mysql сервера требуется установить поддержку старых версий в sql-mode;
 - отчеты берут информацию о месторасположении базы из реестра;
+
+для служебных целей
+гражданство
+ALTER TABLE students ADD COLUMN citizenryid INT(11) NOT NULL DEFAULT '1'
+добавить в словарь русский с номером 1
+
+категория
+ALTER TABLE students ADD COLUMN category_num INT(1) NOT NULL DEFAULT '0'
+
+

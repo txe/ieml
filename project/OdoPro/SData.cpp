@@ -61,6 +61,7 @@ void SData::Init(htmlayout::dom::element root)
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "dogyearid"),		"dogyear");
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "cityid"),		"city");
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "sel-egediscip"),	"egediscip");
+	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "citizenryid"),	"citizenry");
 
 	// подключим изменение города относительно группы
 	HTMLayoutAttachEventHandlerEx(map_elements_["grpid"], ElementEventProcChangedGroup, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);

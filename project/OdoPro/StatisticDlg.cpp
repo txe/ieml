@@ -24,7 +24,7 @@ BOOL CStatisticDlg::PreCreateWindow(CREATESTRUCT& cs)
 
 int CStatisticDlg::OnCreate()
 {
-	SetWindowPos(m_hWnd, NULL, -1, -1, 600, 400, 
+	SetWindowPos(m_hWnd, NULL, -1, -1, 500, 450, 
 		SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOZORDER);
 	CenterWindow();
 
@@ -71,13 +71,14 @@ void CStatisticDlg::InitDomElement(void)
 	HTMLayoutAttachEventHandlerEx(link_element("bt-close"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 
 	// заполянем списки
-	t::LoadContentFromVocForList(link_element("educationid"),	"education");	json::t2v(link_element("educationid"),	"");
-	t::LoadContentFromVocForList(link_element("languageid"),	"language");	json::t2v(link_element("languageid"),	"");
-	t::LoadContentFromVocForList(link_element("dogyearid"),		"dogyear");		json::t2v(link_element("dogyearid"),	"");
-	t::LoadContentFromVocForList(link_element("grpid"),			"grp");			json::t2v(link_element("grpid"),		"");
-	t::LoadContentFromVocForList(link_element("specid"),		"spec");		json::t2v(link_element("specid"),		"");
-	t::LoadContentFromVocForList(link_element("eduformid"),		"eduform");		json::t2v(link_element("eduformid"),	"");
-	t::LoadContentFromVocForList(link_element("dogfastid"),		"dogfast");		json::t2v(link_element("dogfastid"),	"");
+	t::LoadContentFromVocForList(link_element("educationid"),	"education");	
+	t::LoadContentFromVocForList(link_element("languageid"),	"language");	
+	t::LoadContentFromVocForList(link_element("dogyearid"),		"dogyear");		
+	t::LoadContentFromVocForList(link_element("grpid"),			"grp");			
+	t::LoadContentFromVocForList(link_element("specid"),		"spec");		
+	t::LoadContentFromVocForList(link_element("eduformid"),		"eduform");		
+	t::LoadContentFromVocForList(link_element("dogfastid"),		"dogfast");		
+	t::LoadContentFromVocForList(link_element("citizenryid"),	"citizenry");	
 }
 
 // показывает статистику по выбранным критериям
@@ -102,52 +103,48 @@ void CStatisticDlg::ShowStatistic(void)
 	}
 	if (CHECKED("switch-educationid"))
 	{
-		where_st	+=	" AND tvoceduc.deleted=0 and tvoceduc.vkey='education' AND "
-						" tst.educationid=tvoceduc.num AND tst.educationid='" + json::v2t(link_element("educationid")) + "' ";
-		from_st		+=	", voc AS tvoceduc";
+		where_st	+=	" AND tst.educationid='" + json::v2t(link_element("educationid")) + "' ";
 		message		+=	"\n   образование: " + json::get_caption(link_element("educationid"));
 	}
 	if (CHECKED("switch-languageid"))
 	{
-		where_st	+=	" AND tvoclang.deleted=0 AND tvoclang.vkey='language' AND "
-						" tst.languageid=tvoclang.num AND tst.languageid='" + json::v2t(link_element("languageid")) + "' ";
-		from_st		+=	", voc AS tvoclang";
+		where_st	+=	" AND tst.languageid='" + json::v2t(link_element("languageid")) + "' ";
 		message		+=	"\n   язык: " + json::get_caption(link_element("languageid"));
 	}
 	if (CHECKED("switch-dogyearid"))
 	{
-		where_st	+=	" AND tvocdogyear.deleted=0 AND tvocdogyear.vkey='dogyear' AND "
-						" tst.dogyearid=tvocdogyear.num AND tst.dogyearid='" + json::v2t(link_element("dogyearid")) + "' ";
-		from_st		+=	", voc AS tvocdogyear";
+		where_st	+=	" AND tst.dogyearid='" + json::v2t(link_element("dogyearid")) + "' ";
 		message		+=	"\n   год поступления: " + json::get_caption(link_element("dogyearid"));
 	}
 	if (CHECKED("switch-grpid"))
 	{
-		where_st	+=	" AND tvocgroup.deleted=0 AND tvocgroup.vkey='grp' AND "
-						" tst.grpid=tvocgroup.num AND tst.grpid='" + json::v2t(link_element("grpid")) + "' ";
-		from_st		+=	", voc AS tvocgroup";
+		where_st	+=	" AND tst.grpid='" + json::v2t(link_element("grpid")) + "' ";
 		message		+=	"\n   группа: " + json::get_caption(link_element("grpid"));
 	}
 	if (CHECKED("switch-specid"))
 	{
-		where_st	+=	" AND tvocspec.deleted=0 AND tvocspec.vkey='spec' AND "
-						"tst.specid=tvocspec.num AND tst.specid='" + json::v2t(link_element("specid")) + "' ";
-		from_st		+=	", voc AS tvocspec";
+		where_st	+=	" AND tst.specid='" + json::v2t(link_element("specid")) + "' ";
 		message		+=	"\n   специальность: " + json::get_caption(link_element("specid"));
 	}
 	if (CHECKED("switch-eduformid"))
 	{
-		where_st	+=	" AND tvoceduform.deleted=0 AND tvoceduform.vkey='eduform' AND "
-						" tst.eduformid=tvoceduform.num AND tst.eduformid='" + json::v2t(link_element("eduformid")) + "' ";
-		from_st		+=	", voc AS tvoceduform";
+		where_st	+=	" AND tst.eduformid='" + json::v2t(link_element("eduformid")) + "' ";
 		message		+=	"\n   форма обучения: " + json::get_caption(link_element("eduformid"));
 	}
 	if (CHECKED("switch-dogfastid"))
 	{
-		where_st	+=	" AND tvocdogfast.deleted=0 AND tvocdogfast.vkey='dogfast' AND "
-						" tst.dogfastid=tvocdogfast.num AND tst.dogfastid='" + json::v2t(link_element("dogfastid")) + "' ";
-		from_st		+=	", voc AS tvocdogfast";
+		where_st	+=	" AND tst.dogfastid='" + json::v2t(link_element("dogfastid")) + "' ";
 		message		+=	"\n   скорость обучения: " + json::get_caption(link_element("dogfastid"));
+	}
+	if (CHECKED("switch-category_num"))
+	{
+		where_st	+=	" AND tst.category_num = '" + json::v2t(link_element("category_num")) + "' ";
+		message		+=	"\n   категория: " + json::get_caption(link_element("category_num"));
+	}
+	if (CHECKED("switch-citizenryid"))
+	{
+		where_st	+=	" AND tst.citizenryid='" + json::v2t(link_element("citizenryid")) + "' ";
+		message		+=	"\n   гражданство: " + json::get_caption(link_element("citizenryid"));
 	}
 	if (CHECKED("switch-ignore"))
 	{
