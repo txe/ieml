@@ -284,7 +284,7 @@ void __fastcall TFormReportCharacteristic::CreateWordDocument(void)
     macros.SelectionText("vbTab");
     macros.SelectionText("vbTab");
     macros.SelectionText("Д.В. Хавин\n");
-    AnsiString curdate = TDateTime::CurrentDate().DateString();
+    AnsiString curdate = TDateTime::CurrentDate().FormatString("dd.mm.yyyy");
     macros.SelectionText("\n");
     macros.SelectionText("vbTab");
     macros.SelectionText(curdate+"\n");

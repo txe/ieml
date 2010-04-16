@@ -206,8 +206,11 @@ void __fastcall TFormReportEge::CreateWordDocument(void)
     if (discip.size())
     {
       macros.TablesCell(CountTables, 1, 5, "Range.Select");
-      macros.InsertLine("Selection.MoveRight Unit:=wdCharacter, Count:=" + AnsiString(discip.size()-1)+ ", Extend:=wdExtend");
-      macros.InsertLine("Selection.Cells.Merge");
+      if (discip.size() != 1)
+      {
+        macros.InsertLine("Selection.MoveRight Unit:=wdCharacter, Count:=" + AnsiString(discip.size()-1)+ ", Extend:=wdExtend");
+        macros.InsertLine("Selection.Cells.Merge");
+      }
       macros.TablesCell(CountTables, 1, 5, "Range.Text = \"Баллы\"");
       macros.SelectionParagraphFormat("Alignment = wdAlignParagraphCenter");
 

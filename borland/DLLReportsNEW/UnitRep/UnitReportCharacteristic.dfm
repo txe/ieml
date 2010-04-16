@@ -20,7 +20,7 @@ object FormReportCharacteristic: TFormReportCharacteristic
   object ToolBar: TToolBar
     Left = 0
     Top = 0
-    Width = 688
+    Width = 680
     Height = 29
     Caption = 'ToolBar'
     Flat = True

@@ -242,7 +242,7 @@ void __fastcall TFormReportVedomWord::CreateWordDocument(void)
             macros.SelectionText("                                                                                                                      \"\"удовлетворительно\"\" _______ чел.");
             macros.SelectionTypeParagraph();
             macros.SelectionFont("Bold=true");
-            macros.SelectionText("\"\"_____\"\"________________________ 200__г.");
+            macros.SelectionText("\"\"_____\"\"________________________ " + TDateTime::CurrentDate().FormatString("yyyy") + " г.");
             macros.SelectionFont("Bold=false");
             macros.SelectionText("                                     \"\"не удовлетворительно\"\" _______ чел.");
             macros.SelectionTypeParagraph();
