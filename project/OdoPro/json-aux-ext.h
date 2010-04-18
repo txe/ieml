@@ -97,7 +97,7 @@ namespace t
 
 	// формат даты в SQL уууу-mm-dd
 	// проверяет валидность даты и коректирует ее
-	inline bool date2t(const string_t& date, string_t& rez)
+	inline string_t date2t(string_t date)
 	{
 		std::vector<std::wstring> result;
 		std::wstring buf = date;
@@ -107,15 +107,15 @@ namespace t
 		int month = aux::wtoi((result.size() > 1)?result[1].c_str():L"0", 0);
 		int day = aux::wtoi((result.size() > 2)?result[2].c_str():L"0", 0);
 
-		if (year > 2015)
+		if (year > 2020)
 			year = 0;
 		if (month > 12)
 			month = 0;
 		if (day > 31)
 			day = 0;
 		
-		rez = string_t(aux::itow(year)) + "-" + aux::itow(month) + "-" + aux::itow(day);
-		return date == rez;
+		date = string_t(aux::itow(year)) + "-" + aux::itow(month) + "-" + aux::itow(day);
+		return date;
 	}
 	// получает год
 	inline string_t get_year(const string_t& date)

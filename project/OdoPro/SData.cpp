@@ -72,6 +72,11 @@ void SData::Init(htmlayout::dom::element root)
 	// связывает с событиями кнопок
 	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(root_, "bt-change-ege-disp"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(root_, "bt-delete-ege-disp"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+
+	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(root_, "bt-fast-znum"),  ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(root_, "bt-fast-enter"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(root_, "bt-fast-exist"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(root_, "bt-fast-gak"),   ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 }
 
 // обновляет  дом элементы для текущего студента (отображает на экране)
@@ -440,7 +445,7 @@ void SData::get_current_value(std::map<string_t, string_t>& value)
 		string_t old_value  = el.get_attribute("old-value");
 		
 		if (id == "edudatediplom" || id == "edudatequalif" || id == "exitdate" || id == "egedate")
-			t::date2t(new_value, new_value);
+			new_value = t::date2t(new_value);
 		if (id == "eduenddate" && !new_value.empty())
 			new_value += "-01-01";
 
@@ -532,6 +537,25 @@ BOOL CALLBACK SData::ElementEventProcBt(LPVOID tag, HELEMENT he, UINT evtg, LPVO
 		data->DeleteEgeDiscip();
 		return TRUE;
 	}
+	if (aux::wcseq(id, L"bt-fast-znum"))
+	{
+		return TRUE;
+	}
+	if (aux::wcseq(id, L"bt-fast-enter"))
+	{
+		data->FastSetEnter();
+		return TRUE;
+	}
+	if (aux::wcseq(id, L"bt-fast-exist"))
+	{
+		data->FastSetExit();
+		return TRUE;
+	}
+	if (aux::wcseq(id, L"bt-fast-gak"))
+	{
+		return TRUE;
+	}
+
 	return FALSE;
 }
 
@@ -739,4 +763,73 @@ htmlayout::dom::element SData::GetCurEgeDiscip()
 		}
 	}	
 	return row;
+}
+
+// устанавливает для всей группы номер и дату приказа о зачислении
+void SData::FastSetEnter()
+{
+	string_t enternum  = json::v2t(LiteWnd::link_element(root_, "enternum"));
+	string_t enterdate = json::v2t(LiteWnd::link_element(root_, "enterdate"));
+	enterdate = t::date2t(enterdate);
+
+	string_t find_query = string_t() +  
+		" SELECT id FROM students " 
+		" WHERE deleted = 0 AND grpid = " + aux::itow(theApp.GetCurrentGroupID()) +
+		" AND enternum IS NOT NULL AND enternum != '' AND enternum != " + enternum;
+	mybase::MYFASTRESULT find_res = theApp.GetCon().Query(find_query);
+	
+	string_t info = 
+		"Номер и дата приказа о зачислении текущего студента\n"
+		"установится для всей группы.\n";
+	if (!find_res.size())
+		info += "Нажмите ОК, если хотите продолжить.";
+	else
+	{
+		info += string_t() + 
+			"В группе есть несколько студентов (" + aux::itow((long)find_res.size()) + ") с заполненными номерами приказов, отличными от №" + enternum + ".\n"
+			"Нажмите ОК, если уверены и хотите установить номер и дату приказа о зачислении для всей группы.";
+	}
+	if (IDOK != MessageBox(::GetActiveWindow(), info, 
+		L"Предупреждение", MB_OKCANCEL | MB_ICONINFORMATION | MB_APPLMODAL))
+		return;
+
+	string_t query = string_t() +
+		" UPDATE students "
+		" SET enternum = '" + enternum + "', enterdate = '" + enterdate + "' "
+		" WHERE deleted = 0 AND grpid = " + aux::itow(theApp.GetCurrentGroupID());
+	theApp.GetCon().Query(query, false);	
+}
+// устанавливает для всей группы номер и дату приказа об отчислении
+void SData::FastSetExit()
+{
+	string_t exitnum  = json::v2t(LiteWnd::link_element(root_, "exitnum"));
+	string_t exitdate = json::v2t(LiteWnd::link_element(root_, "exitdate")); 
+	exitdate = t::date2t(exitdate);
+
+	string_t find_query = string_t() +  
+		" SELECT id FROM students " 
+		" WHERE deleted = 0 AND grpid = " + aux::itow(theApp.GetCurrentGroupID()) +
+		" AND exitnum IS NOT NULL AND exitnum != '' AND exitnum != " + exitnum;
+	mybase::MYFASTRESULT find_res = theApp.GetCon().Query(find_query);
+
+	string_t info = 
+		"Номер и дата приказа об отчислении текущего студента\n"
+		"установится для всей группы.\n";
+	if (!find_res.size())
+		info += "Нажмите ОК, если хотите продолжить.";
+	else
+	{
+		info += string_t() + 
+			"В группе есть несколько студентов (" + aux::itow((long)find_res.size()) + ") с заполненными номерами приказов, отличными от №" + exitnum + ".\n"
+			"Нажмите ОК, если уверены и хотите установить номер и дату приказа об отчислении для всей группы.";
+	}
+	if (IDOK != MessageBox(::GetActiveWindow(), info, 
+		L"Предупреждение", MB_OKCANCEL | MB_ICONINFORMATION | MB_APPLMODAL))
+		return;
+
+	string_t query = string_t() +
+		" UPDATE students "
+		" SET exitnum = '" + exitnum + "', exitdate = '" + exitdate + "' "
+		" WHERE deleted = 0 AND grpid = " + aux::itow(theApp.GetCurrentGroupID());
+	theApp.GetCon().Query(query, false);
 }

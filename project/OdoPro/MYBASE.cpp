@@ -128,15 +128,14 @@ MYSQL_RES* mybase::MyBase::Query( const string_t& query, bool check /*= true*/ )
 //	LOG_WARNING << query;
 	assert(m_con != NULL);
 	if (0 != mysql_query(m_con, query.c_str()))
+	{
+		string_t msg = "Неправильный запрос:" + query + "/n" + mysql_error(m_con);
+		LOG_ERROR << msg;
+		assert(FALSE);
+
 		if (check)
-		{
-			string_t msg = "Неправильный запрос:" + query + "/n" + mysql_error(m_con);
-			LOG_ERROR << msg;
-			assert(FALSE);
 			throw wss::exception(wss::reason_message(FULL_LOCATION(), ""));
-		}
-		else
-			assert(FALSE);
+	}
 	return mysql_store_result(m_con);
 }
 

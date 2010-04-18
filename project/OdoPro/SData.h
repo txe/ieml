@@ -54,6 +54,10 @@ private:
 	long GetCityIdForGroup(long GroupId);
 	// проверяет корректность введенных данных, корректирует их
 	void get_current_value(std::map<string_t, string_t>& value);
+	// устанавливает для всей группы номер и дату приказа о зачислении
+	void FastSetEnter();
+	// устанавливает для всей группы номер и дату приказа об отчислении
+	void FastSetExit();
 public:
 	// создает в  базе информацию о новом студенте
 	bool CreateData(void);
