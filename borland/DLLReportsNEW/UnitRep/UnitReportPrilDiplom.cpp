@@ -552,7 +552,7 @@ void __fastcall TFormReportPrilDiplom::CreateWordDocument(void)
   macros.InsertLine("Selection.Font.Size=9");
   macros.InsertLine("Selection.MoveDown Unit:=wdLine, Count:=2, Extend:=wdExtend");
   macros.InsertLine("Selection.Cells.Merge");
-  macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(22,2).Range.Text=\""+NapravSpecS+"\"");
+  macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(22,2).Range.Text=\"\"\""+NapravSpecS+"\"\"\"");
   //---------------------------------------------
 
   macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(1,1).Range.Select");
@@ -735,12 +735,16 @@ void __fastcall TFormReportPrilDiplom::CreateWordDocument(void)
         Заполнение 2-й таблицы
   */
 
+  // включим показ скрытых номеров
+  macros.InsertLine("ActiveWindow.ActivePane.View.ShowAll = True");
+
   macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Select");
   macros.InsertLine("Selection.Font.Italic=true");
   macros.InsertLine("Selection.Font.Size=8.5");
 
   macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Columns.Item(1).Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphRight");
+  macros.InsertLine("Selection.Font.Hidden = True");
   macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Columns.Item(2).Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.SelectionParagraphFormat("LeftIndent = -5");
@@ -829,6 +833,7 @@ void __fastcall TFormReportPrilDiplom::CreateWordDocument(void)
 
     macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Columns.Item(1).Select");
     macros.SelectionParagraphFormat("Alignment=wdAlignParagraphRight");
+    macros.InsertLine("Selection.Font.Hidden = True");
     macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Columns.Item(2).Select");
     macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
     macros.SelectionParagraphFormat("LeftIndent = -5");
