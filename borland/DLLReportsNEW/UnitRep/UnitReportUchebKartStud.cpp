@@ -39,8 +39,8 @@ AnsiString MounthNames[12]={ "€нвар€",
                              "но€бр€",
                              "декабр€"};
 const int max_len = 19;   // кол-во букв в одной €чейке
-const int max_count_line = 17; // кол-во строк в одном семестре
-const int max_len_title = 35;
+//const int max_count_line = 17; // кол-во строк в одном семестре
+//const int max_len_title = 35;
 //---------------------------------------------------------------------------
 AnsiString TFormReportUchebKartStud::GetDateAsString(const AnsiString& str, bool isYear)
 {
@@ -350,8 +350,8 @@ void    __fastcall  TFormReportUchebKartStud::GetOchenkiStudenta(void)
     pos_semestr[1].row = pos_semestr[3].row = 47;
     pos_semestr[4].row = pos_semestr[6].row = 65;
     pos_semestr[5].row = pos_semestr[7].row = 79;
-    pos_semestr[8].row = pos_semestr[10].row = 96;
-    pos_semestr[9].row = pos_semestr[11].row = 110;
+    pos_semestr[8].row = pos_semestr[10].row = 98;
+    pos_semestr[9].row = pos_semestr[11].row = 114;
 }
 //---------------------------------------------------------------------------
 void __fastcall TFormReportUchebKartStud::GetInfoStudent(AnsiString& NumZ, AnsiString& SN, AnsiString& FN, AnsiString& TN,
