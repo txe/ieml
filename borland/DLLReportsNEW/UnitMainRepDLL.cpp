@@ -157,6 +157,16 @@ void PreviewReportByIndex(int index, int _IDGroup, int _IDStudent)
       ((TFormReportBUPlanDolgsSemestr*)pReportForm)->ToolBtnPreviewClick(pReportForm);
       ((TFormReportBUPlanDolgsSemestr*)pReportForm)->Free();
       break;
+    case RE_BULASTREPORT:
+      pReportForm=new TFormReportBULast(Application);
+      ((TFormReportBULast*)pReportForm)->ToolBtnPreviewClick(pReportForm);
+      ((TFormReportBULast*)pReportForm)->Free();
+      break;
+  case RE_BULASTREPORT2:
+      pReportForm=new TFormReportBULast2(Application);
+      ((TFormReportBULast2*)pReportForm)->ToolBtnPreviewClick(pReportForm);
+      ((TFormReportBULast2*)pReportForm)->Free();
+      break;
     case RW_AVRGBALLINGROUP:
       pReportForm=new TFormReportAvrgBallInGroup(Application);
       ((TFormReportAvrgBallInGroup*)pReportForm)->SetIDGroup(_IDGroup);
@@ -186,11 +196,6 @@ void PreviewReportByIndex(int index, int _IDGroup, int _IDStudent)
       ((TFormReportCharacteristic*)pReportForm)->SetIDStudent(_IDStudent);
       ((TFormReportCharacteristic*)pReportForm)->ToolBtnPreviewClick(pReportForm);
       ((TFormReportCharacteristic*)pReportForm)->Free();
-      break;
-    case RE_BULASTREPORT:
-      pReportForm=new TFormReportBULast(Application);
-      ((TFormReportBULast*)pReportForm)->ToolBtnPreviewClick(pReportForm);
-      ((TFormReportBULast*)pReportForm)->Free();
       break;
     case RE_UCHEBKARTSTUD:
       pReportForm = new TFormReportUchebKartStud(Application);

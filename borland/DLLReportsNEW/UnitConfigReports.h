@@ -30,6 +30,7 @@
 #include ".\\UnitRep\\UnitReportPrilDiplom.h"
 #include ".\\UnitRep\\UnitReportCharacteristic.h"
 #include ".\\UnitRep\\UnitReportBULast.h"
+#include ".\\UnitRep\\UnitReportBULast2.h"
 #include ".\\UnitRep\\UnitReportUchebKartStud.h"
 #include ".\\UnitRep\\UnitReportPrilDiplomNepol.h"
 #include ".\\UnitRep\\UnitReportForma3.h"
@@ -55,18 +56,19 @@ enum TTypeReport{
                  RW_BUGLOBPLANDOLGS=14,     // отчет для бухгалтерии (оплата и долги представительств за уч. год)
                  RW_BUCITYDAY=15,           // отчет для бухгалтерии (оплата представительств за день)
                  RW_BUPLANDOLGSSEMESTR=16,  // отчет для бухгалтерии (оплата и долги представительств за семестр)
-                 RW_AVRGBALLINGROUP=17,     // Вычисление среднего балла для студентов из одной группы
-                 RW_STUDSCONDREDDIPLOM=18,  // Выявление кандидатов на красный диплом
-                 RW_AKADSPRAV=19,           // Академическая справка
-                 RW_PRILDIPLOM=20,          // Приложение к диплому
-                 RW_CHARACTERISTIC=21,      // Характеристика студента (успеваемость)
-                 RE_BULASTREPORT=22,
-                 RE_UCHEBKARTSTUD=23,
-                 RW_PRILDIPLOMNEPOL=24,     // Приложение к диплому о неполном высшем
-                 RW_FORMA3=25,              // Форма 3
-                 RW_STATOTCH=26,            //
-                 RW_STAT=27,                //
-                 RW_EGE=28                  // отчет по ЕГЕ
+                 RE_BULASTREPORT=17,
+                 RE_BULASTREPORT2=18,
+                 RW_AVRGBALLINGROUP=19,     // Вычисление среднего балла для студентов из одной группы
+                 RW_STUDSCONDREDDIPLOM=20,  // Выявление кандидатов на красный диплом
+                 RW_AKADSPRAV=21,           // Академическая справка
+                 RW_PRILDIPLOM=22,          // Приложение к диплому
+                 RW_CHARACTERISTIC=23,      // Характеристика студента (успеваемость)
+                 RE_UCHEBKARTSTUD=24,
+                 RW_PRILDIPLOMNEPOL=25,     // Приложение к диплому о неполном высшем
+                 RW_FORMA3=26,              // Форма 3
+                 RW_STATOTCH=27,            //
+                 RW_STAT=28,                //
+                 RW_EGE=29                  // отчет по ЕГЕ
                 };
 
 extern const int CountOfReports;

@@ -9,7 +9,7 @@
 
 class WordMacros
 {
-private:
+public:
     AnsiString macros;
     AnsiString cur_mac;
     AnsiString tamplate;

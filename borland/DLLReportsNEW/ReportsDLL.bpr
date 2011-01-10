@@ -25,7 +25,8 @@
       UnitRep\UnitReportAkadSprav.obj UnitRep\UnitReportBULast.obj 
       UnitRep\UnitSelectYear.obj UnitRep\UnitReportPrilDiplomNepol.obj 
       UnitRep\UnitReportForma3.obj UnitRep\UnitReportStatOtch.obj 
-      UnitRep\UnitStatistic.obj UnitRep\UnitReportEge.obj"/>
+      UnitRep\UnitStatistic.obj UnitRep\UnitReportEge.obj 
+      UnitRep\UnitReportBULast2.obj"/>
     <RESFILES value="ReportsDLL.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -49,7 +50,7 @@
       UnitRep\UnitReportBULast.dfm UnitRep\UnitSelectYear.dfm 
       UnitRep\UnitReportPrilDiplomNepol.dfm UnitRep\UnitReportForma3.dfm 
       UnitRep\UnitReportStatOtch.dfm UnitRep\UnitStatistic.dfm 
-      UnitRep\UnitReportEge.dfm"/>
+      UnitRep\UnitReportEge.dfm UnitRep\UnitReportBULast2.dfm"/>
     <LIBFILES value="mysql.lib"/>
     <LIBRARIES value="bcb2kaxserver.lib ZParseSql.lib ZDbc.lib ZCore.lib ZPlain.lib 
       ZComponent.lib bdertl.lib vclx.lib qrpt.lib dbrtl.lib vcl.lib rtl.lib"/>
@@ -61,7 +62,7 @@
       bcbsmp.bpi vclie.bpi xmlrtl.bpi inet.bpi inetdbbde.bpi inetdbxpress.bpi 
       inetdb.bpi nmfast.bpi bcbie.bpi soaprtl.bpi dclocx.bpi dbexpress.bpi 
       dbxcds.bpi indy.bpi bcb2kaxserver.bpi"/>
-    <PATHCPP value=".;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep"/>
+    <PATHCPP value=".;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep;UnitRep"/>
     <PATHPAS value=".;"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
@@ -146,6 +147,10 @@
       <FILE FILENAME="UnitRep\UnitReportEge.ddp" FORMNAME="" UNITNAME="UnitReportEge.ddp" CONTAINERID="" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="UnitRep\UnitReportEge.dfm" FORMNAME="" UNITNAME="UnitReportEge.dfm" CONTAINERID="" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="UnitRep\UnitReportEge.h" FORMNAME="" UNITNAME="UnitReportEge.h" CONTAINERID="" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitRep\UnitReportBULast2.cpp" FORMNAME="FormReportBULast2" UNITNAME="UnitReportBULast2" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitRep\UnitReportBULast2.ddp" FORMNAME="" UNITNAME="UnitReportBULast2.ddp" CONTAINERID="" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitRep\UnitReportBULast2.dfm" FORMNAME="" UNITNAME="UnitReportBULast2.dfm" CONTAINERID="" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="UnitRep\UnitReportBULast2.h" FORMNAME="" UNITNAME="UnitReportBULast2.h" CONTAINERID="" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
