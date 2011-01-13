@@ -36,8 +36,9 @@ __published:	// IDE-managed Components
 private:	// User declarations
     void __fastcall CreateWordDocument(long rows_count);
     void __fastcall CreateBuhData(void);
+    void __fastcall ProcessPlan(AnsiString year);
     void __fastcall ProcessPreDolg(void);
-    void __fastcall ProcessPlan(void);
+    void __fastcall ProcessCurPlan(void);
     void __fastcall ProcessPay(bool is_09);
 
 private:	// User declarations

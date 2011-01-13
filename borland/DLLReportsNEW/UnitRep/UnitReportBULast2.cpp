@@ -194,6 +194,12 @@ void __fastcall TFormReportBULast2::CreateWordDocument(long rows_count)
     macros.TablesCell(1, 2, 7, "VerticalAlignment=wdCellAlignVerticalCenter");
     macros.TablesCell(1, 2, 7, "Range.Text = \"на 01.09.2010 за 2010/2011\"");
 
+    AnsiString text;
+    text += "Ф.И.О,Группа,Долг за предыдущ.,Стоимость,Оплачено,Оплачено,Долг на\n";
+    text += ",, период на,обучения,на 01.09."+firstyear+",на 01.12."+firstyear+",01.09."+firstyear+"\n";
+    text += ",,01.09."+firstyear+","+firstyear+"/"+secondyear+" г.,за "+firstyear+"/"+secondyear+ "г.,за "+firstyear+"/"+secondyear+" г.\n\n";
+
+
 
     mysql_query(mysql, " SELECT CONCAT_WS(' ', s.secondname, s.firstname, s.thirdname) as name, v.title, f.pre_dolg, f.plan, f.pay_09, f.pay_12, f.dolg_09 "
                        " FROM full_table as f, students as s, voc as v "
@@ -204,7 +210,6 @@ void __fastcall TFormReportBULast2::CreateWordDocument(long rows_count)
     MYSQL_RES* result;
     MYSQL_ROW  row;
     int        cur_row = 3;
-    AnsiString text;
     if (result = mysql_store_result(mysql))
       while (row = mysql_fetch_row(result))
       {
@@ -282,34 +287,36 @@ void __fastcall TFormReportBULast2::CreateBuhData(void)
         " GROUP BY studs.id ");
 
     ProcessPreDolg();    // расчитаем долг за предыдущий период
-    ProcessPlan();       // расчитаем план для текущего периода
+    ProcessCurPlan();    // расчитаем план для текущего периода
     ProcessPay(true);    // оплата на 01.09 за текущий год
     ProcessPay(false);   // оплата на 01.12 за текущий год
 
     // расчитаем долг на текущий период на 01.09
     mysql_query(mysql,  " UPDATE full_table SET dolg_09 = plan - pay_09");
+
+    // удалим тех, кто не учиться в этом году
+    mysql_query(mysql,  " DELETE FROM full_table WHERE plan = 0");
 }
 
-// расчитаем долг за предыдущий период
-void __fastcall TFormReportBULast2::ProcessPreDolg(void)
+void __fastcall TFormReportBULast2::ProcessPlan(AnsiString year)
 {
     AnsiString query;
 
     // зададим даты для расчета долга в предыдущем периоде 2009-2010
-    query = "SET @date_pre1 = '" + AnsiString(firstyear.ToInt()-1) + "-02-01'"; // 2009-02-01
+    query = "SET @date_pre1 = '" + year + "-02-01'";                        // 2009-02-01
     mysql_query(mysql, query.c_str());
-    query = "SET @date_pre2 = '" + AnsiString(firstyear.ToInt()-1) + "-09-01'"; // 2009-09-01
+    query = "SET @date_pre2 = '" + year + "-09-01'";                        // 2009-09-01
     mysql_query(mysql, query.c_str());
-    query = "SET @date_pre3 = '" + firstyear + "-02-01'";                       // 2010-02-01
+    query = "SET @date_pre3 = '" + AnsiString(year.ToInt()+1) + "-02-01'";  // 2010-02-01
 
-    // т.к. у студентов может оказаться несколько категорий оплат на один период
-    // то сделаем в два этапа
+    // соберем оплаты по каждой категории
     mysql_query(mysql, "drop temporary table if exists old_pay");
     mysql_query(mysql,
         "CREATE TEMPORARY TABLE old_pay "
         " ( "
         "  id        int(11) NOT NULL AUTO_INCREMENT, "
         "  idstud    int(11) NOT NULL, "
+        "  idopt     int(11) NOT NULL, "
         "  plan      int(11) NOT NULL, "
         "  pay       int(11) NOT NULL, "
         "  INDEX (id),     "
@@ -317,8 +324,8 @@ void __fastcall TFormReportBULast2::ProcessPreDolg(void)
         " ) TYPE = HEAP ");
 
     //# это обычная сентябрьская оплата
-    mysql_query(mysql,"INSERT old_pay (idstud, plan, pay)                                            "
-          " SELECT s.idstud, s.commoncountmoney, SUM(COALESCE(fact.moneypay, 0))                    "
+    mysql_query(mysql,"INSERT old_pay (idstud, idopt, plan, pay)                                    "
+          " SELECT s.idstud, s.idopt, s.commoncountmoney, SUM(COALESCE(fact.moneypay, 0))           "
           " FROM (                                                                                  "
           "      SELECT st.id as idstud, opts.id as idopt, opts.commoncountmoney                    "
           "      FROM students AS st, payoptstest as opts, voc as v                                 "
@@ -331,8 +338,8 @@ void __fastcall TFormReportBULast2::ProcessPreDolg(void)
           " GROUP BY s.idstud, s.idopt");
 
     //# это февральские предыдущие
-    mysql_query(mysql,"INSERT old_pay (idstud, plan, pay)                                           "
-          " SELECT s.idstud, s.commoncountmoney/2, SUM(COALESCE(fact.moneypay, 0)) - s.commoncountmoney/2  "
+    mysql_query(mysql,"INSERT old_pay (idstud, idopt, plan, pay)                                    "
+          " SELECT s.idstud, s.idopt, s.commoncountmoney/2, SUM(COALESCE(fact.moneypay, 0)) - s.commoncountmoney/2  "
           " FROM (                                                                                  "
           "      SELECT st.id as idstud, opts.id as idopt, opts.commoncountmoney                    "
           "      FROM students AS st, payoptstest as opts, voc as v                                 "
@@ -346,9 +353,9 @@ void __fastcall TFormReportBULast2::ProcessPreDolg(void)
     //# сделаеим для них проверку что бы не было отрицательных оплат
     mysql_query(mysql, "UPDATE old_pay SET old_pay.pay = 0 WHERE old_pay.pay < 0 ");
 
-     //# это февральские предыдущие
-    mysql_query(mysql,"INSERT old_pay (idstud, plan, pay)                                           "
-          " SELECT s.idstud, s.commoncountmoney/2, SUM(COALESCE(fact.moneypay, 0))                  "
+     //# это февральские последующие
+    mysql_query(mysql,"INSERT old_pay (idstud, idopt, plan, pay)                                    "
+          " SELECT s.idstud, s.idopt, s.commoncountmoney/2, SUM(COALESCE(fact.moneypay, 0))                  "
           " FROM (                                                                                  "
           "      SELECT st.id as idstud, opts.id as idopt, opts.commoncountmoney                    "
           "      FROM students AS st, payoptstest as opts, voc as v                                 "
@@ -362,6 +369,71 @@ void __fastcall TFormReportBULast2::ProcessPreDolg(void)
     //# сделаеим для них проверку что бы не было оплаты больше плана
     mysql_query(mysql,"UPDATE old_pay SET old_pay.pay = old_pay.plan WHERE old_pay.pay > old_pay.plan ");
 
+    // этап 2
+    // у стедента могут несколько категорий оплат за текущий период, то есть два сценария поведения
+    // 1 если хотя бы по одной было заплачено(может быть несколько), то удалить те которые без оплаты
+    // 2 если ни по одной не заплачено, то оставить только ту которая основная в группе
+
+    // найдем студентов у которых проблемы
+    mysql_query(mysql, "drop temporary table if exists bad_stud");
+    mysql_query(mysql,
+        " CREATE TEMPORARY TABLE bad_stud                  "
+        " (                                                "
+        "  id        int(11) NOT NULL AUTO_INCREMENT,      "
+        "  idstud    int(11) NOT NULL,                     "
+        "  _count    int(11) NOT NULL,                     "
+        "  pay       int(11) NOT NULL,                     "
+        "  INDEX (id),                                     "
+        "  INDEX (idstud)                                  "
+        " ) TYPE = HEAP ");
+    mysql_query(mysql,"INSERT bad_stud (idstud, _count, pay) "
+          " SELECT idstud, COUNT(0) as c, SUM(pay)           "
+          " FROM old_pay                                     "
+          " GROUP BY idstud "
+          " HAVING c > 1");
+
+    // найдем котагории которые являются для проблемных студентов основными
+    mysql_query(mysql, "drop temporary table if exists main_opt");
+    mysql_query(mysql,
+        " CREATE TEMPORARY TABLE main_opt                  "
+        " (                                                "
+        "  id        int(11) NOT NULL AUTO_INCREMENT,      "
+        "  grpid     int(11) NOT NULL,                     "
+        "  idopt     int(11) NOT NULL,                     "
+        "  count     int(11) NOT NULL,"
+        "  INDEX (id),                                     "
+        "  INDEX (grpid)                                   "
+        " ) TYPE = HEAP ");
+    mysql_query(mysql,"INSERT main_opt (grpid, idopt, count)  "
+            " SELECT m.grpid, m.idopt, MAX(m.c)               "
+            " FROM (SELECT s.grpid, pay.idopt, COUNT(*) as c  "
+            "       FROM old_pay as pay, students as s        "
+            "       WHERE pay.idstud = s.id AND pay.pay > 0   "
+            "       GROUP BY s.grpid, pay.idopt               "
+            "      ) as m                                     "
+            " GROUP BY m.grpid");
+
+    // сценарий 1
+    mysql_query(mysql, " DELETE old_pay                          "
+                       " FROM old_pay, bad_stud                  "
+                       " WHERE old_pay.idstud = bad_stud.idstud  "
+                       " AND bad_stud.pay > 0 AND old_pay.pay = 0");
+    // сценарий 2
+    mysql_query(mysql, " DELETE old_pay                                   "
+                       " FROM old_pay, bad_stud, students as s, main_opt  "
+                       " WHERE old_pay.idstud = bad_stud.idstud           "
+                       " AND bad_stud.pay = 0 AND s.id = bad_stud.idstud  "
+                       " AND main_opt.grpid = s.grpid                     "
+                       " AND old_pay.idopt != main_opt.idopt");
+
+
+    mysql_query(mysql, "drop temporary table if exists bad_stud");
+    mysql_query(mysql, "drop temporary table if exists main_opt");
+}
+// расчитаем долг за предыдущий период
+void __fastcall TFormReportBULast2::ProcessPreDolg(void)
+{
+    ProcessPlan(AnsiString(firstyear.ToInt()-1));
 
     // посчитаем долг по каждой оплате и объединим их
     mysql_query(mysql, "drop temporary table if exists old_dolg");
@@ -393,22 +465,14 @@ void __fastcall TFormReportBULast2::ProcessPreDolg(void)
 }
 
 // расчитаем план за текущий период
-void __fastcall TFormReportBULast2::ProcessPlan(void)
+void __fastcall TFormReportBULast2::ProcessCurPlan(void)
 {
-    AnsiString query;
+    ProcessPlan(firstyear);
 
-    // зададим даты для текущего периода 2010-2011
-    query = "SET @date1 = '" + firstyear + "-02-01'";                       // 2010-02-01
-    mysql_query(mysql, query.c_str());
-    query = "SET @date2 = '" + firstyear + "-09-01'";                       // 2010-09-01
-    mysql_query(mysql, query.c_str());
-    query = "SET @date3 = '" + secondyear + "-02-01'";                      // 2011-02-01
-    mysql_query(mysql, query.c_str());
-
-
-    mysql_query(mysql, "drop temporary table if exists plan1");
+    // у студента может быть несколько категорий оплат
+    mysql_query(mysql, "drop temporary table if exists plan");
     mysql_query(mysql,
-        "CREATE TEMPORARY TABLE plan1 "
+        "CREATE TEMPORARY TABLE plan "
         " ( "
         "  id        int(11) NOT NULL AUTO_INCREMENT, "
         "  idstud    int(11) NOT NULL, "
@@ -416,47 +480,17 @@ void __fastcall TFormReportBULast2::ProcessPlan(void)
         "  INDEX (id),     "
         "  INDEX (idstud)  "
         " ) TYPE = HEAP ");
-
-    //# это обычная сентябрьская оплата
-    mysql_query(mysql," INSERT plan1 (idstud, plan)                                           "
-                      " SELECT st.id as idstud, SUM(opts.commoncountmoney)                    "
-                      " FROM students AS st, payoptstest as opts, voc as v                    "
-                      " WHERE st.deleted = 0 AND opts.deleted = 0 AND v.deleted = 0           "
-                      " AND v.vkey = 'grp'  AND st.grpid = v.num AND opts.idgroup = st.grpid  "
-                      " AND opts.datestart=@date2 AND st.cityid != 0                          "
-                      " GROUP BY idstud");
-    //# это февральские предыдущие и последующие
-    mysql_query(mysql," INSERT plan1 (idstud, plan)                                           "
-                      " SELECT st.id as idstud, SUM(opts.commoncountmoney)/2                  "
-                      " FROM students AS st, payoptstest as opts, voc as v                    "
-                      " WHERE st.deleted = 0 AND opts.deleted = 0 AND v.deleted = 0           "
-                      " AND v.vkey = 'grp'  AND st.grpid = v.num AND opts.idgroup = st.grpid  "
-                      " AND (opts.datestart=@date1 OR opts.datestart=@date3) AND st.cityid != 0 "
-                      " GROUP BY idstud");
-
-    // просто на всякий случай еще раз прогруппируем
-    mysql_query(mysql, "drop temporary table if exists plan2");
-    mysql_query(mysql,
-        "CREATE TEMPORARY TABLE plan2 "
-        " ( "
-        "  id        int(11) NOT NULL AUTO_INCREMENT, "
-        "  idstud    int(11) NOT NULL, "
-        "  plan      int(11) NOT NULL, "
-        "  INDEX (id),     "
-        "  INDEX (idstud)  "
-        " ) TYPE = HEAP ");
-     mysql_query(mysql," INSERT plan2 (idstud, plan)   "
-                       " SELECT idstud, plan           "
-                       " FROM plan1                    "
-                       " GROUP BY idstud");
-
+     mysql_query(mysql," INSERT plan (idstud, plan)        "
+                       " SELECT pay.idstud, SUM(pay.plan - 0)  "
+                       " FROM old_pay AS pay               "
+                       " GROUP BY pay.idstud ");
     // перенесем в основную таблицу
-    mysql_query(mysql,  " UPDATE full_table, plan2         "
-                        " SET full_table.plan = plan2.plan "
-                        " WHERE full_table.idstud = plan2.idstud");
+    mysql_query(mysql,  " UPDATE full_table, plan         "
+                        " SET full_table.plan = plan.plan "
+                        " WHERE full_table.idstud = plan.idstud");
 
-    mysql_query(mysql, "drop temporary table if exists plan1");
-    mysql_query(mysql, "drop temporary table if exists plan2");
+    mysql_query(mysql, "drop temporary table if exists plan");
+    mysql_query(mysql, "drop temporary table if exists old_pay");
 }
 
 void __fastcall TFormReportBULast2::ProcessPay(bool is_09)
@@ -520,7 +554,7 @@ void __fastcall TFormReportBULast2::ProcessPay(bool is_09)
     //# сделаеим для них проверку что бы не было отрицательных оплат
     mysql_query(mysql, "UPDATE pay1 SET pay1.pay = 0 WHERE pay1.pay < 0 ");
 
-     //# это февральские предыдущие
+     //# это февральские последующие
     mysql_query(mysql,"INSERT pay1 (idstud, plan, pay)                                              "
           " SELECT s.idstud, s.commoncountmoney/2, SUM(COALESCE(fact.moneypay, 0))                  "
           " FROM (                                                                                  "
@@ -536,7 +570,7 @@ void __fastcall TFormReportBULast2::ProcessPay(bool is_09)
     mysql_query(mysql,"UPDATE pay1 SET pay1.pay = pay1.plan WHERE pay1.pay > pay1.plan ");
 
 
-    // посчитаем долг по каждой оплате и объединим их
+    // может быть несколько оплат
     mysql_query(mysql, "drop temporary table if exists pay2");
     mysql_query(mysql,
         " CREATE TEMPORARY TABLE pay2                 "
@@ -562,7 +596,7 @@ void __fastcall TFormReportBULast2::ProcessPay(bool is_09)
                             " WHERE full_table.idstud = pay2.idstud");
     else
         mysql_query(mysql,  " UPDATE full_table, pay2          "
-                            " SET full_table.pay_09 = pay2.pay "
+                            " SET full_table.pay_12 = pay2.pay "
                             " WHERE full_table.idstud = pay2.idstud");
 
     mysql_query(mysql, "drop temporary table if exists pay1");
