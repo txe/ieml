@@ -18,14 +18,12 @@ BOOL CDictionary::PreCreateWindow(CREATESTRUCT& cs)
 
 	cs.lpszName = (LPCWSTR)"Словарь";
 
-	cs.cx = 600;
-	cs.cy = 600;
-
 	return TRUE;
 }
 
 int CDictionary::OnCreate()
 {
+	SetWindowPos(m_hWnd, NULL, -1, -1, 500, 600, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOZORDER);
 	CenterWindow();
 
 	PBYTE pb; DWORD cb;
@@ -48,6 +46,7 @@ void CDictionary::InitDomElement()
 	_table	= link_element("table");
 	_title	= link_element("title");
 	_num	= link_element("num");
+	_tag	= link_element("tag");
 	_filter = link_element("filter");
 	json::t2v(_filter, "city");
 
@@ -107,7 +106,7 @@ void CDictionary::UpdateView(void)
 		HTMLayoutDetachElement(_table.child(1));
 
 	string_t  query = string_t() +
-		" SELECT id, num, title, vkey "
+		" SELECT id, num, title, vkey, tag "
 		" FROM voc "
 		" WHERE deleted = 0 AND vkey like '" + json::v2t(_filter.get_value()) + "' "
 		" ORDER BY vkey, num, id";
@@ -121,9 +120,10 @@ void CDictionary::UpdateView(void)
 	{
 		buf += "<tr id=" + row["id"]+ ">";
 		buf += string_t() + 
-			"<td>" + row["vkey"] + "</td>"
-			"<td>" + row["num"] + "</td>"
+			"<td>" + row["vkey"]  + "</td>"
+			"<td>" + row["num"]   + "</td>"
 			"<td>" + row["title"] + "</td>"
+			"<td>" + row["tag"]   + "</td>"
 			"</tr>";
 	}
 
@@ -148,11 +148,13 @@ void CDictionary::ShowSelection()
 	{
 		json::t2v(_num, element(find.child(1)).get_text());
 		json::t2v(_title, element(find.child(2)).get_text());
+		json::t2v(_tag, element(find.child(3)).get_text());
 	}
 	else
 	{
 		json::t2v(_num, "0");
 		json::t2v(_title, "");
+		json::t2v(_tag, "");
 	}
 }
 
@@ -223,8 +225,9 @@ void CDictionary::Add(void)
 	
 	string_t title	= json::v2t(_title);
 	string_t num	= GetNextNumForKey(vkey);
+	string_t tag 	= json::v2t(_tag);
 	string_t query	= string_t() + 
-		" INSERT INTO voc(num, vkey, title) VALUES(" + num +", '" + vkey + "', '" + title + "')";
+		" INSERT INTO voc(num, vkey, title, tag) VALUES(" + num +", '" + vkey + "', '" + title + "', '" + tag + "')";
 	theApp.GetCon().Query(query);
 	
 	UpdateView();
@@ -290,8 +293,9 @@ void CDictionary::Save(void)
 
 	string_t num	= json::v2t(_num);
 	string_t title	= json::v2t(_title);
+	string_t tag	= json::v2t(_tag);
 	string_t query	= string_t() + 
-		"UPDATE voc SET title = '" + title + "', num = " + num + " WHERE id = " + id;
+		"UPDATE voc SET title = '" + title + "', num = " + num + ", tag = '" + tag + "' WHERE id = " + id;
 		
 	theApp.GetCon().Query(query);
 	UpdateView();

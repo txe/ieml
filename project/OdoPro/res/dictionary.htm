@@ -67,6 +67,7 @@
             text-overflow:ellipsis;
             white-space:nowrap;
         } 
+        table td:nth-child(4)  { font-weight:bold; text-align:center; width:40px;}
         div
         { 
        //    border:1px solid red;
@@ -89,11 +90,11 @@
 <body>
     <div style="width:*;height:*">
          <table id="table" fixedrows="1" cellspacing="0">
-            <tr><th>Ключ</th><th>Номер</th><th>Название</th></tr>
-            <tr><td>Ключ</td><td>Номер</td><td>Название</td></tr>
-            <tr><td>Ключ</td><td>Номер</td><td>Название</td></tr>
-            <tr><td>Ключ</td><td>Номер</td><td>Название</td></tr>
-            <tr><td>Ключ</td><td>Номер</td><td>Название</td></tr>
+            <tr><th>Ключ</th><th>Номер</th><th>Название</th><th>Тег</th></tr>
+            <tr><td>Ключ</td><td>Номер</td><td>Название</td><td>Тег</td></tr>
+            <tr><td>Ключ</td><td>Номер</td><td>Название</td><td>Тег</td></tr>
+            <tr><td>Ключ</td><td>Номер</td><td>Название</td><td>Тег</td></tr>
+            <tr><td>Ключ</td><td>Номер</td><td>Название</td><td>Тег</td></tr>
          </table>
          <div style="flow:grid;width:100%%;white-space: nowrap;padding-top:4px">
                 <div style="left:1#;top:1#;width:100px"/>
@@ -101,8 +102,11 @@
                 <div style="left:2#;top:1#;right:4#;padding:2px;vertical-align: middle;"><input type="text" id="title" style="width:*" novalue="<нет значения!>"/></div>
                 <div style="left:1#;top:2#;padding:2px;">Номер</div>
                 <div style="left:2#;top:2#;padding:2px;vertical-align: middle"><input type="number" id="num" value="0" size="6" step="1" minvalue="0" maxvalue="12000"/></div>                 
-                <div style="left:1#;top:3#;padding:2px;">Фильтр по ключу</div>
-                <div style="left:2#;top:3#;right:4#;padding:2px;vertical-align: middle">
+ 
+                <div style="left:1#;top:3#;padding:2px;">Таг</div>
+                <div style="left:2#;top:3#;padding:2px;vertical-align: middle"><input type="text" id="tag" style="width:*" maxlength="5" novalue="<нет значения!>"/></div>                 
+                <div style="left:1#;top:4#;padding:2px;">Фильтр по ключу</div>
+                <div style="left:2#;top:4#;right:4#;padding:2px;vertical-align: middle">
                     <select id="filter" style="width:100%%; text-align: center;">
                         <option value="%" selected>все</option>
                         <option value="grp">группы (grp)</option>
@@ -122,6 +126,7 @@
                         <option value="discipclassific">классификация дисциплин (discipclassific)</option>
                         <option value="egediscip">предметы для ЕГЭ (egediscip)</option>
                         <option value="citizenry">гражданство (citizenry)</option>
+                        <option value="direct">направление (direct)</option>
                     </select>
                 </div>
          </div>

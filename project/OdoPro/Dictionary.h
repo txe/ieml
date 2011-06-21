@@ -15,6 +15,7 @@ public:
 	element _table;
 	element _title;
 	element _num;
+	element _tag;
 	element _filter;
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
