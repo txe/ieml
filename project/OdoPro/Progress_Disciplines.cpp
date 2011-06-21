@@ -115,7 +115,7 @@ void CManagDisciplinesDlg::InitDomElement(void)
 	
 	// заполняем списки
 	t::LoadContentFromVocForList(discip_class_, "discipclassific");
-	t::LoadContentFromVocForList(spec_, "spec");
+	t::LoadContentFromVocForList(spec_, "spec", true);
 
 	// присоединяем процедуру, отвлавливающую выбор строки с дисциплинами
 	HTMLayoutAttachEventHandlerEx(discip_table_, ElementEventProcDiscip, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);

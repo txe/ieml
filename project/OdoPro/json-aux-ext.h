@@ -147,7 +147,7 @@ namespace t
 	}
 
 	// загружает в список из таблицы voc согласно спецификатору 
-	inline void LoadContentFromVocForList(htmlayout::dom::element &el, const string_t &vkey)
+	inline void LoadContentFromVocForList(htmlayout::dom::element &el, const string_t &vkey, bool need_tag = false)
 	{
 		htmlayout::dom::element option	= el.find_first("popup");
 		assert(option.is_valid());
@@ -156,7 +156,7 @@ namespace t
 			HTMLayoutDetachElement(el.child(0));
 
 		string_t query = string_t() +
-			" SELECT num , title FROM voc " +
+			" SELECT num , title, tag FROM voc " +
 			" WHERE vkey= '" + vkey + "' AND deleted = 0 " +
 			" ORDER BY title, id";
 		mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
@@ -167,6 +167,12 @@ namespace t
 		while ((row = res.fetch_row()))
 		{
 			string_t title = row["title"];
+			if (need_tag)
+			{
+				string_t tag = row["tag"];
+				if (!tag.empty())
+					title += " (" + tag + ")";
+			}
 			if (title.empty())
 				title = "&nbsp;";
 			buf += "<option value=" + row["num"] + ">" + title + "</option>";

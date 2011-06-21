@@ -54,7 +54,7 @@ void SData::Init(htmlayout::dom::element root)
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "edudocid"),		"edudoc");
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "languageid"),	"language");
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "grpid"),			"grp");
-	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "specid"),		"spec");
+	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "specid"),		"spec", true);
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "eduformid"),		"eduform");
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "dogshifrid"),	"dogshifr");
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "dogfastid"),		"dogfast");
@@ -62,6 +62,7 @@ void SData::Init(htmlayout::dom::element root)
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "cityid"),		"city");
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "sel-egediscip"),	"egediscip");
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "citizenryid"),	"citizenry");
+	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "directid"),	    "direct");
 
 	// подключим изменение города относительно группы
 	HTMLayoutAttachEventHandlerEx(map_elements_["grpid"], ElementEventProcChangedGroup, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
