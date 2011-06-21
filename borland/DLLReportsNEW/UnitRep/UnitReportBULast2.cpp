@@ -195,9 +195,9 @@ void __fastcall TFormReportBULast2::CreateWordDocument(long rows_count)
     macros.TablesCell(1, 2, 7, "Range.Text = \"на 01.09.2010 за 2010/2011\"");
 
     AnsiString text;
-    text += "Ф.И.О,Группа,Долг за предыдущ.,Стоимость,Оплачено,Оплачено,Долг на\n";
-    text += ",, период на,обучения,на 01.09."+firstyear+",на 01.12."+firstyear+",01.09."+firstyear+"\n";
-    text += ",,01.09."+firstyear+","+firstyear+"/"+secondyear+" г.,за "+firstyear+"/"+secondyear+ "г.,за "+firstyear+"/"+secondyear+" г.\n\n";
+    text += "Ф.И.О\tГруппа\tДолг за предыдущ.\tСтоимость\tОплачено\tОплачено\tДолг на\n";
+    text += "\t\t период на\tобучения\tна 01.09."+firstyear+"\tна 01.12."+firstyear+"\t01.09."+firstyear+"\n";
+    text += "\t\t01.09."+firstyear+"\t"+firstyear+"/"+secondyear+" г.\tза "+firstyear+"/"+secondyear+ " г.\tза "+firstyear+"/"+secondyear+" г.\n\n";
 
 
 
@@ -221,25 +221,40 @@ void __fastcall TFormReportBULast2::CreateWordDocument(long rows_count)
         macros.InsertLine("ActiveDocument.Tables.Item(1).Cell("+IntToStr(cur_row)+",6).Range.Text= \"" + AnsiString(row[5]) + "\"");
         macros.InsertLine("ActiveDocument.Tables.Item(1).Cell("+IntToStr(cur_row)+",7).Range.Text= \"" + AnsiString(row[6]) + "\"");
         */
-        text += AnsiString(row[0]) + "," + AnsiString(row[1]) + ",";
-        text += AnsiString(row[2]) + "," + AnsiString(row[3]) + ",";
-        text += AnsiString(row[4]) + "," + AnsiString(row[5]) + ",";
+        text += AnsiString(row[0]) + "\t" + AnsiString(row[1]) + "\t";
+        text += AnsiString(row[2]) + "\t" + AnsiString(row[3]) + "\t";
+        text += AnsiString(row[4]) + "\t" + AnsiString(row[5]) + "\t";
         text += AnsiString(row[6]) + "\n";
         ++cur_row;
 
       }
     mysql_free_result(result);
 
+    mysql_query(mysql, " SELECT SUM(f.pre_dolg), SUM(f.plan), SUM(f.pay_09), SUM(f.pay_12), SUM(f.dolg_09) "
+                       " FROM full_table as f");
+    if (result = mysql_store_result(mysql))
+      if (row = mysql_fetch_row(result))
+      {
+         text += "Итого:\t\t";
+         text += AnsiString(row[0]) + "\t" + AnsiString(row[1]) + "\t";
+         text += AnsiString(row[2]) + "\t" + AnsiString(row[3]) + "\t";
+         text += AnsiString(row[4]) + "\n";
+      }
+    mysql_free_result(result);
+
     macros.EndMacros();
-   // macros.RunMacros();
+    // macros.RunMacros();
 
-   HANDLE  hfile = CreateFile("Account.csv", GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    HANDLE  hfile = CreateFile("Account.prn", GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
-   DWORD dwBytesWritten;
-   WriteFile(hfile, text.c_str(), text.Length(),&dwBytesWritten,NULL);
-   CloseHandle(hfile);
+    DWORD dwBytesWritten;
+    WriteFile(hfile, text.c_str(), text.Length(),&dwBytesWritten,NULL);
+    CloseHandle(hfile);
 
-   Application->MessageBox("Данные по оплате сохранены в Account.csv","Информация",MB_OK|MB_ICONINFORMATION);
+    AnsiString info = "Данные по оплате сохранены в файл 'Account.prn'.\n"
+                      "Файл требуется открыть при помощи MS Excel.\n"
+                      "При открытии запустится мастер импорта, в котором надо нажать 'Готово'.";
+    Application->MessageBox(info.c_str(),"Информация",MB_OK|MB_ICONINFORMATION);
 
 }
 //---------------------------------------------------------------------------
