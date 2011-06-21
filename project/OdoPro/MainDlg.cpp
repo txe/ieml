@@ -58,6 +58,7 @@ int CMainDlg::OnCreate()
 	UpdateGrpList("group-mo", "ÃŒ%");
 	UpdateGrpList("group-mr", "Ã–%");
 	UpdateGrpList("group-u", "ﬁ%");
+	UpdateGrpList("group-ep", "›œ%");
 	UpdateGrpList("group-eun", "›”Õ%");
 	UpdateGrpList("group-pgs", "œ√—%");
 	UpdateGrpList("group-tgv", "“√¬%");
@@ -67,6 +68,7 @@ int CMainDlg::OnCreate()
 		" AND title NOT like 'ÃŒ%'"
 		" AND title NOT like 'Ã–%'"
 		" AND title NOT like 'ﬁ%'"
+		" AND title NOT like '›œ%'"
 		" AND title NOT like '›”Õ%'"
 		" AND title NOT like 'œ√—%'"
 		" AND title NOT like '“√¬%");
