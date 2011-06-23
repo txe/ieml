@@ -44,6 +44,8 @@ public:
 	long int GetSpecIdForStudId(long studid);
 	// управляет исключениями
 	int ExceptionManage(void);
+	// возвращает положение файла программы
+	std::string GetModuleDir();
 private:
 	void UpgradeLocalParam(void);
 };

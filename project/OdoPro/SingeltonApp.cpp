@@ -236,7 +236,7 @@ int SingeltonApp::ExceptionManage(void)
 	return 0;
 }
 
-void SingeltonApp::UpgradeLocalParam(void)
+std::string SingeltonApp::GetModuleDir()
 {
 	char drive[_MAX_DRIVE];
 	char dir[_MAX_DIR];
@@ -247,6 +247,10 @@ void SingeltonApp::UpgradeLocalParam(void)
 	GetModuleFileNameA(NULL, path_buf, sizeof(path_buf)-1);
 	_splitpath(path_buf, drive, dir, fname, ext);
 
-	_setting.path_app_dir = std::string(drive) + dir;
+	return std::string(drive) + dir;
+}
+void SingeltonApp::UpgradeLocalParam(void)
+{
+	_setting.path_app_dir = GetModuleDir();
 	_setting.path_temp_update_dir = _setting.path_app_dir + "{A65DEBAD-22C9-4b32-BEEE-BDBD8CF07BC9}\\";
 }

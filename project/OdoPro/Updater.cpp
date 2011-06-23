@@ -18,7 +18,8 @@ Updater::~Updater(void)
 // проверяет наличие обновления
 bool Updater::start_check_update(void)
 {
-	std::string cmd = "./rsync.exe --dry-run --delete --times --recursive --progress --human-readable \"" +
+
+	std::string cmd = theApp.GetModuleDir() + "rsync.exe --dry-run --delete --times --recursive --progress --human-readable \"" +
 		t::path2rsync(theApp.GetSetting().path_update_dir) + "\" \"" +
 		t::path2rsync(theApp.GetSetting().path_app_dir) + "\"";
 
@@ -35,7 +36,7 @@ bool Updater::start_check_update(void)
 // запускает процесс обновления
 bool Updater::start_update(void)
 {
-	std::string cmd = "./rsync.exe --delete --times --recursive --progress --human-readable "
+	std::string cmd = theApp.GetModuleDir() + "rsync.exe --delete --times --recursive --progress --human-readable "
 		" --compare-dest=\"" + t::path2rsync(theApp.GetSetting().path_app_dir) + "\" \"" + 
 		t::path2rsync(theApp.GetSetting().path_update_dir) + "\" \"" +
 		t::path2rsync(theApp.GetSetting().path_temp_update_dir) + "\"" ;
@@ -53,7 +54,7 @@ bool Updater::start_update(void)
 // запускает процесс обновления  без перезагрузки 
 bool Updater::start_silent_update(void)
 {
-	std::string cmd = "./rsync.exe --delete --times --recursive --progress --human-readable "
+	std::string cmd = theApp.GetModuleDir() + "rsync.exe --delete --times --recursive --progress --human-readable "
 		+ theApp.GetSetting().exclude_silent_update +
 		" \"" + t::path2rsync(theApp.GetSetting().path_update_dir) + "\" \"" +
 		t::path2rsync(theApp.GetSetting().path_app_dir) + "\"";
@@ -202,11 +203,21 @@ DWORD Updater::read_check_update_thread(LPVOID param)
 // закрывает ресурсы
 void Updater::DestroyHandle(void)
 {
-	ResumeThread(_hThread);
-	CloseHandle(_hThread);
-	CloseHandle(_hReadPipe);
-	CloseHandle(_pi.hProcess);
-	CloseHandle(_pi.hThread);
+	if (_hThread)
+	{
+		ResumeThread(_hThread);
+		CloseHandle(_hThread);
+	}
+	if (_hReadPipe)
+		CloseHandle(_hReadPipe);
+	if (_pi.hProcess)
+		CloseHandle(_pi.hProcess);
+	if (_pi.hThread)
+		CloseHandle(_pi.hThread);
+	_hThread     = 0;
+	_hReadPipe   = 0;
+	_pi.hProcess = 0;
+	_pi.hThread  = 0;		
 }
 
 // парсит вывод

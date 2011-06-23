@@ -122,6 +122,16 @@ void UpdateManager::manager_check_update()
 			check_update_panel.start_timer(1);
 			return;
 		}
+		else
+		{
+			check_update_panel.set_style_attribute("visibility", L"visible");
+			check_update_panel.set_text(L"ошибка при поиске обновления");
+			check_update_panel.update(true);
+			status_check = SHOW_MESSAGE;
+			check_update_panel.start_timer(1000*15);// 15 сек
+			return;
+		}
+
 
 	std::deque<bool> info = _updater.GetInfoStatusCheck();
 	if (status_check == RUN_CHECK && info.size() > 0) // если есть результат

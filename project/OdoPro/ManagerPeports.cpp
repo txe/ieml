@@ -39,7 +39,8 @@ void ManagerReports::Init(element menu)
 // загружает библиотеки отчетов
 void ManagerReports::LoadReports(void)
 {
-	if (!(_hinstRepLib = LoadLibrary(L".\\bin\\ReportsDLL.dll")))
+	std::string path = theApp.GetModuleDir() + "bin\\ReportsDLL.dll";
+	if (!(_hinstRepLib = LoadLibraryA(path.c_str())))
 	{
 		assert(FALSE);
 		LOG_ERROR << "не найдено ни одной библиотеки с отчетами (ReportsDLL.dll)";
@@ -117,11 +118,9 @@ BOOL CALLBACK ManagerReports::ElementEventProcMenu(LPVOID tag, HELEMENT he, UINT
 // вызывает отчет
 void ManagerReports::CallReport(string_t id)
 {
-	string_t com_line = string_t() + ".\\bin\\RunReport.exe .\\ReportsDLL.dll " + id + 
+	std::string com_line = theApp.GetModuleDir() + "bin\\RunReport.exe .\\ReportsDLL.dll " + id + 
 		" " + aux::itow(theApp.GetCurrentGroupID()) + " " + aux::itow(theApp.GetCurrentStudentID());
 	
-	
-
 	HANDLE hFile;
 
 	SECURITY_ATTRIBUTES sa;
