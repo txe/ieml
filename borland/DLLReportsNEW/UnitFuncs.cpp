@@ -12,7 +12,7 @@
 EDRegOpts opts;
 MYSQL *mysql=NULL;
 
-AnsiString keys[15]={ "grp",
+AnsiString keys[16]={ "grp",
                       "city",
                       "spec",
                       "specializ",
@@ -26,7 +26,8 @@ AnsiString keys[15]={ "grp",
                       "language",
                       "falseedudocinfo",
                       "shifrspec",
-                      "discipclassific"
+                      "discipclassific",
+                      "direct"
                      };
 
 

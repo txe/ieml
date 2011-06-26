@@ -69,13 +69,15 @@ __published:	// IDE-managed Components
         void __fastcall FormCreate(TObject *Sender);
         void __fastcall FormDestroy(TObject *Sender);
 private:	// User declarations
-        int idstudent;
+        int  idstudent;
+        bool _IsNewType;
 public:		// User declarations
         void SetOfset(double& val);
         __fastcall TFormReportDogovor(TComponent* Owner);
         void __fastcall SetIDStudent(int _IDStudent);
         int __fastcall GetIDStudent(void);
         AnsiString __fastcall GetNumberOfDogovor(void);
+        void IsNewType(bool yes) { _IsNewType = yes; }
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFormReportDogovor *FormReportDogovor;

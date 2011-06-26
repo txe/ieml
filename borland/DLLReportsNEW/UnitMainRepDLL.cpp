@@ -61,9 +61,17 @@ void PreviewReportByIndex(int index, int _IDGroup, int _IDStudent)
       ((TFormReportVedom*)pReportForm)->ToolBtnPreviewClick(pReportForm);
       ((TFormReportVedom*)pReportForm)->Free();
       break;
+    case RQ_DOGOVOR_2:
+      pReportForm=new TFormReportDogovor(Application);
+      ((TFormReportDogovor*)pReportForm)->SetIDStudent(_IDStudent);
+      ((TFormReportDogovor*)pReportForm)->IsNewType(true);
+      ((TFormReportDogovor*)pReportForm)->ToolBtnPreviewClick(pReportForm);
+      ((TFormReportDogovor*)pReportForm)->Free();
+      break;
    case RQ_DOGOVOR:
       pReportForm=new TFormReportDogovor(Application);
       ((TFormReportDogovor*)pReportForm)->SetIDStudent(_IDStudent);
+      ((TFormReportDogovor*)pReportForm)->IsNewType(false);
       ((TFormReportDogovor*)pReportForm)->ToolBtnPreviewClick(pReportForm);
       ((TFormReportDogovor*)pReportForm)->Free();
       break;

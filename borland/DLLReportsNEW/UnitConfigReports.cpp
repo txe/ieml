@@ -3,11 +3,12 @@
 
 #include "UnitConfigReports.h"
 //---------------------------------------------------------------------------
-const int CountOfReports = 30;
+const int CountOfReports = 31;
 
 AnsiString arrTitlesOfReports[CountOfReports] = {
         "Ведомость на группу (Quick)",
-        "Договор (Quick)",
+        "Договор new (Quick)",
+        "Договор old (Quick)",
         "Экзаменационный (зачетный) лист (Quick)",
         "Протокол заседания экз. комиссии - гос. экзамены (Quick)",
         "Справка (Quick)",
@@ -40,7 +41,8 @@ AnsiString arrTitlesOfReports[CountOfReports] = {
 
 AnsiString arrHintsOfReports[CountOfReports] = {
         "Экзаменационная ведомость на группу",
-        "Договор",
+        "Договор для направлений",
+        "Договор для специальностей",
         "Экзаменационный (зачетный) лист",
         "Протокол заседания экзаменационной комиссии (гос. экзамены)",
         "Справка, подтверждающая что студент учится в ВУЗе",

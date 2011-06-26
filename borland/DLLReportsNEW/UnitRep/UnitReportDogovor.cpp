@@ -271,14 +271,16 @@ void __fastcall TFormReportDogovor::ToolBtnPreviewClick(TObject *Sender)
 
     QRLabelFIO1->Caption=ZMySqlQuery->Fields->FieldByNumber(2)->AsString;
     QRLabelFIO2->Caption=ZMySqlQuery->Fields->FieldByNumber(2)->AsString;
-
-    GetListWords(WCGetTitleForKeyNum(SPECS,ZMySqlQuery->Fields->FieldByNumber(4)->AsString.ToInt()),listWords);
+    // специальность - направление
+    AnsiString spec_direct = WCGetTitleForKeyNum(_IsNewType ? DIRECTS : SPECS,ZMySqlQuery->Fields->FieldByNumber(4)->AsString.ToInt());
+    spec_direct += _IsNewType ? " (аккредитованная программа)" : "";
+    GetListWords(spec_direct,listWords);
     QRLabelspec11->Caption=GetStrWithWordsAndDefLenWithDel(listWords,70);
     QRLabelspec12->Caption=GetEndWordsWithDel(listWords);
-
+     // шифр специальности - направления направление
     QRLabelShifrSpec1->Caption=WCGetTitleForKeyNum(SHIFRSPECS,ZMySqlQuery->Fields->FieldByNumber(4)->AsString.ToInt());
     QRLabelShifrSpec2->Caption=WCGetTitleForKeyNum(SHIFRSPECS,ZMySqlQuery->Fields->FieldByNumber(4)->AsString.ToInt());
-
+    // форма обучения
     GetListWords(WCGetTitleForKeyNum(EDUFORMS,ZMySqlQuery->Fields->FieldByNumber(7)->AsString.ToInt()),listWords);
     QRLabelform11->Caption=GetStrWithWordsAndDefLenWithDel(listWords,80);
     QRLabelform12->Caption=GetEndWordsWithDel(listWords);
@@ -294,11 +296,11 @@ void __fastcall TFormReportDogovor::ToolBtnPreviewClick(TObject *Sender)
       QRLabelCountMoney->Caption="";
       QRLabelCountMoneyStr->Caption="";
     }
-
-    GetListWords(WCGetTitleForKeyNum(SPECS,ZMySqlQuery->Fields->FieldByNumber(4)->AsString.ToInt()),listWords);
+    // специальность
+    GetListWords(spec_direct,listWords);
     QRLabelspec21->Caption=GetStrWithWordsAndDefLenWithDel(listWords,70);
     QRLabelspec22->Caption=GetEndWordsWithDel(listWords);
-
+    // форма обучения
     GetListWords(WCGetTitleForKeyNum(EDUFORMS,ZMySqlQuery->Fields->FieldByNumber(7)->AsString.ToInt()),listWords);
     QRLabelform21->Caption=GetStrWithWordsAndDefLenWithDel(listWords,80);
     QRLabelform22->Caption=GetEndWordsWithDel(listWords);
@@ -352,8 +354,9 @@ AnsiString __fastcall TFormReportDogovor::GetNumberOfDogovor(void)
 //---------------------------------------------------------------------------
 void __fastcall TFormReportDogovor::InitReportQuery(void)
 {
+  AnsiString spec_direct_id = _IsNewType ? "directid" : "specid";
   ZMySqlQuery->SQL->Clear();
-  ZMySqlQuery->SQL->Add("select bdate,concat(secondname,\' \',firstname,\' \',thirdname) as fullname,dogyearid,specid,addr,liveaddr,eduformid,passseries,passnum,passdate,passplace,phones,grpid,secondname,firstname,thirdname,dogshifrid,dogfastid,dognum from "+opts.DBStudTable+" where deleted=0 and id="+ToStr(AnsiString(idstudent)));
+  ZMySqlQuery->SQL->Add("select bdate,concat(secondname,\' \',firstname,\' \',thirdname) as fullname,dogyearid," + spec_direct_id + ",addr,liveaddr,eduformid,passseries,passnum,passdate,passplace,phones,grpid,secondname,firstname,thirdname,dogshifrid,dogfastid,dognum from "+opts.DBStudTable+" where deleted=0 and id="+ToStr(AnsiString(idstudent)));
   ZMySqlQuery->Active=true;
 }
 //---------------------------------------------------------------------------

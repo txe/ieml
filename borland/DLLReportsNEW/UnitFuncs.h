@@ -22,7 +22,8 @@ enum TTypeKeyVoc{
                   LANGUAGES=11,
                   FALSEEDUDOCINFOS=12,
                   SHIFRSPECS=13,
-                  DISCIPCLASSIFIC=14
+                  DISCIPCLASSIFIC=14,
+                  DIRECTS=15
                 };
 
 AnsiString ToStr(AnsiString str);
