@@ -228,10 +228,8 @@ void __fastcall TFormReportDogovor::ToolBtnPreviewClick(TObject *Sender)
 {
   InitReportQuery();
 
-  int delta = opts.GetDeltaDogovor().ToInt();
-
-  QuickRep1->Page->TopMargin = QuickRep1->Page->TopMargin - delta;
-  QuickRep2->Page->TopMargin = QuickRep2->Page->TopMargin - delta;
+  QuickRep1->Page->TopMargin = QuickRep1->Page->TopMargin - opts.GetDeltaDogovor(true).ToInt();
+  QuickRep2->Page->TopMargin = QuickRep2->Page->TopMargin - opts.GetDeltaDogovor(false).ToInt();
 
   if (ZMySqlQuery->RecordCount)
   {
@@ -273,7 +271,6 @@ void __fastcall TFormReportDogovor::ToolBtnPreviewClick(TObject *Sender)
     QRLabelFIO2->Caption=ZMySqlQuery->Fields->FieldByNumber(2)->AsString;
     // специальность - направление
     AnsiString spec_direct = WCGetTitleForKeyNum(_IsNewType ? DIRECTS : SPECS,ZMySqlQuery->Fields->FieldByNumber(4)->AsString.ToInt());
-    spec_direct += _IsNewType ? " (аккредитованная программа)" : "";
     GetListWords(spec_direct,listWords);
     QRLabelspec11->Caption=GetStrWithWordsAndDefLenWithDel(listWords,70);
     QRLabelspec12->Caption=GetEndWordsWithDel(listWords);

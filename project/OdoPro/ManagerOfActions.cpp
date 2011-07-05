@@ -100,7 +100,8 @@ void ManagerOfActions::Init( HELEMENT menu )
 	_menu = menu;
 	// обработчик для меню
 	HTMLayoutAttachEventHandlerEx(_menu, ElementEventProcMenu, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
-	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_menu, "vert-delta"), ElementEventProcDelta, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_menu, "vert-delta-1"), ElementEventProcDelta, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_menu, "vert-delta-2"), ElementEventProcDelta, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 	LoadDelta();
 }
 
@@ -122,7 +123,8 @@ void ManagerOfActions::LoadDelta()
 	reg.SetRootKey(HKEY_CURRENT_USER);
 	reg.SetKey("ODOBase\\ODOBase\\OTHER");
 	
-	json::t2v(LiteWnd::link_element(_menu, "vert-delta"), reg.ReadString("deltadogovor", "0"));
+	json::t2v(LiteWnd::link_element(_menu, "vert-delta-1"), reg.ReadString("deltadogovor_1", "0"));
+	json::t2v(LiteWnd::link_element(_menu, "vert-delta-2"), reg.ReadString("deltadogovor_2", "0"));
 }
 
 void ManagerOfActions::SaveDelta()
@@ -131,5 +133,6 @@ void ManagerOfActions::SaveDelta()
 	reg.SetRootKey(HKEY_CURRENT_USER);
 	reg.SetKey("ODOBase\\ODOBase\\OTHER");
 
-	reg.WriteString("deltadogovor", json::v2t(LiteWnd::link_element(_menu, "vert-delta")).c_str());
+	reg.WriteString("deltadogovor_1", json::v2t(LiteWnd::link_element(_menu, "vert-delta-1")).c_str());
+	reg.WriteString("deltadogovor_2", json::v2t(LiteWnd::link_element(_menu, "vert-delta-2")).c_str());
 }

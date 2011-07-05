@@ -67,7 +67,7 @@ class EDRegOpts: public EDOpts
      virtual AnsiString GetLibraryName(int num);
      virtual void SetLibraryName(int num,const AnsiString& libname);
 
-     AnsiString GetDeltaDogovor();
+     AnsiString GetDeltaDogovor(bool first);
      void SetDeltaDogovor(AnsiString& param);
 
 };
@@ -390,13 +390,13 @@ void EDRegOpts::SetDateQualif(const AnsiString& Str)
   delete MyRegIniFile;
 }
 
-AnsiString EDRegOpts::GetDeltaDogovor(void)
+AnsiString EDRegOpts::GetDeltaDogovor(bool first)
 {
   AnsiString Str;
   MyRegIniFile=new TRegIniFile(DefPath);
   MyRegIniFile->RootKey=MyRootKey;
   MyRegIniFile->OpenKey(DefPath,false);
-  Str=MyRegIniFile->ReadString(DefKeyOTHER,"deltadogovor","0");
+  Str=MyRegIniFile->ReadString(DefKeyOTHER, first ? "deltadogovor_1" : "deltadogovor_2","0");
   delete MyRegIniFile;
   return Str;
 }

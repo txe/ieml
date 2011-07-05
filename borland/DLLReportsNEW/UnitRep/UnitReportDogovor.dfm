@@ -1,10 +1,9 @@
 object FormReportDogovor: TFormReportDogovor
-  Left = 250
-  Top = 64
-  Width = 696
-  Height = 480
-  HorzScrollBar.Position = 521
-  VertScrollBar.Position = 435
+  Left = 364
+  Top = 186
+  Width = 1242
+  Height = 757
+  VertScrollBar.Position = 56
   Caption = #1044#1086#1075#1086#1074#1086#1088
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -21,9 +20,9 @@ object FormReportDogovor: TFormReportDogovor
   PixelsPerInch = 96
   TextHeight = 13
   object ToolBar: TToolBar
-    Left = -521
-    Top = -435
-    Width = 1195
+    Left = 0
+    Top = -56
+    Width = 1209
     Height = 29
     Caption = 'ToolBar'
     Images = ImageList
@@ -44,8 +43,8 @@ object FormReportDogovor: TFormReportDogovor
     end
   end
   object QuickRep1: TQuickRep
-    Left = -521
-    Top = -407
+    Left = 0
+    Top = -28
     Width = 595
     Height = 842
     Frame.Color = clBlack
@@ -108,7 +107,7 @@ object FormReportDogovor: TFormReportDogovor
       BandType = rbTitle
       object QRLabelspec11: TQRLabel
         Left = 88
-        Top = 179
+        Top = 178
         Width = 77
         Height = 17
         Frame.Color = clBlack
@@ -119,7 +118,7 @@ object FormReportDogovor: TFormReportDogovor
         Size.Values = (
           59.9722222222222
           310.444444444444
-          631.472222222222
+          627.944444444444
           271.638888888889)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -294,7 +293,7 @@ object FormReportDogovor: TFormReportDogovor
       end
       object QRLabelShifrSpec1: TQRLabel
         Left = 32
-        Top = 179
+        Top = 178
         Width = 33
         Height = 17
         Frame.Color = clBlack
@@ -305,7 +304,7 @@ object FormReportDogovor: TFormReportDogovor
         Size.Values = (
           59.9722222222222
           112.888888888889
-          631.472222222222
+          627.944444444444
           116.416666666667)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -479,7 +478,7 @@ object FormReportDogovor: TFormReportDogovor
         FontSize = 10
       end
       object QRLabelCountMoney: TQRLabel
-        Left = 431
+        Left = 419
         Top = 246
         Width = 30
         Height = 17
@@ -490,7 +489,7 @@ object FormReportDogovor: TFormReportDogovor
         Frame.DrawRight = False
         Size.Values = (
           59.9722222222222
-          1520.47222222222
+          1478.13888888889
           867.833333333333
           105.833333333333)
         Alignment = taCenter
@@ -511,7 +510,7 @@ object FormReportDogovor: TFormReportDogovor
       end
       object QRLabelCountMoneyStr: TQRLabel
         Left = 46
-        Top = 264
+        Top = 263
         Width = 68
         Height = 17
         Frame.Color = clBlack
@@ -522,7 +521,7 @@ object FormReportDogovor: TFormReportDogovor
         Size.Values = (
           59.9722222222222
           162.277777777778
-          931.333333333333
+          927.805555555556
           239.888888888889)
         Alignment = taCenter
         AlignToBand = False
@@ -542,7 +541,7 @@ object FormReportDogovor: TFormReportDogovor
       end
       object QRLabeldognum: TQRLabel
         Left = 224
-        Top = 0
+        Top = 1
         Width = 129
         Height = 13
         Frame.Color = clBlack
@@ -553,7 +552,7 @@ object FormReportDogovor: TFormReportDogovor
         Size.Values = (
           45.8611111111111
           790.222222222222
-          0
+          3.52777777777778
           455.083333333333)
         Alignment = taCenter
         AlignToBand = False
@@ -568,8 +567,8 @@ object FormReportDogovor: TFormReportDogovor
     end
   end
   object QuickRep2: TQuickRep
-    Left = 79
-    Top = -407
+    Left = 600
+    Top = -28
     Width = 595
     Height = 842
     Frame.Color = clBlack
@@ -631,7 +630,7 @@ object FormReportDogovor: TFormReportDogovor
         1947.33333333333)
       BandType = rbTitle
       object QRLabelbdateDay: TQRLabel
-        Left = 20
+        Left = 34
         Top = 408
         Width = 15
         Height = 14
@@ -642,7 +641,7 @@ object FormReportDogovor: TFormReportDogovor
         Frame.DrawRight = False
         Size.Values = (
           49.3888888888889
-          70.5555555555556
+          119.944444444444
           1439.33333333333
           52.9166666666667)
         Alignment = taLeftJustify
@@ -755,7 +754,7 @@ object FormReportDogovor: TFormReportDogovor
         FontSize = 11
       end
       object QRLabelbdateMounthYear: TQRLabel
-        Left = 72
+        Left = 83
         Top = 408
         Width = 99
         Height = 14
@@ -766,7 +765,7 @@ object FormReportDogovor: TFormReportDogovor
         Frame.DrawRight = False
         Size.Values = (
           49.3888888888889
-          254
+          292.805555555556
           1439.33333333333
           349.25)
         Alignment = taLeftJustify
@@ -786,7 +785,7 @@ object FormReportDogovor: TFormReportDogovor
         FontSize = 10
       end
       object QRLabelphones: TQRLabel
-        Left = 142
+        Left = 57
         Top = 529
         Width = 45
         Height = 14
@@ -797,7 +796,7 @@ object FormReportDogovor: TFormReportDogovor
         Frame.DrawRight = False
         Size.Values = (
           49.3888888888889
-          500.944444444444
+          201.083333333333
           1866.19444444444
           158.75)
         Alignment = taCenter
@@ -848,7 +847,7 @@ object FormReportDogovor: TFormReportDogovor
         FontSize = 10
       end
       object QRLabelpassnumber: TQRLabel
-        Left = 373
+        Left = 366
         Top = 408
         Width = 28
         Height = 14
@@ -859,7 +858,7 @@ object FormReportDogovor: TFormReportDogovor
         Frame.DrawRight = False
         Size.Values = (
           49.3888888888889
-          1315.86111111111
+          1291.16666666667
           1439.33333333333
           98.7777777777778)
         Alignment = taLeftJustify
@@ -879,7 +878,7 @@ object FormReportDogovor: TFormReportDogovor
         FontSize = 10
       end
       object QRLabelpassdateDay: TQRLabel
-        Left = 54
+        Left = 69
         Top = 436
         Width = 14
         Height = 14
@@ -890,7 +889,7 @@ object FormReportDogovor: TFormReportDogovor
         Frame.DrawRight = False
         Size.Values = (
           49.3888888888889
-          190.5
+          243.416666666667
           1538.11111111111
           49.3888888888889)
         Alignment = taLeftJustify
@@ -910,7 +909,7 @@ object FormReportDogovor: TFormReportDogovor
         FontSize = 10
       end
       object QRLabelpassdateMounthYear: TQRLabel
-        Left = 104
+        Left = 109
         Top = 436
         Width = 86
         Height = 14
@@ -921,7 +920,7 @@ object FormReportDogovor: TFormReportDogovor
         Frame.DrawRight = False
         Size.Values = (
           49.3888888888889
-          366.888888888889
+          384.527777777778
           1538.11111111111
           303.388888888889)
         Alignment = taLeftJustify
@@ -941,7 +940,7 @@ object FormReportDogovor: TFormReportDogovor
         FontSize = 10
       end
       object QRLabelpassplace1: TQRLabel
-        Left = 197
+        Left = 206
         Top = 436
         Width = 72
         Height = 14
@@ -952,7 +951,7 @@ object FormReportDogovor: TFormReportDogovor
         Frame.DrawRight = False
         Size.Values = (
           49.3888888888889
-          694.972222222222
+          726.722222222222
           1538.11111111111
           254)
         Alignment = taLeftJustify
@@ -972,7 +971,7 @@ object FormReportDogovor: TFormReportDogovor
         FontSize = 10
       end
       object QRLabelIOFam: TQRLabel
-        Left = 388
+        Left = 397
         Top = 560
         Width = 56
         Height = 17
@@ -983,7 +982,7 @@ object FormReportDogovor: TFormReportDogovor
         Frame.DrawRight = False
         Size.Values = (
           59.9722222222222
-          1368.77777777778
+          1400.52777777778
           1975.55555555556
           197.555555555556)
         Alignment = taLeftJustify
@@ -1045,12 +1044,12 @@ object FormReportDogovor: TFormReportDogovor
     PrinterSettings.Orientation = poLandscape
     PrinterSettings.PaperSize = A5
     ReportTitle = #1051#1080#1095#1085#1072#1103' '#1082#1072#1088#1090#1086#1095#1082#1072' '#1089#1090#1091#1076#1077#1085#1090#1072
-    Left = 200
-    Top = 1
+    Left = 213
+    Top = 33
   end
   object ImageList: TImageList
-    Left = 64
-    Top = 1
+    Left = 149
+    Top = 33
     Bitmap = {
       494C010102000400040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
@@ -1212,15 +1211,15 @@ object FormReportDogovor: TFormReportDogovor
     UpdateMode = umUpdateChanged
     WhereMode = wmWhereKeyOnly
     Options = [doCalcDefaults]
-    Left = 448
-    Top = 48
+    Left = 269
+    Top = 24
   end
   object ZMySqlQueryOpts: TZReadOnlyQuery
     Connection = ZMySqlDatabase
     ParamCheck = True
     Params = <>
     Options = [doCalcDefaults]
-    Left = 440
-    Top = 104
+    Left = 333
+    Top = 24
   end
 end
