@@ -57,9 +57,10 @@ int CMainDlg::OnCreate()
 	UpdateGrpList("group-bu", "БУ%");
 	UpdateGrpList("group-mo", "МО%");
 	UpdateGrpList("group-mr", "МР%");
-	UpdateGrpList("group-u", "Ю%");
+	UpdateGrpList("group-u",  "Ю%");
 	UpdateGrpList("group-ep", "ЭП%");
 	UpdateGrpList("group-eun", "ЭУН%");
+	UpdateGrpList("group-eun", "ПМ%");
 	UpdateGrpList("group-pgs", "ПГС%");
 	UpdateGrpList("group-tgv", "ТГВ%");
 	// маленький грязный хак
@@ -70,6 +71,7 @@ int CMainDlg::OnCreate()
 		" AND title NOT like 'Ю%'"
 		" AND title NOT like 'ЭП%'"
 		" AND title NOT like 'ЭУН%'"
+		" AND title NOT like 'ПМ%'"
 		" AND title NOT like 'ПГС%'"
 		" AND title NOT like 'ТГВ%");
 	//  заполнем значениями статус бар	
