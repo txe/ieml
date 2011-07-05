@@ -59,8 +59,8 @@ int CMainDlg::OnCreate()
 	UpdateGrpList("group-mr", "МР%");
 	UpdateGrpList("group-u",  "Ю%");
 	UpdateGrpList("group-ep", "ЭП%");
-	UpdateGrpList("group-eun", "ЭУН%");
-	UpdateGrpList("group-eun", "ПМ%");
+	UpdateGrpList("group-eun","ЭУН%");
+	UpdateGrpList("group-pm", "ПМ%");
 	UpdateGrpList("group-pgs", "ПГС%");
 	UpdateGrpList("group-tgv", "ТГВ%");
 	// маленький грязный хак
