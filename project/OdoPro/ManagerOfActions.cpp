@@ -3,6 +3,7 @@
 
 #include "ActionChangeSem.h"
 #include "ActionChangeTypeEstimation.h"
+#include "ActionBuhReport.h"
 #include "StatisticDlg.h"
 #include "json-aux-ext.h"
 #include "LiteWnd.h"
@@ -30,33 +31,39 @@ BOOL CALLBACK ManagerOfActions::ElementEventProcMenu( LPVOID tag, HELEMENT he, U
 
 	if (aux::wcseq(id, L"show-statistic"))
 	{
-		CStatisticDlg dlg;
+		CStatisticDlg dlg(main->_parent);
 		dlg.DoModal();
 		return TRUE;
 	}
 	if (aux::wcseq(id, L"change-plan-sem"))
 	{
-		CActionChangeSem dlg;
+		CActionChangeSem dlg(main->_parent);
 		dlg.SetTypeSem(CActionChangeSem::PLAN_SEM);
 		dlg.DoModal();
 		return TRUE;
 	}
 	if (aux::wcseq(id, L"change-graph-sem"))
 	{
-		CActionChangeSem dlg;
+		CActionChangeSem dlg(main->_parent);
 		dlg.SetTypeSem(CActionChangeSem::GRAPH_SEM);
 		dlg.DoModal();
 		return TRUE;
 	}
 	if (aux::wcseq(id, L"change-estim"))
 	{
-		CActionChangeTypeEstimation dlg;
+		CActionChangeTypeEstimation dlg(main->_parent);
 		dlg.DoModal();
 		return TRUE;
 	}
 	if (aux::wcseq(id, L"load-fio"))
 	{
 		main->FioToClipBoard();
+		return TRUE;
+	}
+	if (aux::wcseq(id, L"buh-report"))
+	{
+		CActionBuhReport dlg(main->_parent);
+		dlg.DoModal();
 		return TRUE;
 	}
 	return FALSE;
@@ -95,8 +102,9 @@ void ManagerOfActions::FioToClipBoard()
 	CloseClipboard();
 }
 
-void ManagerOfActions::Init( HELEMENT menu )
+void ManagerOfActions::Init(LiteWnd* parent, HELEMENT menu)
 {
+	_parent = parent;
 	_menu = menu;
 	// обработчик для меню
 	HTMLayoutAttachEventHandlerEx(_menu, ElementEventProcMenu, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);

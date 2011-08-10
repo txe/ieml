@@ -2,6 +2,7 @@
 
 #include <htmlayout.h>
 #include "string_t.h"
+#include "LiteWnd.h"
 
 using namespace htmlayout::dom;
 
@@ -10,11 +11,14 @@ class ManagerOfActions
 public:
 	ManagerOfActions(void);
 	~ManagerOfActions(void);
+
 private:
 	element		_menu;
+	LiteWnd*	_parent;
+
 public:
 	// инициализирует
-	void Init(HELEMENT menu);
+	void Init(LiteWnd* parent, HELEMENT menu);
 private:
 	// обрабатывает меню
 	static BOOL CALLBACK ElementEventProcMenu(LPVOID tag, HELEMENT he, UINT evtg, LPVOID prms);

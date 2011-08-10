@@ -82,7 +82,7 @@ int CMainDlg::OnCreate()
 	SetStatusBar(SB_BUILD,  string_t(__DATE__) + "/" + string_t(__TIME__));
 	// загружаем отчеты
 	manag_rep_.Init(link_element("menu-bar"));
-	manag_actions_.Init(link_element("menu-bar"));
+	manag_actions_.Init(this, link_element("menu-bar"));
 	theApp.GetUpdater().Init(m_hWnd);
 	//  обновляем таблицу студентов
 	theApp.SetCurrentGroupID(52);

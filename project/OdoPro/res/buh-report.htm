@@ -1,0 +1,132 @@
+<html>
+<head>
+    <style>
+	    /* настройки боковой панели со списком групп */@import url(group-panel.css);
+        /* общие настройки*/
+        html
+        {
+            //background-color: #C4C2C3;
+            behavior: actions accesskeys;
+        }
+        body
+        {
+            margin: 5px;
+            overflow: hidden;
+        }
+		button[type="checkbox"]
+		{ 
+			text-decoration:none;
+		}
+		span
+        { 
+        	border:1px solid red;
+        }
+	</style>
+</head>
+<body>
+	<fieldset>
+		<legend style="color: black">Объем выборки</legend>
+		<div style="padding: 3px; padding-left: 15px">
+			<div><button id="o-all" type="radio" name="o" checked>По институту</button></div>
+			<div><button id="o-spec" type="radio" name="o">По специальностям (0)</button></div>
+			<div><button id="o-grp" type="radio" name="o">По группам (0)</button></div>
+		</div>
+	</fieldset>  
+	<fieldset>
+		<legend style="color: black">Отобразить поля</legend>
+		<div style="padding: 3px; padding-left: 15px">
+			<div><button id="field-grp" type="checkbox" checked>Группа</button></div>
+			<div><button id="field-fio" type="checkbox" checked>Ф.И.О.</button></div>
+			<div><button id="field-pas" type="checkbox">Паспортные данные</button></div>
+		</div>
+	</fieldset>  
+	<fieldset>
+		<legend style="color: black">Оплата</legend>
+		<div style="padding: 3px; padding-left: 15px">
+			<div><button type="radio"  id="pay-radio" name="pay" checked>Выбор учебного года</button></div>
+			<div id="year-div" style="margin-left: 20px;">
+				<select id="pay-year-1" style="width:50px; text-align: center;">
+					<option value="2005">2005</option>
+					<option value="2006">2006</option>
+					<option value="2007">2007</option>
+					<option value="2008">2008</option>
+					<option value="2009">2009</option>
+					<option value="2010" selected>2010</option>
+					<option value="2011">2011</option>
+					<option value="2012">2012</option>
+					<option value="2013">2013</option>
+					<option value="2014">2014</option>
+					<option value="2015">2015</option>
+					<option value="2016">2016</option>
+					<option value="2017">2017</option>
+				</select>
+				-- <select id=pay-year-2" style="width:50px; text-align: center;">
+					<option value="2005">2005</option>
+					<option value="2006">2006</option>
+					<option value="2007">2007</option>
+					<option value="2008">2008</option>
+					<option value="2009">2009</option>
+					<option value="2010">2010</option>
+					<option value="2011" selected>2011</option>
+					<option value="2012">2012</option>
+					<option value="2013">2013</option>
+					<option value="2014">2014</option>
+					<option value="2015">2015</option>
+					<option value="2016">2016</option>
+					<option value="2017">2017</option>
+				</select>	
+			</div>
+			<div><button type="radio" id="cat-radio"  name="pay">Выбор категории оплаты</button></div>
+			<div id="cat-div" style="margin-left: 20px;" disabled>
+				<select id="cat-month-1" style="width:50px; text-align: center;">
+					<option value="0" selected>сент.</option>
+					<option value="1" selected>февр.</option>
+				</select>
+				<select id="cat-year-1" style="width:50px; text-align: center;">
+					<option value="2005">2005</option>
+					<option value="2006">2006</option>
+					<option value="2007">2007</option>
+					<option value="2008">2008</option>
+					<option value="2009">2009</option>
+					<option value="2010" selected>2010</option>
+					<option value="2011">2011</option>
+					<option value="2012">2012</option>
+					<option value="2013">2013</option>
+					<option value="2014">2014</option>
+					<option value="2015">2015</option>
+					<option value="2016">2016</option>
+					<option value="2017">2017</option>
+				</select>
+				-- <select id="cat-month-2" style="width:50px; text-align: center;">
+					<option value="0" selected>сент.</option>
+					<option value="1" selected>февр.</option>
+				</select>
+				<select id="cat-year-2" style="width:50px; text-align: center;">
+					<option value="2005">2005</option>
+					<option value="2006">2006</option>
+					<option value="2007">2007</option>
+					<option value="2008">2008</option>
+					<option value="2009">2009</option>
+					<option value="2010">2010</option>
+					<option value="2011" selected>2011</option>
+					<option value="2012">2012</option>
+					<option value="2013">2013</option>
+					<option value="2014">2014</option>
+					<option value="2015">2015</option>
+					<option value="2016">2016</option>
+					<option value="2017">2017</option>
+				</select>	
+			</div>
+			<div><button id="date-box" type="checkbox" action="copy-state: disabled, [lock-d1], !checked, #date-box">Выбор даты, по состоянию на которую нужен отчет</button></div>
+			<div disabled style="margin-left: 20px;" lock-d1>
+				<input type="date" id="date-1" class="my">
+				-- <input type="date" id="date-2" class="my">			
+			</div>
+		</div>
+	</fieldset>  
+	<div align="right" style="padding-top: 3px; padding-left: 15px">
+		<button id="bt-report">Отчет</button>
+        <button id="bt-close">Закрыть</button>
+	</div>
+</body>
+</html>
