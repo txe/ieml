@@ -190,8 +190,9 @@ void __fastcall TFormReportCharacteristic::CreateWordDocument(void)
     macros.SelectionParagraphFormat("Alignment=wdAlignParagraphCenter");
     macros.SelectionFont("Bold=false");
     macros.SelectionFont("Size=12");
-    macros.SelectionText("Федеральное агентство по образованию\n");
-    macros.SelectionText("Государственное образовательное учреждение высшего профессионального образования\n");
+    macros.SelectionText("Минобрнауки России\n");
+    macros.SelectionText("Федеральное государственное бюджетное образовательное учреждение\n");
+    macros.SelectionText("высшего профессионального образования\n");
     macros.SelectionText("\"\"Нижегородский государственный архитектурно-строительный университет\"\" (ННГАСУ)\n\n");
     macros.InsertLine("Selection.MoveUp Unit:=wdLine, Count:=2");
     macros.SelectionParagraphFormat("Borders.Item(wdBorderBottom).LineStyle = wdLineStyleSingle");
