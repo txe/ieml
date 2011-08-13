@@ -221,7 +221,7 @@ void __fastcall TFormReportAkadSprav::CreateWordDocument(void)
   AnsiString MiscS = "приведены в продолжении приложения к диплому";
   AnsiString PracticaS, ItogGosEkzS;
   AnsiString VipQualificWorkS, ContVIP;
-  AnsiString CityS = "г. Нижний Новгород";
+  AnsiString CityS = "Нижний Новгород";
   // изменил -------------------------------------------------------------
   AnsiString NumDiplomS, RegNumS, DataVidachiS, DataQualificS;
 
@@ -240,12 +240,12 @@ void __fastcall TFormReportAkadSprav::CreateWordDocument(void)
   int NNGASU_NAME_IN = 3;
   try
   {
-    // старое наименование < 2002-6-14
-    if (InYear.ToInt() < 2002 || (InYear.ToInt() == 2002 && (InMonth.ToInt() < 6 || (InMonth.ToInt() == 6 && InDay.ToInt() < 14))))
-        NNGASU_NAME_IN = 1;
-    else // следующее наименование  < 2011-07-08
-        if (InYear.ToInt() < 2011 || (InYear.ToInt() == 2011 && (InMonth.ToInt() < 7 || (InMonth.ToInt() == 7 && InDay.ToInt() < 8))))
-            NNGASU_NAME_IN = 2;
+//    // старое наименование < 2002-6-14
+//    if (InYear.ToInt() < 2002 || (InYear.ToInt() == 2002 && (InMonth.ToInt() < 6 || (InMonth.ToInt() == 6 && InDay.ToInt() < 14))))
+//        NNGASU_NAME_IN = 1;
+//    else // следующее наименование  < 2011-07-08
+    if (InYear.ToInt() < 2011 || (InYear.ToInt() == 2011 && (InMonth.ToInt() < 7 || (InMonth.ToInt() == 7 && InDay.ToInt() < 8))))
+      NNGASU_NAME_IN = 2;
   }
   catch (...)
   {
@@ -253,6 +253,7 @@ void __fastcall TFormReportAkadSprav::CreateWordDocument(void)
         InMonth = "0";
         InDay   = "0";
   }
+/*
   int NNGASU_NAME_OUT = 3;
   try
   {
@@ -266,176 +267,38 @@ void __fastcall TFormReportAkadSprav::CreateWordDocument(void)
         OutMonth = "0";
         OutDay   = "0";
   }
-
+  */
 
   AnsiString InS  = " году в федеральное государственное бюджетное образовательное учреждение высшего профессионального образования \"\"Нижегородский государственный архитектурно-строительный университет\"\"\n(заочная форма)";
   AnsiString OutS = " году в федеральном государственном бюджетном образовательном учреждении высшего профессионального образования \"\"Нижегородский государственный архитектурно-строительный университет\"\"\n(заочная форма)";
-  AnsiString VUZS = "Федеральное государственное\nбюджетное образовательное\nучреждение высшего\nпрофессионального образования\n\"\"Нижегородский\nгосударственный\nархитектурно-строительный\nуниверситет\"\"";
+  AnsiString VUZS = "Федеральное государственное\nбюджетное образовательное\nучреждение высшего\nпрофессионального образования\n\"\"Нижегородский государственный\nархитектурно-строительный\nуниверситет\"\"";
   AnsiString Comment1 = "";
   AnsiString Comment2 = "Образовательная программа освоена по сокращенной + ускоренной программе.";
 
   if (NNGASU_NAME_IN == 2)
-    InS = " году в государственное образовательное учреждение высшего профессионального образования \"\"Нижегородский государственный архитектурно-строительный университет\"\"\n(заочная форма)";
-  else if (NNGASU_NAME_IN == 1)
-    InS = " году в государственное образовательное учреждение\n\"\"Нижегородский государственный архитектурно-строительный университет\"\"\n(заочная форма)";
-
-  if (NNGASU_NAME_OUT == 2)
   {
-    OutS = " году в государственном образовательном учреждении высшего профессионального образования \"\"Нижегородский государственный архитектурно-строительный университет\"\"\n(заочная форма)";
-    VUZS = "Государственное\nобразовательное учреждение\nвысшего профессионального\nобразования \"\"Нижегородский\nгосударственный\nархитектурно-строительный\nуниверситет\"\"";
+    InS = " году в государственное образовательное учреждение высшего профессионального образования \"\"Нижегородский государственный архитектурно-строительный университет\"\"\n(заочная форма)";
+    Comment1 = "Государственное образовательное учреждение высшего профессионального образования \"\"Нижегородский государственный архитектурно-строительный университет\"\" в 2011 году приказом Минобрнауки России № 1763 переименовано в федеральное государственное бюджетное образовательное учреждение высшего профессионального образования \"\"Нижегородский государственный архитектурно-строительный университет\"\".";
   }
 
-  if (NNGASU_NAME_IN == 2 && NNGASU_NAME_OUT == 3)
-    Comment1 = "Государственное образовательное учреждение высшего профессионального образования \"\"Нижегородский государственный архитектурно-строительный университет\"\" в 2011 году приказом Минобрнауки России № 1763 переименовано в федеральное государственное бюджетное образовательное учреждение высшего профессионального образования \"\"Нижегородский государственный архитектурно-строительный университет\"\".";
-  else if (NNGASU_NAME_IN == 1)
-    Comment1 = "Государственное образовательное учреждение \"\"Нижегородский государственный архитектурно-строительный университет\"\" изменило свое наименование на государственное образовательное учреждение высшего профессионального образования \"\"Нижегородский государственный архитектурно-строительный университет\"\" 14 июня 2002 года.";
+//  if (NNGASU_NAME_IN == 2)
+//    InS = " году в государственное образовательное учреждение высшего профессионального образования \"\"Нижегородский государственный архитектурно-строительный университет\"\"\n(заочная форма)";
+//  else if (NNGASU_NAME_IN == 1)
+//    InS = " году в государственное образовательное учреждение\n\"\"Нижегородский государственный архитектурно-строительный университет\"\"\n(заочная форма)";
+
+//  if (NNGASU_NAME_OUT == 2)
+//  {
+//    OutS = " году в государственном образовательном учреждении высшего профессионального образования \"\"Нижегородский государственный архитектурно-строительный университет\"\"\n(заочная форма)";
+//    VUZS = "Государственное\nобразовательное учреждение\nвысшего профессионального\nобразования \"\"Нижегородский\nгосударственный\nархитектурно-строительный\nуниверситет\"\"";
+//  }
+
+//  if (NNGASU_NAME_IN == 2 && NNGASU_NAME_OUT == 3)
+//    Comment1 = "Государственное образовательное учреждение высшего профессионального образования \"\"Нижегородский государственный архитектурно-строительный университет\"\" в 2011 году приказом Минобрнауки России № 1763 переименовано в федеральное государственное бюджетное образовательное учреждение высшего профессионального образования \"\"Нижегородский государственный архитектурно-строительный университет\"\".";
+//  else if (NNGASU_NAME_IN == 1)
+//    Comment1 = "Государственное образовательное учреждение \"\"Нижегородский государственный архитектурно-строительный университет\"\" изменило свое наименование на государственное образовательное учреждение высшего профессионального образования \"\"Нижегородский государственный архитектурно-строительный университет\"\" 14 июня 2002 года.";
 
 
   WordMacros macros;
-  macros.BeginMacros();
-
-  //----------------------------------------------------------
-  //              THE FIRST PAGE
-  //----------------------------------------------------------
-  int CountRows1 = 22;
-  macros.InsertLine("ActiveDocument.PageSetup.Orientation=wdOrientLandscape");
-  macros.InsertLine("ActiveDocument.PageSetup.TopMargin=25");
-  macros.InsertLine("ActiveDocument.PageSetup.BottomMargin=25");
-  macros.InsertLine("ActiveDocument.PageSetup.LeftMargin=25");
-  macros.InsertLine("ActiveDocument.PageSetup.RightMargin=25");
-
-  macros.InsertLine("ActiveDocument.Select");
-  macros.TablesAdd(CountRows1, 2);
-  macros.TableStyle(WordMacros::StyleNone);
-
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Range.Font.Name = \"Arial\"");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Range.Font.Spacing = 1.0");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Range.Font.Size = 12");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Range.Font.Italic = true");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Range.Font.Bold = false");
-
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Columns.Item(2).Select");
-   macros.SelectionParagraphFormat("LeftIndent = 25");
-
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Rows.Item(1).SetHeight RowHeight:=72.00, HeightRule:=wdRowHeightAtLeast");
-  for (i = 0; i < 6; ++i)
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Rows.Item(" + IntToStr(2+i) + ").SetHeight RowHeight:=14.00, HeightRule:=wdRowHeightAtLeast");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Rows.Item(8).SetHeight RowHeight:=50.00, HeightRule:=wdRowHeightAtLeast");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Rows.Item(9).SetHeight RowHeight:=20.00, HeightRule:=wdRowHeightAtLeast");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Rows.Item(10).SetHeight RowHeight:=45.00, HeightRule:=wdRowHeightAtLeast");
-  for (i = 0; i < 3; ++i)
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Rows.Item(" + IntToStr(11+i) + ").SetHeight RowHeight:=14.00, HeightRule:=wdRowHeightAtLeast");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Rows.Item(14).SetHeight RowHeight:=63.00, HeightRule:=wdRowHeightAtLeast");
-  for (i = 0; i < 5; ++i)
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Rows.Item(" + IntToStr(15+i) + ").SetHeight RowHeight:=14.00, HeightRule:=wdRowHeightAtLeast");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Rows.Item(20).SetHeight RowHeight:=56.00, HeightRule:=wdRowHeightAtLeast");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Rows.Item(21).SetHeight RowHeight:=14.00, HeightRule:=wdRowHeightAtLeast");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Rows.Item(22).SetHeight RowHeight:=14.00, HeightRule:=wdRowHeightAtLeast");
-
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Columns.Item(1).Select");
-  macros.InsertLine("ActiveDocument.Paragraphs.Format.Alignment=wdAlignParagraphLeft");
-  macros.InsertLine("Selection.Font.Size = 12");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Columns.Item(2).Select");
-  macros.InsertLine("ActiveDocument.Paragraphs.Format.Alignment=wdAlignParagraphCenter");
-  macros.InsertLine("Selection.Font.Size = 12");
-
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(2,2).Range.Select");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(2,2).VerticalAlignment=wdCellAlignVerticalCenter");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(2,2).Range.Text= \"г. Нижний Новгород\"");
-
-  if (NNGASU_NAME_OUT == 3)
-  {
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(3,2).Range.Select");
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(3,2).VerticalAlignment=wdCellAlignVerticalCenter");
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(3,2).Range.Text=\"Федеральное государственное бюджетное\"");
-
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(4,2).Range.Select");
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(4,2).VerticalAlignment=wdCellAlignVerticalCenter");
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(4,2).Range.Text=\"образовательное учреждение\"");
-
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(5,2).Range.Select");
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(5,2).VerticalAlignment=wdCellAlignVerticalCenter");
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(5,2).Range.Text=\"высшего профессионального образования\"");
-
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(6,2).Range.Select");
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(6,2).VerticalAlignment=wdCellAlignVerticalCenter");
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(6,2).Range.Text=\"\"\"Нижегородский государственный\"");
-
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(7,2).Range.Select");
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(7,2).VerticalAlignment=wdCellAlignVerticalCenter");
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(7,2).Range.Text=\"архитектурно-строительный университет\"\"");
-
-  }
-  else
-  {
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(3,2).Range.Select");
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(3,2).VerticalAlignment=wdCellAlignVerticalCenter");
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(3,2).Range.Text=\"Государственное образовательное учреждение\"");
-
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(4,2).Range.Select");
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(4,2).VerticalAlignment=wdCellAlignVerticalCenter");
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(4,2).Range.Text=\"высшего профессионального образования\"");
-
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(5,2).Range.Select");
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(5,2).VerticalAlignment=wdCellAlignVerticalCenter");
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(5,2).Range.Text=\"\"\"Нижегородский государственный\"");
-
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(6,2).Range.Select");
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(6,2).VerticalAlignment=wdCellAlignVerticalCenter");
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(6,2).Range.Text=\"архитектурно-строительный университет\"\"");
-  }
-
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(9,2).Range.Select");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(9,2).VerticalAlignment=wdCellAlignVerticalCenter");
-  macros.InsertLine("Selection.Font.Bold=false");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(9,2).Range.Text=\"\"");/*NumDiplomS*/;
-
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(11,2).Range.Select");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(11,2).VerticalAlignment=wdCellAlignVerticalCenter");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(11,2).Range.Text=\""+ DataQualificS + "\"");
-
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(12,2).Range.Select");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(12,2).VerticalAlignment=wdCellAlignVerticalCenter");
-  macros.InsertLine("Selection.Font.Size=14");
-  macros.InsertLine("Selection.Font.Bold=true");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(12,2).Range.Text=\"" + SecNameS + "\"");
-
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(13,2).Range.Select");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(13,2).VerticalAlignment=wdCellAlignVerticalCenter");
-  macros.InsertLine("Selection.Font.Size=14");
-  macros.InsertLine("Selection.Font.Bold=true");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(13,2).Range.Text=\""+FirstNameS+" "+ThirdNameS+"\"");
-
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(15,2).Range.Select");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(15,2).VerticalAlignment=wdCellAlignVerticalCenter");
-  macros.InsertLine("Selection.Font.Bold=true");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(15,2).Range.Text=\"" + QualificTitleS.UpperCase()+ "\"");
-
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(16,2).Range.Select");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(16,2).VerticalAlignment=wdCellAlignVerticalCenter");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(16,2).Range.Text=\"" + PrevSpecS + "\"");
-
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(17,2).Range.Select");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(17,2).VerticalAlignment=wdCellAlignVerticalTop");
-  macros.InsertLine("Selection.MoveDown Unit:=wdLine, Count:=2, Extend:=wdExtend");
-  macros.InsertLine("Selection.Cells.Merge");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(17,2).Range.Text=\"\"\""+NapravSpecS+"\"\"\"");
-
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(21,1).Range.Select");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(21,1).Range.Paragraphs.Format.Alignment = wdAlignParagraphLeft");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(21,1).VerticalAlignment=wdCellAlignVerticalCenter");
-  AnsiString mystr="                                  ";
-  mystr+=RegNumS;
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(21,1).Range.Text=\"" + mystr + "\"");
-
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(22,1).Range.Select");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(22,1).Range.Paragraphs.Format.Alignment = wdAlignParagraphLeft");
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(22,1).VerticalAlignment=wdCellAlignVerticalCenter");
-  mystr = "Дата выдачи "+DataVidachiS+" года";
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(22,1).Range.Text=\"" + mystr + "\"");
-
-  macros.EndMacros();
-  macros.RunMacros();
 
   //----------------------------------------------------------
   //              THE SECOND PAGE
@@ -524,6 +387,8 @@ void __fastcall TFormReportAkadSprav::CreateWordDocument(void)
   macros.InsertLine("Selection.Cells.Merge");
   // изменил
   macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(4,2).Range.Select");
+  macros.InsertLine("Selection.Cells(1).LeftPadding = InchesToPoints(0.01)");
+  macros.InsertLine("Selection.Cells(1).RightPadding = InchesToPoints(0.01)");
   macros.SelectionText(VUZS);
  // macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(4,2).Range.Text= \"" + VUZS + "\"");
 
