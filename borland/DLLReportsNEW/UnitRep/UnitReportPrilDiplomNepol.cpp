@@ -228,10 +228,12 @@ void __fastcall TFormReportPrilDiplomNepol::CreateWordDocument(void)
   AnsiString QualificS = "квалификация", QualificTitleS, PrevSpecS = "по специальности", SpecS, SexS;
 
   AnsiString InYear, InMonth, InDay, OutYear, OutMonth, OutDay;
-  AnsiString lang;
+  AnsiString lang, Direct;
   InitPrivateData(SecNameS, FirstNameS, ThirdNameS, BirstDateS, VipQualificWorkS, PrevDocS,
         PrevDocYearS, InYear, InMonth, InDay, OutYear, OutMonth, OutDay, NapravSpecS, SpecializS, QualificTitleS, SexS, lang,
-        NumDiplomS, RegNumS, DataVidachiS, DataQualificS);
+        NumDiplomS, RegNumS, DataVidachiS, DataQualificS, Direct);
+  if (Direct != "")
+    PrevSpecS = "по направлению";
 
   // 1 - старое наименование ННГАСУ
   // 2 - следующее наименование
@@ -308,7 +310,10 @@ void __fastcall TFormReportPrilDiplomNepol::CreateWordDocument(void)
 
   float itog_oc;
   InitPracticAndItog(PracticaS, itog_oc, ContVIP);
-  ItogGosEkzS = "\n\nМеждисциплинарный экзамен по специальности \"\""+NapravSpecS+"\"\", "+GetEst(itog_oc);
+  if (Direct != "")
+    ItogGosEkzS = "\n\nМеждисциплинарный экзамен по направлению \"\""+Direct+"\"\", "+GetEst(itog_oc);
+  else
+    ItogGosEkzS = "\n\nМеждисциплинарный экзамен по специальности \"\""+NapravSpecS+"\"\", "+GetEst(itog_oc);
   VipQualificWorkS = "\"" + VipQualificWorkS + "\"" + ContVIP;
 
   //macros.InsertLine("Selection.Range->InsertAfter(TVariant("\n\n"));
@@ -422,7 +427,10 @@ void __fastcall TFormReportPrilDiplomNepol::CreateWordDocument(void)
   macros.InsertLine("Selection.Font.Bold=true");
   macros.InsertLine("Selection.Font.Italic=true");
   macros.InsertLine("Selection.Font.Size="+IntToStr(ns));
-  macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(15,1).Range.Text= \"" + GetWithLowerFirst(NapravSpecS) + "\"");
+  if (Direct != "")
+    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(15,1).Range.Text= \"" + GetWithLowerFirst(Direct) + "\"");
+  else
+    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(15,1).Range.Text= \"" + GetWithLowerFirst(NapravSpecS) + "\"");
 
   macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(16,1).Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
@@ -593,7 +601,7 @@ void __fastcall TFormReportPrilDiplomNepol::InitPrivateData(AnsiString& SN, Ansi
         AnsiString& InYear, AnsiString& InMonth, AnsiString& InDay, AnsiString& OutYear,  AnsiString& OutMonth, AnsiString& OutDay,
         AnsiString& spec, AnsiString& specializ,
         AnsiString& Qualific, AnsiString& Sex, AnsiString& lang,
-        AnsiString&  NumDiplomS, AnsiString& RegNumS, AnsiString& DataVidachiS, AnsiString& DataQualificS)
+        AnsiString&  NumDiplomS, AnsiString& RegNumS, AnsiString& DataVidachiS, AnsiString& DataQualificS, AnsiString& Direct)
 {
     SN = "???";
     FN = "???";
@@ -609,6 +617,7 @@ void __fastcall TFormReportPrilDiplomNepol::InitPrivateData(AnsiString& SN, Ansi
     OutMonth = "???";
     OutDay = "???";
     spec = "???";
+    Direct = "???";
     specializ = "???";
     Qualific = "???";
     Sex = "Средний пол";
@@ -626,7 +635,7 @@ void __fastcall TFormReportPrilDiplomNepol::InitPrivateData(AnsiString& SN, Ansi
 
     AnsiString myquery = "select s.secondname,s.firstname,s.thirdname,s.bdate,s.vkr_title," \
         "s.edudocid,s.eduenddate,s.specid,s.enterdate,s.exitdate,s.sex,v.title,s.edunumdiplom,"\
-        "s.edunumreg,s.edudatediplom,s.edudatequalif from "+opts.DBStudTable+" as s, "\
+        "s.edunumreg,s.edudatediplom,s.edudatequalif,s.directid from "+opts.DBStudTable+" as s, "\
         +opts.DBVocTable+" as v where s.deleted=0 and v.deleted=0 and s.id="\
         +ToStr(AnsiString(idstudent))+" and s.languageid=v.num and v.vkey="+ToStr("language");
 
@@ -646,6 +655,7 @@ void __fastcall TFormReportPrilDiplomNepol::InitPrivateData(AnsiString& SN, Ansi
                 PrevDoc = WCGetTitleForKeyNum(EDUDOCS, AnsiString(row[5]).ToInt());
                 PrevDocYear = "выданный в " + GetYear(AnsiString(row[6])) + " году";
                 spec = WCGetTitleForKeyNum(SPECS, AnsiString(row[7]).ToInt());
+                Direct = WCGetTitleForKeyNum(DIRECTS, AnsiString(row[16]).ToInt());
                 specializ = WCGetTitleForKeyNum(SPEZIALIZS, AnsiString(row[7]).ToInt());
                 Qualific = WCGetTitleForKeyNum(QUALIFIC, AnsiString(row[7]).ToInt());
                 InYear = GetYear(AnsiString(row[8]));
