@@ -47,7 +47,7 @@ __published:	// IDE-managed Components
         void __fastcall InitPrivateData(AnsiString& SN, AnsiString& FN, AnsiString& TN, AnsiString& BirstDate,
                 AnsiString& VipQualifWork, AnsiString& PrevDoc, AnsiString& PrevDocYear, AnsiString& InYear, AnsiString& InMonth, AnsiString& InDay,
                 AnsiString& OutYear, AnsiString& OutMonth, AnsiString& OutDay, AnsiString& spec, AnsiString& specializ, AnsiString& Qualific, AnsiString& Sex, AnsiString& lang,
-                AnsiString&  NumDiplomS, AnsiString& RegNumS, AnsiString& DataVidachiS, AnsiString& DataQualificS);
+                AnsiString&  NumDiplomS, AnsiString& RegNumS, AnsiString& DataVidachiS, AnsiString& DataQualificS, AnsiString& Direct);
         void __fastcall InitPracticAndItog(AnsiString& pract, float& itog_oc, AnsiString& VIP);
         void __fastcall InitVectorsOfDisciplines(_vecDiscip& vecComm, _vecDiscip& vecCurWorks, _vecDiscip& vecCurProj,
                 _vecDiscip& vecOther);
