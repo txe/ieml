@@ -63,7 +63,7 @@ int __fastcall TFormReportCharacteristic::GetIDStudent(void)
 void __fastcall TFormReportCharacteristic::InitReportQuery(void)
 {
   ZMySqlQuery->SQL->Clear();
-  ZMySqlQuery->SQL->Add("select id,CONCAT(secondname,\' \',firstname,\' \',thirdname),specid,znum,enterdate,bdate,educationid,eduenddate,eduplace,enterdate,sex,grpid from "+opts.DBStudTable+" where deleted=0 and id="+ToStr(AnsiString(idstudent)));
+  ZMySqlQuery->SQL->Add("select id,CONCAT(secondname,\' \',firstname,\' \',thirdname),specid,znum,enterdate,bdate,educationid,eduenddate,eduplace,enterdate,sex,grpid,directid from "+opts.DBStudTable+" where deleted=0 and id="+ToStr(AnsiString(idstudent)));
   ZMySqlQuery->Active=true;
 }
 //---------------------------------------------------------------------------
@@ -217,6 +217,7 @@ void __fastcall TFormReportCharacteristic::CreateWordDocument(void)
     AnsiString enteryear = GetYear_cur(ZMySqlQuery->Fields->FieldByNumber(10)->AsString);
     AnsiString spec = WCGetTitleForKeyNum(SPECS, ZMySqlQuery->Fields->FieldByNumber(3)->AsString.ToInt());
     AnsiString grpName = WCGetTitleForKeyNum(GROUPS, ZMySqlQuery->Fields->FieldByNumber(12)->AsString.ToInt());
+    AnsiString naprav = WCGetTitleForKeyNum(DIRECTS, ZMySqlQuery->Fields->FieldByNumber(13)->AsString.ToInt());
 
     macros.SelectionParagraphFormat("Alignment=wdAlignParagraphJustify");
     macros.SelectionText("vbTab");
@@ -225,7 +226,12 @@ void __fastcall TFormReportCharacteristic::CreateWordDocument(void)
     macros.FilterText(eduplace);
     macros.SelectionText("Закончил"+AnsiString(isMan?"":"а")+" в "+eduendyear+" году "+ eduplace + ".\n");
     macros.SelectionText("vbTab");
-    macros.SelectionText("В "+enteryear+" году поступил"+AnsiString(isMan?"":"а")+" в ННГАСУ на места, не финансируемые из федерального бюджета, для обучения по специальности \"\""+spec+"\"\" по заочной форме с применением дистанционных технологий.\n");
+
+    if (naprav != "")
+      macros.SelectionText("В "+enteryear+" году поступил"+AnsiString(isMan?"":"а")+" в ННГАСУ на места, не финансируемые из федерального бюджета, для обучения по направлению \"\""+naprav+"\"\" по заочной форме с применением дистанционных технологий.\n");
+    else
+      macros.SelectionText("В "+enteryear+" году поступил"+AnsiString(isMan?"":"а")+" в ННГАСУ на места, не финансируемые из федерального бюджета, для обучения по специальности \"\""+spec+"\"\" по заочной форме с применением дистанционных технологий.\n");
+
     macros.SelectionText("vbTab");
     macros.SelectionText("За время обучения в университете показал"+AnsiString(isMan?"":"а")+" следующую успеваемость:\n");
     int countUDOVL,countHOR,countOTL;
@@ -265,15 +271,20 @@ void __fastcall TFormReportCharacteristic::CreateWordDocument(void)
 //    MessageBox(0, AnsiString(itog_oc).c_str(),"",0);
     macros.SelectionText("vbTab");
     if (grpName.SubString(1,1) != "Ю")
-        macros.SelectionText("Сдал"+AnsiString(isMan?"":"а")+" государственный экзамен по специальности с итоговой оценкой \"\""+GetEst_cur(itog_oc)+"\"\".\n");
+        macros.SelectionText("Сдал"+AnsiString(isMan?"":"а")+" государственный экзамен по "+(naprav != "" ? "направлению" : "специальности") + " с итоговой оценкой \"\""+GetEst_cur(itog_oc)+"\"\".\n");
     else
         macros.SelectionText(ItogForUr(isMan));
     macros.SelectionText("vbTab");
-    macros.SelectionText(AnsiString(isMan?"Прошел":"Прошла")+" специализацию и выполнил"+AnsiString(isMan?"":"а")+" дипломную работу по кафедре " + caf + ".\n");
+    macros.SelectionText("Выполнил"+AnsiString(isMan?"":"а")+" выпускную квалификационную работу по кафедре " + caf + ".\n");
     macros.SelectionText("vbTab");
     macros.SelectionText(FIO+" административных взысканий за время обучения не имеет, пользуется уважением студентов и преподавателей.\n");
     macros.SelectionText("vbTab");
-    macros.SelectionText("Характеристика дана для предоставления в Государственную аттестационную комиссию по защите выпускной квалификационной работы по специальности \"\""+spec+"\"\".\n");
+
+    if (naprav != "")
+      macros.SelectionText("Характеристика дана для предоставления в Государственную аттестационную комиссию по защите выпускной квалификационной работы по направлению \"\""+naprav+"\"\".\n");
+    else
+       macros.SelectionText("Характеристика дана для предоставления в Государственную аттестационную комиссию по защите выпускной квалификационной работы по специальности \"\""+spec+"\"\".\n");
+
     macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
     macros.SelectionText("\n");
     macros.SelectionText("vbTab");
