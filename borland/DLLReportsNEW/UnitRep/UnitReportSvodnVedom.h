@@ -49,7 +49,7 @@ private:	// User declarations
         void __fastcall CreateData();
         void __fastcall DestroyData();
 
-        AnsiString __fastcall GetSpec();
+        void __fastcall GetSpec(AnsiString& spec, AnsiString& naprav);
 public:		// User declarations
         __fastcall TFormReportSvodnVedom(TComponent* Owner);
         void __fastcall SetIDGroup(int _IDGroup);

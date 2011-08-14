@@ -98,13 +98,14 @@ void __fastcall TFormReportSvodnVedom::CreateWordDocument(void)
 
     macros.SelectionParagraphFormat("Alignment = wdAlignParagraphLeft");
 
-    AnsiString Str,Strtmp;
+    AnsiString Str,Strtmp,Spec, Naprav;
+    GetSpec(Spec, Naprav);
 
     macros.SelectionText("");
     macros.SelectionParagraphFormat("Alignment = wdAlignParagraphCenter");
-    macros.SelectionText("Cпециальность \"");
+    macros.SelectionText(Naprav != "" ? "Направление \"" : "Cпециальность \"");
     macros.SelectionFont("Bold=true");
-    macros.SelectionText(GetSpec());
+    macros.SelectionText(Naprav != "" ? Naprav : Spec);
     macros.SelectionText("\"");
     macros.SelectionFont("Bold=false");
     macros.SelectionTypeParagraph();
@@ -327,14 +328,13 @@ void __fastcall TFormReportSvodnVedom::DestroyData()
     pos_dis.clear();
 }
 //---------------------------------------------------------------------------
-AnsiString __fastcall TFormReportSvodnVedom::GetSpec()
+void __fastcall TFormReportSvodnVedom::GetSpec(AnsiString& spec, AnsiString& naprav)
 {
     MYSQL_RES *result;
     MYSQL_ROW row;
     AnsiString query;
-    AnsiString spec;
 
-    query = "SELECT specid FROM students WHERE deleted = 0 AND grpid = " + IntToStr(GetIDGroup())
+    query = "SELECT specid,directid FROM students WHERE deleted = 0 AND grpid = " + IntToStr(GetIDGroup())
         + " LIMIT 1";
     mysql_query(mysql, query.c_str());
     result = mysql_store_result(mysql);
@@ -342,9 +342,9 @@ AnsiString __fastcall TFormReportSvodnVedom::GetSpec()
     {
         row = mysql_fetch_row(result);
         spec = WCGetTitleForKeyNum(SPECS, AnsiString(row[0]).ToInt());
+        naprav = WCGetTitleForKeyNum(DIRECTS, AnsiString(row[1]).ToInt());
     }
     mysql_free_result(result);
-    return spec;
 }
 //---------------------------------------------------------------------------
 
