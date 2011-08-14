@@ -37,7 +37,7 @@ int __fastcall TFormReportVedomWord::GetIDGroup(void)
 void __fastcall TFormReportVedomWord::InitReportQuery(void)
 {
   ZMySqlQuery->SQL->Clear();
-  ZMySqlQuery->SQL->Add("select secondname,firstname,thirdname,specid,znum,id from "+opts.DBStudTable+" where deleted=0 and grpid="+ToStr(AnsiString(idgroup))+" order by specid,secondname,firstname,thirdname");
+  ZMySqlQuery->SQL->Add("select secondname,firstname,thirdname,specid,znum,id,directid from "+opts.DBStudTable+" where deleted=0 and grpid="+ToStr(AnsiString(idgroup))+" order by specid,secondname,firstname,thirdname");
   ZMySqlQuery->Active=true;
 }
 //---------------------------------------------------------------------------
@@ -55,8 +55,6 @@ void __fastcall TFormReportVedomWord::FormClose(TObject *Sender,
 //---------------------------------------------------------------------------
 void __fastcall TFormReportVedomWord::CreateWordDocument(void)
 {
-     int numspec;
-
     InitReportQuery();
 
     WordMacros macros;
@@ -68,24 +66,29 @@ void __fastcall TFormReportVedomWord::CreateWordDocument(void)
     AnsiString GroupStr;
     GroupStr=WCGetTitleForKeyNum(GROUPS,idgroup);
 
-    numspec=-1;
+    int numspec = -1;
+    int directid = -1;
     int CountTables=0;
     int CountRows;
     int CountPrevRows=0;
     int CountPrevPrevRows=0;
     AnsiString Str,Strtmp;
     bool isFirst=true;
+    AnsiString naprav = WCGetTitleForKeyNum(DIRECTS,ZMySqlQuery->Fields->FieldByNumber(7)->AsString.ToInt());
     for (int i=0;i<ZMySqlQuery->RecordCount;i++)
     {
         ZMySqlQuery->RecNo=i+1;
-        if ( numspec != ZMySqlQuery->Fields->FieldByNumber(4)->AsString.ToInt() )
+        if ( (naprav != "" ? directid != ZMySqlQuery->Fields->FieldByNumber(7)->AsString.ToInt() :
+                  numspec != ZMySqlQuery->Fields->FieldByNumber(4)->AsString.ToInt()))
         {
             macros.SelectionTypeParagraph();
             macros.SelectionTypeParagraph();
             macros.InsertLine("Range.Select");
             macros.InsertLine("Selection.MoveUp Unit := wdLine, Count:=2");
-            
+
             numspec=ZMySqlQuery->Fields->FieldByNumber(4)->AsString.ToInt();
+            directid = ZMySqlQuery->Fields->FieldByNumber(7)->AsString.ToInt();
+            AnsiString naprav = WCGetTitleForKeyNum(DIRECTS,directid);
 
             //Заголовок
             macros.SelectionParagraphFormat("Alignment = wdAlignParagraphCenter");
@@ -106,10 +109,13 @@ void __fastcall TFormReportVedomWord::CreateWordDocument(void)
             macros.SelectionTypeParagraph();
             macros.SelectionFont("Size=10");
             macros.SelectionFont("Bold=false");
-            macros.SelectionText("Специальность ");
+            macros.SelectionText(naprav != "" ? "Направление " : "Специальность ");
             macros.SelectionFont("Bold=true");
             macros.SelectionFont("Underline=wdUnderlineSingle");
-            macros.SelectionText("  "+WCGetTitleForKeyNum(SPECS,numspec)+"  ");
+            if (naprav != "")
+              macros.SelectionText("  "+naprav+"  ");
+            else
+              macros.SelectionText("  "+WCGetTitleForKeyNum(SPECS,numspec)+"  ");
             macros.SelectionTypeParagraph();
             macros.SelectionFont("Underline=wdUnderlineNone");
             macros.SelectionFont("Bold=false");
@@ -133,7 +139,13 @@ void __fastcall TFormReportVedomWord::CreateWordDocument(void)
             for (int j=i;j<ZMySqlQuery->RecordCount;j++)
             {
                 ZMySqlQuery->RecNo=j+1;
-                if (numspec!=ZMySqlQuery->Fields->FieldByNumber(4)->AsString.ToInt() )
+                if (naprav != "")
+                {
+                  if (directid!=ZMySqlQuery->Fields->FieldByNumber(7)->AsString.ToInt() )
+                    break;
+                }
+                else
+                  if (numspec!=ZMySqlQuery->Fields->FieldByNumber(4)->AsString.ToInt() )
                     break;
                 CountRows++;
             }
