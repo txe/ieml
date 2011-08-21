@@ -158,7 +158,7 @@ namespace t
 		string_t query = string_t() +
 			" SELECT num , title, tag FROM voc " +
 			" WHERE vkey= '" + vkey + "' AND deleted = 0 " +
-			" ORDER BY title, id";
+			" ORDER BY title, tag, id";
 		mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
 
 		string_t			buf;
