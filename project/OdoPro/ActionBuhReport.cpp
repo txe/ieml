@@ -239,21 +239,21 @@ void CActionBuhReport::CreateBuhData()
 		theApp.GetCon().Query("INSERT full_table (idstud,grpid,specid) "
 			" SELECT studs.id, studs.grpid, studs.specid"
 			" FROM students AS studs, voc as v "
-			" WHERE studs.deleted = 0 AND studs.cityid != 0 AND studs.grpid=v.num "
+			" WHERE studs.deleted = 0 AND studs.grpid=v.num "
 			" AND v.vkey='grp' AND v.deleted=0 "
 			" GROUP BY studs.id ");
 	else if (link_element("o-spec").get_state(STATE_CHECKED))
 		theApp.GetCon().Query("INSERT full_table (idstud,grpid,specid) "
 		" SELECT studs.id, studs.grpid, studs.specid"
 		" FROM students AS studs, voc as v "
-		" WHERE studs.deleted = 0 AND studs.cityid != 0 AND " + GetSpecLst("studs") + " "
+		" WHERE studs.deleted = 0 AND " + GetSpecLst("studs") + " "
 		" AND studs.grpid=v.num  AND v.vkey='grp' AND v.deleted=0 "
 		" GROUP BY studs.id ");
 	else if (link_element("o-grp").get_state(STATE_CHECKED))
 		theApp.GetCon().Query("INSERT full_table (idstud,grpid,specid) "
 		" SELECT studs.id, studs.grpid, studs.specid"
 		" FROM students AS studs "
-		" WHERE studs.deleted = 0 AND studs.cityid != 0 AND " + GetGrpLst("studs") +
+		" WHERE studs.deleted = 0 AND " + GetGrpLst("studs") +
 		" GROUP BY studs.id ");
 	
 	ProcessPlan();   // расчитаем план для текущего периода
@@ -270,7 +270,7 @@ void CActionBuhReport::CreateBuhData()
 	std::map<std::wstring, std::wstring> spec_itog;
 	mybase::MYFASTRESULT res =  theApp.GetCon().Query(
 		"SELECT specid, SUM(plan) as plan, SUM(pay) as pay, SUM(dolg) as dolg "
-		" FROM full_table as f"
+		" FROM full_table as f "
 		" GROUP BY specid ");
 	mybase::MYFASTROW row;
 	while (row = res.fetch_row())
@@ -316,14 +316,6 @@ void CActionBuhReport::CreateBuhData()
 	std::wstring old_spec_id = L"";
 	while (row = res.fetch_row())
 	{
-		string_t spec = row["spec"];
-		string_t tag  = row["tag"];
-		if (!tag.empty())
-			spec += " (" + tag + ")";
-		if (!set_grp && !set_fio)	text += spec + "\t" + row["plan"] + "\t" + row["pay"] + "\t" + row["dolg"] + "\n";
-		else if (!set_fio)			text += spec + "\t" + row["grp"] + "\t" + row["plan"] + "\t" + row["pay"] + "\t" + row["dolg"] + "\n";
-		else						text += spec + "\t" + row["grp"] + "\t" + row["fio"] + "\t" + row["plan"] + "\t" + row["pay"] + "\t" + row["dolg"] + "\n";
-
 		// если пошла новая специальность, то подведем  итоги о старой
 		if (old_spec_id == L"")
 			old_spec_id = row["specid"];
@@ -338,6 +330,15 @@ void CActionBuhReport::CreateBuhData()
 			else						text += "итого по специальности\t\t\t" + txt + "\n";
 			old_spec_id = row["specid"];
 		}
+
+		// 
+		string_t spec = row["spec"];
+		string_t tag  = row["tag"];
+		if (!tag.empty())
+			spec += " (" + tag + ")";
+		if (!set_grp && !set_fio)	text += spec + "\t" + row["plan"] + "\t" + row["pay"] + "\t" + row["dolg"] + "\n";
+		else if (!set_fio)			text += spec + "\t" + row["grp"] + "\t" + row["plan"] + "\t" + row["pay"] + "\t" + row["dolg"] + "\n";
+		else						text += spec + "\t" + row["grp"] + "\t" + row["fio"] + "\t" + row["plan"] + "\t" + row["pay"] + "\t" + row["dolg"] + "\n";
     }
 	// подведем итоги о последней специальности
 	string_t txt;
