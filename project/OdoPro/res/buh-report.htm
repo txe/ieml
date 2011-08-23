@@ -35,7 +35,7 @@
 				<div style="padding: 3px; padding-left: 15px">
 					<div><button id="o-all" type="radio" name="o" checked>По институту</button></div>
 					<div><button id="o-spec" type="radio" name="o">По специальностям </button>
-						<button id="spec-but" style="behavior:popup-menu;">...
+						<button id="spec-but" style="behavior:popup-menu;" disable>...
 							<popup> 
 								<widget type="select"  multiple="checks" style="width: 250px; height: 300px;visibility:show">
 									<OPTION>Lithium (Li)</OPTION>
@@ -49,7 +49,7 @@
 						</button>
 					</div>
 					<div><button id="o-grp" type="radio" name="o">По группам </button>
-						<button id="grp-but" style="behavior:popup-menu;">...
+						<button id="grp-but" style="behavior:popup-menu;" disable>...
 							<popup> 
 								<widget id="grp-lst" type="select"  style="width: 210px; height: 300px;visibility:show" >
 									<OPTIONS open>Alkaline Metals
@@ -90,12 +90,12 @@
 						<option value="2017">2017 - 2018</option>
 						</select>
 					<div><button type="radio" id="cat-radio" name="pay">Выбор категории оплаты</button></div>
-					<div style="margin-left: 20px;" disabled>
-						<select id="cat-month" style="width:50px; text-align: center;">
+					<div style="margin-left: 20px;">
+						<select id="cat-month" style="width:50px; text-align: center;" disabled>
 							<option value="09" selected>сент.</option>
 							<option value="02">февр.</option>
 						</select>
-						<select id="cat-year" style="width:50px; text-align: center;">
+						<select id="cat-year" style="width:50px; text-align: center;" disabled>
 							<option value="2005">2005 - 2006</option>
 							<option value="2006">2006 - 2007</option>
 							<option value="2007">2007 - 2008</option>

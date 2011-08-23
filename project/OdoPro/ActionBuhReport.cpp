@@ -2,6 +2,10 @@
 #include "ActionBuhReport.h"
 #include "SingeltonApp.h"
 #include "json-aux-ext.h"
+#include <sys/timeb.h>
+#include <sstream>
+#include <iomanip>
+#include <map>
 
 CActionBuhReport::CActionBuhReport(LiteWnd* parent /* = NULL */):LiteWnd(parent)
 {
@@ -148,6 +152,7 @@ void CActionBuhReport::FullGrpInLst()
 	assert(_mbslen(buf));
 	if (_mbslen(buf))
 		link_element("grp-but").set_html(buf, _mbslen(buf), SIH_REPLACE_CONTENT);
+	link_element("grp-but").set_state(STATE_DISABLED, 0);
 }
 void CActionBuhReport::FullSpecInLst()
 {
@@ -175,6 +180,7 @@ void CActionBuhReport::FullSpecInLst()
 	assert(_mbslen(buf));
 	if (_mbslen(buf))
 		link_element("spec-but").set_html(buf, _mbslen(buf), SIH_REPLACE_CONTENT);
+	link_element("spec-but").set_state(STATE_DISABLED, 0);
 }
 
 void CActionBuhReport::Report(void)
@@ -219,6 +225,7 @@ void CActionBuhReport::CreateBuhData()
 		" ( "
 		"  idstud    int(11), "
 		"  grpid     int(11), "
+		"  specid    int(11), "
 		"  plan      int(11) DEFAULT '0', "
 		"  pay       int(11) DEFAULT '0', "
 		"  dolg      int(11) DEFAULT '0', "
@@ -226,25 +233,25 @@ void CActionBuhReport::CreateBuhData()
 		"  INDEX (grpid) "
 		" ) TYPE = HEAP ");
 
-	// найдем студентов, или все, или с указанными специальностями, или или с указанными группами
+	// найдем студентов, или все, или с указанными специальностями, или с указанными группами
 	// сделаем группировки т.к. может быть несколько план за один период
 	if (link_element("o-all").get_state(STATE_CHECKED))
-		theApp.GetCon().Query("INSERT full_table (idstud,grpid) "
-			" SELECT studs.id, studs.grpid"
+		theApp.GetCon().Query("INSERT full_table (idstud,grpid,specid) "
+			" SELECT studs.id, studs.grpid, studs.specid"
 			" FROM students AS studs, voc as v "
 			" WHERE studs.deleted = 0 AND studs.cityid != 0 AND studs.grpid=v.num "
 			" AND v.vkey='grp' AND v.deleted=0 "
 			" GROUP BY studs.id ");
 	else if (link_element("o-spec").get_state(STATE_CHECKED))
-		theApp.GetCon().Query("INSERT full_table (idstud,grpid) "
-		" SELECT studs.id, studs.grpid"
+		theApp.GetCon().Query("INSERT full_table (idstud,grpid,specid) "
+		" SELECT studs.id, studs.grpid, studs.specid"
 		" FROM students AS studs, voc as v "
 		" WHERE studs.deleted = 0 AND studs.cityid != 0 AND " + GetSpecLst("studs") + " "
 		" AND studs.grpid=v.num  AND v.vkey='grp' AND v.deleted=0 "
 		" GROUP BY studs.id ");
 	else if (link_element("o-grp").get_state(STATE_CHECKED))
-		theApp.GetCon().Query("INSERT full_table (idstud,grpid) "
-		" SELECT studs.id, studs.grpid"
+		theApp.GetCon().Query("INSERT full_table (idstud,grpid,specid) "
+		" SELECT studs.id, studs.grpid, studs.specid"
 		" FROM students AS studs "
 		" WHERE studs.deleted = 0 AND studs.cityid != 0 AND " + GetGrpLst("studs") +
 		" GROUP BY studs.id ");
@@ -252,32 +259,131 @@ void CActionBuhReport::CreateBuhData()
 	ProcessPlan();   // расчитаем план для текущего периода
 	ProcessPay();    // оплата на 01.09 за текущий год
 
-	// расчитаем долг на текущий период на 01.09
+	// расчитаем долг 
 	theApp.GetCon().Query(" UPDATE full_table SET dolg = pay - plan");
 
 	// удалим тех, кто не учиться в этом году
 	//theApp.GetCon().Query(" DELETE FROM full_table WHERE plan = 0");
 
-	 mybase::MYFASTRESULT res =  theApp.GetCon().Query(" SELECT CONCAT_WS(' ', s.secondname, s.firstname, s.thirdname) as name, v.title, f.plan, f.pay, f.dolg "
-                       " FROM full_table as f, students as s, voc as v "
-                       " WHERE s.id = f.idstud AND v.vkey='grp' AND v.num = f.grpid AND v.deleted = 0 "
-                       " ORDER BY v.title, name ");
-
-	string_t text;
-	text += "Ф.И.О\tГруппа\tСтоимость\tОплачено\tДолг";
-
+	// получим значения из таблицы
+	// посчитаем и запомним итоги для каждой специальности
+	std::map<std::wstring, std::wstring> spec_itog;
+	mybase::MYFASTRESULT res =  theApp.GetCon().Query(
+		"SELECT specid, SUM(plan) as plan, SUM(pay) as pay, SUM(dolg) as dolg "
+		" FROM full_table as f"
+		" GROUP BY specid ");
 	mybase::MYFASTROW row;
 	while (row = res.fetch_row())
-	{
-       text += row["name"] + "\t" + row["title"] + "\t"
-			+ row["plan"] + "\t" + row["pay"] + "\t"
-			+ "\t" + row["dolg"] + "\n";
-    }
+		spec_itog.insert(std::make_pair(row["specid"], row["plan"] + "\t" + row["pay"] + "\t" + row["dolg"]));
+	bool set_grp = link_element("field-grp").get_state(STATE_CHECKED);
+	bool set_fio = link_element("field-fio").get_state(STATE_CHECKED) && !link_element("field-fio").get_state(STATE_DISABLED);
 
-	HANDLE  hfile = CreateFile(L"Account.prn", GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (!set_grp && !set_fio)
+	{
+		res = theApp.GetCon().Query(
+			" SELECT f.specid as specid, v.title as spec, v.tag as tag , SUM(f.plan) as plan , SUM(f.pay) as pay, SUM(f.dolg) as dolg "
+			" FROM full_table as f, voc as v "
+			" WHERE v.vkey='spec' AND v.num = f.specid AND v.deleted = 0 "
+			" GROUP BY f.specid "
+			" ORDER BY v.title, v.tag, f.specid " );
+	}
+	else if (!set_fio)
+	{
+		res = theApp.GetCon().Query(
+			" SELECT f.specid as specid, v.title as spec, v.tag as tag, v2.title as grp, SUM(f.plan) as plan, SUM(f.pay) as pay, SUM(f.dolg) as dolg "
+			" FROM full_table as f, voc as v, voc as v2 "
+			" WHERE v.vkey='spec' AND v.num = f.specid AND v.deleted = 0 "
+			" AND v2.vkey='grp' AND v2.num = f.grpid AND v2.deleted = 0 "
+			" GROUP BY f.specid, f.grpid "
+			" ORDER BY v.title, v.tag, f.specid, v2.title " );
+	}
+	else // set_grp && set_fio
+	{	
+		res = theApp.GetCon().Query(
+			" SELECT f.specid as specid, v.title as spec, v.tag as tag, v2.title as grp, CONCAT_WS(' ', s.secondname, s.firstname, s.thirdname) as fio, f.plan as plan, f.pay as pay, f.dolg as dolg"
+			" FROM full_table as f, voc as v, voc as v2, students as s "
+			" WHERE v.vkey='spec' AND v.num = f.specid AND v.deleted = 0 "
+			" AND v2.vkey='grp' AND v2.num = f.grpid AND v2.deleted = 0 "
+			" AND s.id = f.idstud "
+			" ORDER BY v.title, v.tag, f.specid, v2.title, fio " );
+	}
+	
+	string_t text;
+	if (!set_grp && !set_fio)	text += "Специальность\tПлан оплаты\tФакт оплаты\tДолг(-) / Переплата (+)\n";
+	else if (!set_fio)			text += "Специальность\tГруппа\tПлан оплаты\tФакт оплаты\tДолг(-) / Переплата (+)\n";
+	else						text += "Специальность\tГруппа\tФИО\tПлан оплаты\tФакт оплаты\tДолг(-) / Переплата (+)\n";
+	
+	std::wstring old_spec_id = L"";
+	while (row = res.fetch_row())
+	{
+		string_t spec = row["spec"];
+		string_t tag  = row["tag"];
+		if (!tag.empty())
+			spec += " (" + tag + ")";
+		if (!set_grp && !set_fio)	text += spec + "\t" + row["plan"] + "\t" + row["pay"] + "\t" + row["dolg"] + "\n";
+		else if (!set_fio)			text += spec + "\t" + row["grp"] + "\t" + row["plan"] + "\t" + row["pay"] + "\t" + row["dolg"] + "\n";
+		else						text += spec + "\t" + row["grp"] + "\t" + row["fio"] + "\t" + row["plan"] + "\t" + row["pay"] + "\t" + row["dolg"] + "\n";
+
+		// если пошла новая специальность, то подведем  итоги о старой
+		if (old_spec_id == L"")
+			old_spec_id = row["specid"];
+		if (old_spec_id != row["specid"])
+		{
+			string_t txt;
+			std::map<std::wstring, std::wstring>::iterator it = spec_itog.find(old_spec_id);
+			if (it != spec_itog.end())
+				txt = it->second;
+			if (!set_grp && !set_fio)	text += "итого по специальности\t" + txt + "\n";
+			else if (!set_fio)			text += "итого по специальности\t\t" + txt + "\n";
+			else						text += "итого по специальности\t\t\t" + txt + "\n";
+			old_spec_id = row["specid"];
+		}
+    }
+	// подведем итоги о последней специальности
+	string_t txt;
+	std::map<std::wstring, std::wstring>::iterator it = spec_itog.find(old_spec_id);
+	if (it != spec_itog.end())
+		txt = it->second;
+	if (!set_grp && !set_fio)	text += "итого по специальности\t" + txt + "\n";
+	else if (!set_fio)			text += "итого по специальности\t\t" + txt + "\n";
+	else						text += "итого по специальности\t\t\t" + txt + "\n";
+
+	// подведем итоги по универу
+	if (link_element("o-all").get_state(STATE_CHECKED))
+	{
+		mybase::MYFASTRESULT res =  theApp.GetCon().Query("SELECT SUM(plan) as plan, SUM(pay) as pay, SUM(dolg) as dolg  FROM full_table");
+		string_t txt;
+		while (mybase::MYFASTROW row = res.fetch_row())
+			txt = row["plan"] + "\t" + row["pay"] + "\t" + row["dolg"];
+		if (!set_grp && !set_fio)	text += "всего по институту\t" +  txt;
+		else if (!set_fio)			text += "всего по институту\t\t" + txt;
+		else						text += "всего по институту\t\t\t" + txt;
+	}
+
+	theApp.GetCon().Query("drop temporary table if exists full_table");
+
+	// создадим имя файла
+	__timeb64 tstruct;
+	_ftime64(&tstruct);
+	tm lTime = *_localtime64(&tstruct.time);
+	std::wostringstream name;
+	name<< L"Buh_report"
+		<< L"_"
+		<< (1900+lTime.tm_year)
+		<< std::setiosflags(std::ios::right) << std::setfill(L'0')
+		<< std::setw(2) << (1+lTime.tm_mon)
+		<< std::setw(2) << lTime.tm_mday
+		<< L"_"
+		<< std::setw(2) << lTime.tm_hour
+		<< std::setw(2) << lTime.tm_min
+		<< std::setw(2) << lTime.tm_sec
+		<< L".xls.prn";
+	HANDLE hfile = CreateFile(name.str().c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	DWORD dwBytesWritten;
-	WriteFile(hfile, text.c_str(), text.size() ,&dwBytesWritten,NULL);
+	WriteFile(hfile, text.c_str(), text.size(), &dwBytesWritten, NULL);
 	CloseHandle(hfile);
+
+	ShellExecute(NULL, L"open", name.str().c_str(), NULL, NULL, SW_SHOWNORMAL);
 }
 
 void CActionBuhReport::ProcessPlan()
@@ -353,7 +459,7 @@ void CActionBuhReport::ProcessPlan()
 	}
 	else // если была выбрана категоря оплаты
 	{
-		theApp.GetCon().Query("SET @date_pre = '" + cat_year); // 2010-02-01
+		theApp.GetCon().Query("SET @date_pre = '" + cat_year + "'"); // 2010-02-01
 		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, pay)                              "
 			" SELECT s.idstud, s.idopt, s.commoncountmoney, SUM(COALESCE(fact.moneypay, 0))           "
 			" FROM (                                                                                  "
@@ -524,7 +630,7 @@ void CActionBuhReport::ProcessPay()
 	}
 	else // если была выбрана категоря оплаты
 	{
-		theApp.GetCon().Query("SET @cat_date = '" + cat_year); // 2010-02-01
+		theApp.GetCon().Query("SET @cat_date = '" + cat_year + "'"); // 2010-02-01
 		theApp.GetCon().Query("INSERT pay1 (idstud, plan, pay)                         "
 			" SELECT s.idstud, s.commoncountmoney, SUM(COALESCE(fact.moneypay, 0))     "
 			" FROM (                                                                   "
@@ -625,8 +731,8 @@ string_t CActionBuhReport::GetRange(string_t name)
 
 	string_t buf;
 	if (!data1.empty())
-		buf += " AND " + name + " >= " + t::date2t(data1) + " ";
+		buf += " AND " + name + " >= '" + t::date2t(data1) + "' ";
 	if (!data2.empty())
-		buf += " AND " + name + " <= " + t::date2t(data2) + " ";
+		buf += " AND " + name + " <= '" + t::date2t(data2) + "' ";
 	return buf;
 }
