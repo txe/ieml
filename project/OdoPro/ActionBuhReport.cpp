@@ -412,9 +412,9 @@ void CActionBuhReport::ProcessPlan()
 	if (link_element("pay-radio").get_state(STATE_CHECKED))
 	{
 		// зададим даты периода 2009-2010
-		theApp.GetCon().Query("SET @date_pre1 = '" + first + "-02-01'");  // 2009-02-01
-		theApp.GetCon().Query("SET @date_pre2 = '" + first + "-09-01'");  // 2009-09-01
-		theApp.GetCon().Query("SET @date_pre3 = '" + second + "-02-01'"); // 2010-02-01
+		string_t d1 = "'" + first + "-02-01'";  // 2009-02-01
+		string_t d2 = "'" + first + "-09-01'";  // 2009-09-01
+		string_t d3 = "'" + second + "-02-01'"; // 2010-02-01
 
 		//# это обычная сентябрьская оплата
 		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, pay)                              "
@@ -423,7 +423,7 @@ void CActionBuhReport::ProcessPlan()
 			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney				  "
 			"      FROM full_table AS st, payoptstest as opts										  "
 			"      WHERE opts.deleted = 0 AND opts.idgroup = st.grpid						          "
-			"      AND opts.datestart=@date_pre2							                          "
+			"      AND opts.datestart= " + d2 + "  							                          "
 			" ) as s                                                                                  "
 			" LEFT JOIN payfactstest AS fact                                                          "
 			" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0                "
@@ -436,7 +436,7 @@ void CActionBuhReport::ProcessPlan()
 			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney                "
 			"      FROM full_table AS st, payoptstest as opts										  "
 			"	   WHERE opts.deleted = 0 AND opts.idgroup = st.grpid						          "
-			"      AND opts.datestart=@data_pre1						                              "
+			"      AND opts.datestart=" + d1 + "						                              "
 			" ) as s                                                                                  "
 			" LEFT JOIN payfactstest AS fact                                                          "
 			" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0                "
@@ -450,7 +450,7 @@ void CActionBuhReport::ProcessPlan()
 			" FROM (                                                                                  "
 			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney                "
 			"      FROM full_table AS st, payoptstest as opts                                         "
-			"	   WHERE opts.deleted = 0 AND opts.idgroup = st.grpid AND opts.datestart=@data_pre3	  "
+			"	   WHERE opts.deleted = 0 AND opts.idgroup = st.grpid AND opts.datestart=" + d3 + "	  "
 			" ) as s                                                                                  "
 			" LEFT JOIN payfactstest AS fact                                                          "
 			" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0                "
@@ -460,14 +460,14 @@ void CActionBuhReport::ProcessPlan()
 	}
 	else // если была выбрана категоря оплаты
 	{
-		theApp.GetCon().Query("SET @date_pre = '" + cat_year + "'"); // 2010-02-01
+		string_t d4 = "'" + cat_year + "'"; // 2010-02-01
 		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, pay)                              "
 			" SELECT s.idstud, s.idopt, s.commoncountmoney, SUM(COALESCE(fact.moneypay, 0))           "
 			" FROM (                                                                                  "
 			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney				  "
 			"      FROM full_table AS st, payoptstest as opts										  "
 			"      WHERE opts.deleted = 0 AND opts.idgroup = st.grpid						          "
-			"      AND opts.datestart=@date_pre 							                          "
+			"      AND opts.datestart=" + d4 + " 							                          "
 			" ) as s                                                                                  "
 			" LEFT JOIN payfactstest AS fact                                                          "
 			" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0                "
@@ -582,9 +582,9 @@ void CActionBuhReport::ProcessPay()
 	if (link_element("pay-radio").get_state(STATE_CHECKED))
 	{
 		// зададим даты для текущего периода 2010-2011
-		theApp.GetCon().Query("SET @date1 = '" + first + "-02-01'");                       // 2010-02-01
-		theApp.GetCon().Query("SET @date2 = '" + first + "-09-01'");                       // 2010-09-01
-		theApp.GetCon().Query("SET @date3 = '" + second + "-02-01'");                      // 2011-02-01
+		string_t d1 = "'" + first + "-02-01'";    // 2010-02-01
+		string_t d2 = "'" + first + "-09-01'";    // 2010-09-01
+		string_t d3 = "'" + second + "-02-01'";   // 2011-02-01
 
 		//# это обычная сентябрьская оплата
 		theApp.GetCon().Query("INSERT pay1 (idstud, plan, pay)                         "
@@ -593,7 +593,7 @@ void CActionBuhReport::ProcessPay()
 			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney "
 			"      FROM full_table AS st, payoptstest as opts                          "
 			"      WHERE opts.deleted = 0 AND opts.idgroup = st.grpid				   "
-			"      AND opts.datestart=@date2                                           "
+			"      AND opts.datestart=" + d2 + "                                       "
 			" ) as s                                                                   "
 			" LEFT JOIN payfactstest AS fact                                           "
 			" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0 " + GetRange("fact.datepay") +
@@ -606,7 +606,7 @@ void CActionBuhReport::ProcessPay()
 			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney  "
 			"      FROM full_table AS st, payoptstest as opts                           "
 			"	     WHERE opts.deleted = 0 AND opts.idgroup = st.grpid                 "
-			"      AND opts.datestart=@data1                                            "
+			"      AND opts.datestart=" + d1 + "                                        "
 			" ) as s                                                                    "
 			" LEFT JOIN payfactstest AS fact                                            "
 			" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0 " + GetRange("fact.datepay") +
@@ -621,7 +621,7 @@ void CActionBuhReport::ProcessPay()
 			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney  "
 			"      FROM full_table AS st, payoptstest as opts                           "
 			"	     WHERE opts.deleted = 0 AND opts.idgroup = st.grpid                 "
-			"      AND opts.datestart=@data3                                            "
+			"      AND opts.datestart=" + d3 + "                                        "
 			" ) as s                                                                    "
 			" LEFT JOIN payfactstest AS fact                                            "
 			" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0 " + GetRange("fact.datepay") +
@@ -631,14 +631,14 @@ void CActionBuhReport::ProcessPay()
 	}
 	else // если была выбрана категоря оплаты
 	{
-		theApp.GetCon().Query("SET @cat_date = '" + cat_year + "'"); // 2010-02-01
+		string_t d4 = "'" + cat_year + "'"; // 2010-02-01
 		theApp.GetCon().Query("INSERT pay1 (idstud, plan, pay)                         "
 			" SELECT s.idstud, s.commoncountmoney, SUM(COALESCE(fact.moneypay, 0))     "
 			" FROM (                                                                   "
 			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney "
 			"      FROM full_table AS st, payoptstest as opts                          "
 			"      WHERE opts.deleted = 0 AND opts.idgroup = st.grpid				   "
-			"      AND opts.datestart=@cat_date                                           "
+			"      AND opts.datestart=" + d4 + "                                       "
 			" ) as s                                                                   "
 			" LEFT JOIN payfactstest AS fact                                           "
 			" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0 " + GetRange("fact.datepay") +

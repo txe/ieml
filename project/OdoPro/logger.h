@@ -241,6 +241,7 @@ namespace logger
 				m_file << "(" << logLevel << ")";
 			m_file << ": " << logMessage << std::endl << std::flush;
 			OutputDebugStringA(logMessage.c_str());
+			OutputDebugStringA("\n");
 			if(!m_file)
 			{
 				m_canWrite = false;
