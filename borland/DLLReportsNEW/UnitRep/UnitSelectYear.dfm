@@ -26,7 +26,6 @@ object FormSelectYear: TFormSelectYear
     Width = 113
     Height = 21
     ItemHeight = 13
-    ItemIndex = 1
     TabOrder = 0
     Text = '2006'
     OnChange = ComboBoxFirstYearChange
@@ -38,7 +37,14 @@ object FormSelectYear: TFormSelectYear
       '2009'
       '2010'
       '2011'
-      '2012')
+      '2012'
+      '2013'
+      '2014'
+      '2015'
+      '2016'
+      '2017'
+      '2018'
+      '2019')
   end
   object EditSecondYear: TEdit
     Left = 200
