@@ -166,7 +166,11 @@ void CMainDlg::UpdateGrid(void)
 	}
 	
 	theApp.SetCurrentStudentID(GetSelectedStudentID());
-	theApp.SetCurrentGroupID(GetSelectedStudent().get_attribute_int("grpid", -1));
+	// в списке могло быть много разнородных стедентов, устаном группу для текущего
+	// так же студентов может и не быть, тогда ничего не меняем
+	int grp = GetSelectedStudent().get_attribute_int("grpid", -1);
+	if (grp != -1)
+		theApp.SetCurrentGroupID(grp);
 
 	SetStatusBar(SB_COUNT, string_t(aux::itow(count)));
 

@@ -207,6 +207,11 @@ string_t SPayment::DateToPayFormat(const string_t& pay_date)
 // сохраняет оплату студента
 void SPayment::AddPay(void)
 {
+	if (!GetCurrentCat().is_valid())
+	{
+		MessageBox(::GetActiveWindow(), L"Для занесения оплаты выберете категорию оплаты.", L"Ошибка", MB_OK | MB_ICONERROR | MB_APPLMODAL);
+		return;
+	}
 	if (!CheckInputPay())
 		return;
 
@@ -252,7 +257,7 @@ bool SPayment::CheckInputPay(void)
 		return false;
 	}
 	
-	element catpay	= GetCurrentCat();
+	element catpay	= GetCurrentCat(); // может ничего не вернуть, проверили в оплате
 	long	dolg	= catpay.get_attribute_int("dolg");
 
 	if (aux::wtoi(pay_pay) > dolg)
@@ -277,8 +282,9 @@ element SPayment::GetCurrentCat(void)
 	element find = _payment_table.find_first(":current");
 	if (!find.is_valid())
 	{
-		assert(FALSE);
-		throw wss::exception(wss::reason_message(FULL_LOCATION()));
+		return find; // бедет невалидным
+		//assert(FALSE);
+		//throw wss::exception(wss::reason_message(FULL_LOCATION()));
 	}
 	// если оплата, то передем на категорию 
 	if (aux::streq(find.get_element_type(), "option"))
@@ -297,13 +303,12 @@ element SPayment::GetCurrentCat(void)
 void SPayment::DeletePay(void)
 {
 	element find = _payment_table.find_first(":current");
-	if (!find.is_valid())
-	{
-		assert(FALSE);
-		throw wss::exception(wss::reason_message(FULL_LOCATION()));
-	}
+	
 	if (!aux::streq(find.get_element_type(), "option") || -1 == find.get_attribute_int("idfact", -1))
+	{
+		MessageBox(::GetActiveWindow(), L"Для удаления оплаты выберете факт оплаты.", L"Ошибка", MB_OK | MB_ICONERROR | MB_APPLMODAL);
 		return;
+	}
 
 	string_t msg = "Вы действительно хотите удалить эту запись по факту оплаты?\n"
 		"Будьте аккуратны!";
@@ -321,6 +326,8 @@ void SPayment::DeletePay(void)
 void SPayment::UpdateViewCat(void)
 {
 	element cat = GetCurrentCat();
+	if (!cat.is_valid()) // для пустой группы категории еще не введены
+		return;
 
 	std::vector<std::wstring> date;
 	std::wstring buf = cat.get_attribute("datestart"); 
@@ -367,7 +374,7 @@ void SPayment::AddCat(void)
 bool SPayment::IsExistCat(bool include_cur_cat /* = true */)
 {
 	string_t grpid			= aux::itow(theApp.GetCurrentGroupID());
-	string_t incl			= include_cur_cat?"":(string_t() + " id != " + GetCurrentCat().get_attribute("optid") + " AND ");
+	string_t incl			= include_cur_cat || !GetCurrentCat().is_valid()?"":(string_t() + " id != " + GetCurrentCat().get_attribute("optid") + " AND ");
 	string_t startdate;
 	string_t enddate;
 
@@ -396,6 +403,11 @@ void SPayment::GetDateCat(string_t& startdate, string_t& enddate)
 // сохраняет изменения категории оплаты
 void SPayment::SaveUpdateCat(void)
 {
+	if (!GetCurrentCat().is_valid())
+	{
+		MessageBox(::GetActiveWindow(), L"Для сохранения изменений выберете категорию оплаты.", L"Ошибка", MB_OK | MB_ICONERROR | MB_APPLMODAL);
+		return;
+	}
 	if (IsExistCat(false))
 	{
 		string_t msg = "Категория оплаты с такими параметрами уже существует в базе данных.\n"
@@ -431,6 +443,11 @@ void SPayment::SaveUpdateCat(void)
 // удаляет выбранную категорию
 void SPayment::DeleteCat(void)
 {
+	if (!GetCurrentCat().is_valid())
+	{
+		MessageBox(::GetActiveWindow(), L"Для удаления категории оплаты выберете категорию оплаты.", L"Ошибка", MB_OK | MB_ICONERROR | MB_APPLMODAL);
+		return;
+	}
 	string_t msg = "Вы действительно хотите удалить эту запись?\n"
 		"Ведь при её удалении пропадут некоторые данные о студентах,\n"
 		"а при попытке исправить ситуацию и внести запись с теми же данными структура базы не восстановится!\n"
