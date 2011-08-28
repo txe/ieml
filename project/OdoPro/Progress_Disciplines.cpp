@@ -115,11 +115,12 @@ void CManagDisciplinesDlg::InitDomElement(void)
 	
 	// заполн€ем списки
 	t::LoadContentFromVocForList(discip_class_, "discipclassific");
+	json::t2v(discip_class_, htmlayout::dom::element(discip_class_.find_first("option")).get_attribute("value"));
 	t::LoadContentFromVocForList(spec_, "spec", true);
+	json::t2v(spec_, (LPCWSTR)aux::itow(theApp.GetSpecIdForStudId(theApp.GetCurrentStudentID())));
 
 	// присоедин€ем процедуру, отвлавливающую выбор строки с дисциплинами
 	HTMLayoutAttachEventHandlerEx(discip_table_, ElementEventProcDiscip, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
-
 }
 
 // проверка введенных значений
@@ -193,6 +194,10 @@ void CManagDisciplinesDlg::UpdateViewDiscipTable(void)
 // отображает данные на выбранную дисциплину
 void CManagDisciplinesDlg::UpdateViewDiscipData(void)
 {
+	// нет ни одной дисциплины
+	if (discip_table_.children_count() < 2)
+		return;
+
 	element discip = t::GetSelectedRow(discip_table_);
 
 	json::t2v(fulltitle_,  json::v2t(element(discip.child(2)).get_value()));
@@ -206,14 +211,16 @@ void CManagDisciplinesDlg::UpdateViewDiscipData(void)
 	for (uint i = 0; i < sem_hours_.size(); ++i)
 		json::t2v(sem_hours_[i], (i < hs.size())?hs[i]:L"1");
 
-	json::t2v(spec_, discip.get_attribute("idspec"));
 	json::t2v(discip_class_, discip.get_attribute("idclass"));
-
 }
 
 // удал€ет дисциплину из базы
 void CManagDisciplinesDlg::DeleteDiscip(void)
 {
+	// нет ни одной дисциплины
+	if (discip_table_.children_count() < 2)
+		return;
+
 	string_t msg = "¬ы действительно хотите удалить эту запись?\n"
 		"¬едь при еЄ удалении пропадут некоторые данные о студентах,\n"
 		"а при попытке исправить ситуацию и внести запись с теми же данными структура базы не восстановитс€!\n"
@@ -236,7 +243,8 @@ bool CManagDisciplinesDlg::IsExistDiscip(bool include_cur_discip /* = true */)
 	string_t specid			= aux::itow(theApp.GetSpecIdForStudId(theApp.GetCurrentStudentID()));
 	string_t fulltitle		= json::v2t(fulltitle_.get_value());
 	string_t shorttitle		= json::v2t(shorttitle_.get_value());
-	string_t incl			= string_t() + " id != " + t::GetSelectedRow(discip_table_).get_attribute("discip_id") + " AND ";
+	string_t incl			= discip_table_.children_count() < 2 ? "" :
+		string_t() + " id != " + t::GetSelectedRow(discip_table_).get_attribute("discip_id") + " AND ";
 
 	string_t query = "SELECT id FROM disciplines "
 		" WHERE idspec = " + specid + " AND "
@@ -270,8 +278,8 @@ void CManagDisciplinesDlg::AddDiscip(void)
 
 	string_t query = 
 		" INSERT INTO disciplines (idspec, fulltitle, shorttitle, idclass, num_hours, scan_number, sem_hours) "
-		" VALUES(" + specid + ", '" + fulltitle + "', '" + shorttitle + "', " + 
-		discip_class + ", " + num_hours + ", " + scan_namber + ", '" + sem_hours+"')";
+		" VALUES(" + specid + ", '" + fulltitle + "', '" + shorttitle + "', '" + 
+		discip_class + "', " + num_hours + ", " + scan_namber + ", '" + sem_hours+"')";
 	theApp.GetCon().Query(query);
 
 	UpdateView();
@@ -298,6 +306,9 @@ string_t CManagDisciplinesDlg::AudHoursToStr(void)
 // сохран€ет изменение дисциплины
 void CManagDisciplinesDlg::SaveUpdateDiscip(void)
 {
+	if (discip_table_.children_count() < 2)
+		return;
+
 	if (IsExistDiscip(false))
 	{
 		string_t msg = "«апись c такими параметрами дл€ данной специальности уже существует в базе данных.\n"
