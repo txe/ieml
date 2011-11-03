@@ -216,7 +216,7 @@ void __fastcall TFormReportPrilDiplomNepol::CreateWordDocument(void)
   AnsiString BirstDateS;
   AnsiString PrevDocS, PrevDocYearS;
   AnsiString NormPeriodStudyS = "       5 лет";
-  AnsiString NapravSpecS, SpecializS;
+  AnsiString SpecOrProfil, SpecializS;
   AnsiString CursWorks = "\nприведены в продолжении приложения к диплому";
   AnsiString MiscS = "приведены в продолжении приложения к диплому";
   AnsiString PracticaS, ItogGosEkzS;
@@ -230,7 +230,7 @@ void __fastcall TFormReportPrilDiplomNepol::CreateWordDocument(void)
   AnsiString InYear, InMonth, InDay, OutYear, OutMonth, OutDay;
   AnsiString lang, Direct;
   InitPrivateData(SecNameS, FirstNameS, ThirdNameS, BirstDateS, VipQualificWorkS, PrevDocS,
-        PrevDocYearS, InYear, InMonth, InDay, OutYear, OutMonth, OutDay, NapravSpecS, SpecializS, QualificTitleS, SexS, lang,
+        PrevDocYearS, InYear, InMonth, InDay, OutYear, OutMonth, OutDay, SpecOrProfil, SpecializS, QualificTitleS, SexS, lang,
         NumDiplomS, RegNumS, DataVidachiS, DataQualificS, Direct);
   if (Direct != "")
     PrevSpecS = "по направлению";
@@ -313,7 +313,7 @@ void __fastcall TFormReportPrilDiplomNepol::CreateWordDocument(void)
   if (Direct != "")
     ItogGosEkzS = "\n\nМеждисциплинарный экзамен по направлению \"\""+Direct+"\"\", "+GetEst(itog_oc);
   else
-    ItogGosEkzS = "\n\nМеждисциплинарный экзамен по специальности \"\""+NapravSpecS+"\"\", "+GetEst(itog_oc);
+    ItogGosEkzS = "\n\nМеждисциплинарный экзамен по специальности \"\""+SpecOrProfil+"\"\", "+GetEst(itog_oc);
   VipQualificWorkS = "\"" + VipQualificWorkS + "\"" + ContVIP;
 
   //macros.InsertLine("Selection.Range->InsertAfter(TVariant("\n\n"));
@@ -430,7 +430,7 @@ void __fastcall TFormReportPrilDiplomNepol::CreateWordDocument(void)
   if (Direct != "")
     macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(15,1).Range.Text= \"" + GetWithLowerFirst(Direct) + "\"");
   else
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(15,1).Range.Text= \"" + GetWithLowerFirst(NapravSpecS) + "\"");
+    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(15,1).Range.Text= \"" + GetWithLowerFirst(SpecOrProfil) + "\"");
 
   macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(16,1).Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
@@ -599,7 +599,7 @@ void __fastcall TFormReportPrilDiplomNepol::CreateWordDocument(void)
 void __fastcall TFormReportPrilDiplomNepol::InitPrivateData(AnsiString& SN, AnsiString& FN, AnsiString& TN,
         AnsiString& BirstDate, AnsiString& VipQualifWork, AnsiString& PrevDoc, AnsiString& PrevDocYear,
         AnsiString& InYear, AnsiString& InMonth, AnsiString& InDay, AnsiString& OutYear,  AnsiString& OutMonth, AnsiString& OutDay,
-        AnsiString& spec, AnsiString& specializ,
+        AnsiString& SpecOrProfil, AnsiString& specializ,
         AnsiString& Qualific, AnsiString& Sex, AnsiString& lang,
         AnsiString&  NumDiplomS, AnsiString& RegNumS, AnsiString& DataVidachiS, AnsiString& DataQualificS, AnsiString& Direct)
 {
@@ -616,7 +616,7 @@ void __fastcall TFormReportPrilDiplomNepol::InitPrivateData(AnsiString& SN, Ansi
     OutYear = "???";
     OutMonth = "???";
     OutDay = "???";
-    spec = "???";
+    SpecOrProfil = "???";
     Direct = "???";
     specializ = "???";
     Qualific = "???";
@@ -654,7 +654,7 @@ void __fastcall TFormReportPrilDiplomNepol::InitPrivateData(AnsiString& SN, Ansi
                 VipQualifWork = AnsiString(row[4]);
                 PrevDoc = WCGetTitleForKeyNum(EDUDOCS, AnsiString(row[5]).ToInt());
                 PrevDocYear = "выданный в " + GetYear(AnsiString(row[6])) + " году";
-                spec = WCGetTitleForKeyNum(SPECS, AnsiString(row[7]).ToInt());
+                SpecOrProfil = WCGetTitleForKeyNum(SPECS, AnsiString(row[7]).ToInt());
                 Direct = WCGetTitleForKeyNum(DIRECTS, AnsiString(row[16]).ToInt());
                 specializ = WCGetTitleForKeyNum(SPEZIALIZS, AnsiString(row[7]).ToInt());
                 Qualific = WCGetTitleForKeyNum(QUALIFIC, AnsiString(row[7]).ToInt());

@@ -223,7 +223,7 @@ void __fastcall TFormReportPrilDiplom::CreateWordDocument(void)
   AnsiString PrevDocS, PrevDocYearS;
 
   AnsiString NormPeriodStudyS = "                                                    5 лет";
-  AnsiString NapravSpecS, SpecializS;
+  AnsiString SpecOrProfil, SpecializS;
   AnsiString CursWorks = "\nприведены в продолжении приложения к диплому";
   AnsiString MiscS = "приведены в продолжении приложения к диплому";
   AnsiString PracticaS, ItogGosEkzS;
@@ -236,7 +236,7 @@ void __fastcall TFormReportPrilDiplom::CreateWordDocument(void)
   AnsiString InYear, InMonth, InDay, OutYear, OutMonth, OutDay;
   AnsiString lang, Direct;
   InitPrivateData(SecNameS, FirstNameS, ThirdNameS, BirstDateS, VipQualificWorkS, PrevDocS,
-        PrevDocYearS, InYear, InMonth, InDay, OutYear, OutMonth, OutDay, NapravSpecS, SpecializS, QualificTitleS, SexS, lang,
+        PrevDocYearS, InYear, InMonth, InDay, OutYear, OutMonth, OutDay, SpecOrProfil, SpecializS, QualificTitleS, SexS, lang,
         NumDiplomS, RegNumS, DataVidachiS, DataQualificS, Direct);
   if (Direct != "")
     PrevSpecS = "по направлению";
@@ -432,7 +432,7 @@ void __fastcall TFormReportPrilDiplom::CreateWordDocument(void)
   if (Direct != "")
     macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(17,2).Range.Text=\"\"\""+Direct+"\"\"\"");
   else
-    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(17,2).Range.Text=\"\"\""+NapravSpecS+"\"\"\"");
+    macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(17,2).Range.Text=\"\"\""+SpecOrProfil+"\"\"\"");
 
   macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(21,1).Range.Select");
   macros.InsertLine("ActiveDocument.Tables.Item(1).Cell(21,1).Range.Paragraphs.Format.Alignment = wdAlignParagraphLeft");
@@ -471,7 +471,7 @@ void __fastcall TFormReportPrilDiplom::CreateWordDocument(void)
     if (Direct != "")
       ItogGosEkzS = "\n\nМеждисциплинарный экзамен по направлению \"\""+Direct+"\"\", "+GetEst(itog_oc);
     else
-      ItogGosEkzS = "\n\nМеждисциплинарный экзамен по специальности \"\""+NapravSpecS+"\"\", "+GetEst(itog_oc);
+      ItogGosEkzS = "\n\nМеждисциплинарный экзамен по специальности \"\""+SpecOrProfil+"\"\", "+GetEst(itog_oc);
   else
     ItogGosEkzS = "\n\n" + ExamForUr();
 
@@ -628,7 +628,7 @@ void __fastcall TFormReportPrilDiplom::CreateWordDocument(void)
   if (Direct != "")
     macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(22,2).Range.Text=\"\"\""+Direct+"\"\"\"");
   else
-    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(22,2).Range.Text=\"\"\""+NapravSpecS+"\"\"\"");
+    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(22,2).Range.Text=\"\"\""+SpecOrProfil+"\"\"\"");
 
   //---------------------------------------------
 
@@ -716,7 +716,7 @@ void __fastcall TFormReportPrilDiplom::CreateWordDocument(void)
   if (Direct != "")
     macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(11,1).Range.Text= \"" + GetWithLowerFirst(Direct) + "\"");
   else
-    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(11,1).Range.Text= \"" + GetWithLowerFirst(NapravSpecS) + "\"");
+    macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(11,1).Range.Text= \"" + GetWithLowerFirst(SpecOrProfil) + "\"");
 
   macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(12,1).Range.Select");
   // 218
@@ -726,7 +726,7 @@ void __fastcall TFormReportPrilDiplom::CreateWordDocument(void)
   macros.InsertLine("Selection.Font.Bold=true");
   macros.InsertLine("Selection.Font.Italic=true");
   macros.InsertLine("Selection.Font.Size="+IntToStr(ns));
-  macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(12,1).Range.Text= \"" + GetWithLowerFirst(SpecializS) + "\"");
+  macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(12,1).Range.Text= \"" + GetWithLowerFirst(Direct != "" ? SpecOrProfil : SpecializS) + "\"");
 
   macros.InsertLine("ActiveDocument.Tables.Item("+IntToStr(CountTables)+").Cell(13,1).Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
@@ -1049,7 +1049,7 @@ void __fastcall TFormReportPrilDiplom::CreateWordDocument(void)
 //---------------------------------------------------------------------------
 void __fastcall TFormReportPrilDiplom::InitPrivateData(AnsiString& SN, AnsiString& FN, AnsiString& TN,
         AnsiString& BirstDate, AnsiString& VipQualifWork, AnsiString& PrevDoc, AnsiString& PrevDocYear,
-        AnsiString& InYear, AnsiString& InMonth, AnsiString& InDay, AnsiString& OutYear, AnsiString& OutMonth, AnsiString& OutDay, AnsiString& spec, AnsiString& specializ,
+        AnsiString& InYear, AnsiString& InMonth, AnsiString& InDay, AnsiString& OutYear, AnsiString& OutMonth, AnsiString& OutDay, AnsiString& SpecOrProfil, AnsiString& specializ,
         AnsiString& Qualific, AnsiString& Sex, AnsiString& lang,
         AnsiString&  NumDiplomS, AnsiString& RegNumS, AnsiString& DataVidachiS, AnsiString& DataQualificS, AnsiString& Direct)
 {
@@ -1066,7 +1066,7 @@ void __fastcall TFormReportPrilDiplom::InitPrivateData(AnsiString& SN, AnsiStrin
     OutYear = "???";
     OutMonth = "???";
     OutDay = "???";
-    spec = "???";
+    SpecOrProfil = "???";
     Direct = "???";
     specializ = "???";
     Qualific = "???";
@@ -1104,7 +1104,7 @@ void __fastcall TFormReportPrilDiplom::InitPrivateData(AnsiString& SN, AnsiStrin
                 VipQualifWork = AnsiString(row[4]);
                 PrevDoc = WCGetTitleForKeyNum(EDUDOCS, AnsiString(row[5]).ToInt());
                 PrevDocYear = "выданный в " + GetYear(AnsiString(row[6])) + " году";
-                spec = WCGetTitleForKeyNum(SPECS, AnsiString(row[7]).ToInt());
+                SpecOrProfil = WCGetTitleForKeyNum(SPECS, AnsiString(row[7]).ToInt());
                 Direct = WCGetTitleForKeyNum(DIRECTS, AnsiString(row[16]).ToInt());
                 specializ = WCGetTitleForKeyNum(SPEZIALIZS, AnsiString(row[7]).ToInt());
                 Qualific = WCGetTitleForKeyNum(QUALIFIC, AnsiString(row[7]).ToInt());
