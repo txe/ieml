@@ -32,6 +32,7 @@ void SPayment::Init(htmlayout::dom::element root)
 	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "pay-cat-add"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "pay-cat-del"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "pay-cat-save"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "pay-cat-per"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "pay-show-only-pay"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 
 	// присоединяем процедуру, отвлавливающую выбор строки категории/оплаты
@@ -73,6 +74,11 @@ BOOL CALLBACK SPayment::ElementEventProcBt(LPVOID tag, HELEMENT he, UINT evtg, L
 	if (aux::wcseq(id, L"pay-cat-save"))
 	{
 		dlg->SaveUpdateCat();
+		return TRUE;
+	}
+	if (aux::wcseq(id, L"pay-cat-per"))
+	{
+		dlg->PersonalCat();
 		return TRUE;
 	}
 	if (aux::wcseq(id, L"pay-show-only-pay"))
@@ -136,19 +142,40 @@ void SPayment::UpdateViewPayment()
 	while (info_row = info_res.fetch_row())	
 	{	
 		std::wstring optid	= info_row["id"];
+		std::wstring studid	= aux::itow(theApp.GetCurrentStudentID());
+
+		// определим есть ли персональная категория оплаты
+		string_t query = string_t() +
+			"SELECT id,commoncountmoney  FROM paypersonaltest "
+			" WHERE idstud = " + studid + " AND idopts = "  + optid +
+			" AND deleted = 0";
+		std::wstring per_id = L"";
+		int per_money = 0;
+		mybase::MYFASTRESULT per_res = theApp.GetCon().Query(query);
+		if (mybase::MYFASTROW per_row = per_res.fetch_row())
+		{
+			per_id = per_row["id"];
+			per_money = aux::wtoi(per_row["commoncountmoney"]);
+		}
+		
+
 		std::wstring period = DateToPayFormat(info_row["datestart"]) + " - " + DateToPayFormat(info_row["dateend"]);
 		std::wstring atr	= string_t() + 
 			" optid=" + optid +  
-			" dolg=" + aux::itow(aux::wtoi(info_row["commoncountmoney"]) - pay[optid]) + 
+			(per_id == L"" ? L"" : L" per_id=" + per_id) +
+			" dolg=" + (per_id == L"" ? aux::itow(aux::wtoi(info_row["commoncountmoney"]) - pay[optid]) : aux::itow(per_money - pay[optid])) + 
 			" period=\"" + period +"\" " +
 			" money=" + info_row["commoncountmoney"] +
 			" datestart=\"" + info_row["datestart"] + "\"";
 		std::wstring dolg;
 		if (!info_pay[optid].empty())
-			dolg = string_t() + "[долг: " + aux::itow(aux::wtoi(info_row["commoncountmoney"]) - pay[optid]) + " руб.]";			
+			dolg = string_t() + "[долг: " + (per_id == L"" ? aux::itow(aux::wtoi(info_row["commoncountmoney"]) - pay[optid]) : aux::itow(per_money - pay[optid])) + " руб.]";			
 		buf += string_t() + "<options" + atr +"><caption>";
-		buf += string_t() + period + " [студ: " + info_row["cnt"] + "]";;
-		buf += string_t() + "<br/>[сумма: " + info_row["commoncountmoney"] + " руб.]";
+		buf += string_t() + period + " [студ: " + info_row["cnt"] + "]";
+		if (per_id == L"")
+			buf += string_t() + "<br/>[сумма: " + info_row["commoncountmoney"] + " руб.]";
+		else
+			buf += string_t() + "<br/>[сумма: " + aux::itow(per_money) + "(" + info_row["commoncountmoney"] + ") руб.]";
 		buf += dolg;
 		buf += "</caption>";
 		buf += info_pay[optid];
@@ -356,7 +383,7 @@ void SPayment::AddCat(void)
 	string_t enddate;
 	GetDateCat(startdate, enddate);
 
-	if (aux::wtoi(monye, -1) == -1)
+	if (aux::wtoi(monye, -1) < 1)
 	{
 		string_t msg = "Сумма оплаты должна задаваться как целое положительное число.\nИсправьте пожалуйста.";
 		MessageBox(::GetActiveWindow(), msg, L"Ошибка", MB_OK | MB_ICONERROR | MB_APPLMODAL);
@@ -423,7 +450,7 @@ void SPayment::SaveUpdateCat(void)
 	string_t enddate;
 	GetDateCat(startdate, enddate);
 
-	if (aux::wtoi(money, -1) == -1)
+	if (aux::wtoi(money, -1) < 1)
 	{
 		string_t msg = "Сумма оплаты должна задаваться как целое положительное число.\nИсправьте пожалуйста.";
 		MessageBox(::GetActiveWindow(), msg, L"Ошибка", MB_OK | MB_ICONERROR | MB_APPLMODAL);
@@ -445,21 +472,96 @@ void SPayment::DeleteCat(void)
 {
 	if (!GetCurrentCat().is_valid())
 	{
-		MessageBox(::GetActiveWindow(), L"Для удаления категории оплаты выберете категорию оплаты.", L"Ошибка", MB_OK | MB_ICONERROR | MB_APPLMODAL);
+		MessageBox(::GetActiveWindow(), L"Для удаления категории оплаты или персональной категории оплаты выберете категорию оплаты.", L"Ошибка", MB_OK | MB_ICONERROR | MB_APPLMODAL);
 		return;
 	}
-	string_t msg = "Вы действительно хотите удалить эту запись?\n"
-		"Ведь при её удалении пропадут некоторые данные о студентах,\n"
-		"а при попытке исправить ситуацию и внести запись с теми же данными структура базы не восстановится!\n"
-		"Будьте аккуратны!";
+	int per_id = GetCurrentCat().get_attribute_int("per_id", -1);
+	string_t msg;
+	if (per_id == -1)
+		msg = "Вы действительно хотите удалить категорию оплаты?\n"
+			  "Ведь при её удалении пропадут некоторые данные о студентах,\n"
+		      "а при попытке исправить ситуацию и внести запись с теми же данными структура базы не восстановится!\n"
+		      "Будьте аккуратны!";
+	else
+		msg = "Вы действительно хотите удалить ПЕРСОНАЛЬНУЮ категорию оплаты?";
 
-	if( IDNO == MessageBox(::GetActiveWindow(), msg, 
-		L"Предупреждение", MB_YESNO | MB_ICONERROR | MB_APPLMODAL))
+	if (IDNO == MessageBox(::GetActiveWindow(), msg, L"Предупреждение", MB_YESNO | MB_ICONERROR | MB_APPLMODAL))
 		return;
 
-	string_t cat_id = GetCurrentCat().get_attribute("optid");
-	string_t query = "UPDATE payoptstest SET deleted = 1 WHERE id = " + cat_id;
-	theApp.GetCon().Query(query);
+	if (per_id == -1)
+	{
+		string_t cat_id = GetCurrentCat().get_attribute("optid");
+		string_t query = "UPDATE payoptstest SET deleted = 1 WHERE id = " + cat_id;
+		theApp.GetCon().Query(query);
+	}
+	else
+	{
+		string_t query = string_t() + "UPDATE paypersonaltest SET deleted = 1 WHERE id = " + aux::itow(per_id);
+		theApp.GetCon().Query(query);
+	}
+	UpdateView();
+}
+
+// задает для выбранной категории собственную оплату студента
+void SPayment::PersonalCat()
+{
+	if (!GetCurrentCat().is_valid())
+	{
+		MessageBox(::GetActiveWindow(), L"Для создания персональной оплаты выберете существующую категорию оплаты", L"Ошибка", MB_OK | MB_ICONERROR | MB_APPLMODAL);
+		return;
+	}
+	
+	element  cat    = GetCurrentCat();
+	string_t money  = json::v2t(_cat_money.get_value());
+	string_t catid  = GetCurrentCat().get_attribute("optid");
+	string_t studid	= aux::itow(theApp.GetCurrentStudentID());
+
+	if (aux::wtoi(money, -1) < 1)
+	{
+		string_t msg = "Сумма оплаты должна задаваться как целое положительное число.\nИсправьте пожалуйста.";
+		MessageBox(::GetActiveWindow(), msg, L"Ошибка", MB_OK | MB_ICONERROR | MB_APPLMODAL);
+		return;
+	}
+	if (aux::wtoi(money, -1) == cat.get_attribute_int("money", -1))
+	{
+		string_t msg = "Сумма персональной оплаты не должна совпадать с оплатой категории.";
+		msg += "\nP.S.: Для удаления персональной оплаты используйте кнопку 'Удалить'.";
+		MessageBox(::GetActiveWindow(), msg, L"Ошибка", MB_OK | MB_ICONERROR | MB_APPLMODAL);
+		return;
+	}
+
+	// определим есть ли уже персональная оплата, если есть то просто изменим иначе создадим новую
+	string_t query = "SELECT id FROM paypersonaltest "
+		" WHERE idstud = " + studid + " AND idopts = "  + catid +
+		" AND deleted = 0";
+	mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
+	if (res.size() > 0)
+	{
+		string_t msg = "Вы действительно хотите изменить сумму персональной оплаты?"
+			"\nP.S.: Для удаления персональной оплаты используйте кнопку 'Удалить'.";
+		if (IDNO == MessageBox(::GetActiveWindow(), msg, L"Предупреждение", MB_YESNO | MB_ICONERROR | MB_APPLMODAL))
+			return;
+
+		string_t query = 
+			" UPDATE paypersonaltest "
+			" SET commoncountmoney = " + money + 
+			" WHERE idstud = " + studid + " AND idopts = " + catid;
+
+		theApp.GetCon().Query(query);
+	}
+	else
+	{
+		string_t msg = "Вы действительно хотите задать персональную оплату по данной категории?"
+			"\nP.S.: Для удаления персональной оплаты используйте кнопку 'Удалить'.";
+		if (IDNO == MessageBox(::GetActiveWindow(), msg, L"Предупреждение", MB_YESNO | MB_ICONERROR | MB_APPLMODAL))
+			return;
+
+		string_t query = 
+			"INSERT INTO paypersonaltest "
+			"(idstud,idopts,commoncountmoney,deleted) " 
+			" VALUES(" + studid +", " + catid + ", " + money + ", 0)";
+		theApp.GetCon().Query(query);
+	}
 
 	UpdateView();
 }

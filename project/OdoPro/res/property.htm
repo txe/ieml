@@ -771,15 +771,14 @@
                             <div style="padding-top:4px"><button id="pay-save"  value="Сохранить"/></div>
                         </div>
                     </fieldset>
-                    <div style="padding-top:4px" disabled pay-cat-lock align="left">
-                        <div style="padding-top:4px"><button id="pay-del"  value="Удалить"/></div>
+                    <div style="flow:horizontal">
+                        <div style="padding-top:4px" ><button id="pay-show-only-pay" title="Покажет только выплаты" value="Выплаты"/></div>
+                        <div style="padding-top:4px" align="right" ><button id="pay-del"  disabled pay-cat-lock value="Удалить"/></div>
+                        
                     </div>
-                    <div style="flow:horizontal;padding-top:4px" align="right">
-                            <div style="padding-top:4px"><button id="pay-show-only-pay" title="Тревожная кнопочка :)" value="Показать только выплаты"/></div>
-                    </div>
-                    <div style="width:100%%;height:100%%;vertical-align:bottom">
+                    <div style="width:100%%;height:100%%;vertical-align:top">
                     <fieldset disabled pay-cat-lock>
-                    <legend style="color: black;">Управление категориями</legend>
+                    <legend style="color: black;">Категории оплаты</legend>
                         <div style="flow:grid;white-space: nowrap;">
                             <div style="left:1#;top:1#;padding:2px; width:50%%">тип</div>
                             <div style="left:2#;right:3#;top:1#;padding:2px;">
@@ -814,11 +813,13 @@
                             </div>
                             <div style="left:1#;top:3#;padding:2px; width:50%%">сумма</div>
                             <div style="left:2#;top:3#;padding:2px;"><input type="number" value="0" id="pay-cat-money" size="7"/></div>
-                            <div style="left:3#;top:3#;padding:2px; width:50%%">руб.</div>
                         </div> 
-                        <div style="flow:horizontal;padding-top:4px" align="right">
+                        <div style="flow:horizontal;padding-top:4px" align="center">
                             <div style="padding-top:4px"><button id="pay-cat-add" value="Добавить"/></div>
                             <div style="padding-top:4px"><button id="pay-cat-save" value="Сохранить"/></div>
+                        </div>
+                        <div style="flow:horizontal;padding-top:4px" align="center">
+                            <div style="padding-top:4px"><button id="pay-cat-per" value="Персональная оплата"/></div>
                         </div>
                     </fieldset>
                     <div style="flow:horizontal;padding-top:4px" align="right">

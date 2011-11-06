@@ -55,6 +55,8 @@ private:
 	void SaveUpdateCat(void);
 	// удаляет выбранную категорию
 	void DeleteCat(void);
+	// задает для выбранной категории собственную оплату студента
+	void PersonalCat();
 	// заполняет поле оплаты разными вариантами оплаты
 	void InitPayPay(void);
 	// показать только оплаты
