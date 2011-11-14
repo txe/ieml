@@ -410,6 +410,7 @@ void CActionBuhReport::ProcessPlan()
 		"  idopt     int(11) NOT NULL, "
 		"  plan      int(11) NOT NULL, "
 		"  pay       int(11) NOT NULL, "
+		"  type      char(1) NOT NULL, "
 		"  INDEX (id),     "
 		"  INDEX (idstud)  "
 		" ) TYPE = HEAP ");
@@ -423,8 +424,8 @@ void CActionBuhReport::ProcessPlan()
 		string_t d3 = "'" + second + "-02-01'"; // 2010-02-01
 
 		//# это обычная сентябрьская оплата
-		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, pay)                              "
-			" SELECT s.idstud, s.idopt, s.commoncountmoney, SUM(COALESCE(fact.moneypay, 0))           "
+		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, pay, type)                        "
+			" SELECT s.idstud, s.idopt, s.commoncountmoney, SUM(COALESCE(fact.moneypay, 0)), 'a'      "
 			" FROM (                                                                                  "
 			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney				  "
 			"      FROM full_table AS st, payoptstest as opts										  "
@@ -434,10 +435,15 @@ void CActionBuhReport::ProcessPlan()
 			" LEFT JOIN payfactstest AS fact                                                          "
 			" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0                "
 			" GROUP BY s.idstud, s.idopt");
-
+		// проверим на наличие персональных категорий оплат
+		theApp.GetCon().Query("UPDATE old_pay, paypersonaltest as p "
+			" SET old_pay.plan = p.commoncountmoney "
+			" WHERE old_pay.type = 'a' AND p.idstud = old_pay.idstud "
+			" AND p.idopts = old_pay.idopt AND p.deleted = 0 ");
+		
 		//# это февральские предыдущие
-		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, pay)                              "
-			" SELECT s.idstud, s.idopt, s.commoncountmoney/2, SUM(COALESCE(fact.moneypay, 0)) - s.commoncountmoney/2  "
+		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, pay, type)                        "
+			" SELECT s.idstud, s.idopt, s.commoncountmoney/2, SUM(COALESCE(fact.moneypay, 0)), 'b'    "
 			" FROM (                                                                                  "
 			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney                "
 			"      FROM full_table AS st, payoptstest as opts										  "
@@ -447,12 +453,19 @@ void CActionBuhReport::ProcessPlan()
 			" LEFT JOIN payfactstest AS fact                                                          "
 			" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0                "
 			" GROUP BY s.idstud, s.idopt");
-		//# сделаеим для них проверку что бы не было отрицательных оплат
+		// проверим на наличие персональных категорий оплат
+		theApp.GetCon().Query("UPDATE old_pay, paypersonaltest as p "
+			" SET old_pay.plan = p.commoncountmoney/2 "
+			" WHERE old_pay.type = 'b' AND p.idstud = old_pay.idstud "
+			" AND p.idopts = old_pay.idopt AND p.deleted = 0 ");
+		//скоректируем выплаты
+		theApp.GetCon().Query("UPDATE old_pay SET old_pay.pay = old_pay.pay - old_pay.plan WHERE old_pay.type = 'b' ");
+		//сделаеим для них проверку что бы не было отрицательных оплат
 		theApp.GetCon().Query("UPDATE old_pay SET old_pay.pay = 0 WHERE old_pay.pay < 0 ");
 
 		//# это февральские последующие
-		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, pay)                              "
-			" SELECT s.idstud, s.idopt, s.commoncountmoney/2, SUM(COALESCE(fact.moneypay, 0))         "
+		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, pay, type)                        "
+			" SELECT s.idstud, s.idopt, s.commoncountmoney/2, SUM(COALESCE(fact.moneypay, 0)), 'c'    "
 			" FROM (                                                                                  "
 			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney                "
 			"      FROM full_table AS st, payoptstest as opts                                         "
@@ -461,14 +474,19 @@ void CActionBuhReport::ProcessPlan()
 			" LEFT JOIN payfactstest AS fact                                                          "
 			" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0                "
 			" GROUP BY s.idstud, s.idopt");
+		// проверим на наличие персональных категорий оплат
+		theApp.GetCon().Query("UPDATE old_pay, paypersonaltest as p "
+			" SET old_pay.plan = p.commoncountmoney/2 "
+			" WHERE old_pay.type = 'c' AND p.idstud = old_pay.idstud "
+			" AND p.idopts = old_pay.idopt AND p.deleted = 0 ");
 		//# сделаеим для них проверку что бы не было оплаты больше плана
 		theApp.GetCon().Query("UPDATE old_pay SET old_pay.pay = old_pay.plan WHERE old_pay.pay > old_pay.plan ");
 	}
 	else // если была выбрана категоря оплаты
 	{
 		string_t d4 = "'" + cat_year + "'"; // 2010-02-01
-		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, pay)                              "
-			" SELECT s.idstud, s.idopt, s.commoncountmoney, SUM(COALESCE(fact.moneypay, 0))           "
+		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, pay, type)                        "
+			" SELECT s.idstud, s.idopt, s.commoncountmoney, SUM(COALESCE(fact.moneypay, 0)), 'f'      "
 			" FROM (                                                                                  "
 			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney				  "
 			"      FROM full_table AS st, payoptstest as opts										  "
@@ -478,6 +496,11 @@ void CActionBuhReport::ProcessPlan()
 			" LEFT JOIN payfactstest AS fact                                                          "
 			" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0                "
 			" GROUP BY s.idstud, s.idopt");
+		// проверим на наличие персональных категорий оплат
+		theApp.GetCon().Query("UPDATE old_pay, paypersonaltest as p "
+			" SET old_pay.plan = p.commoncountmoney "
+			" WHERE old_pay.type = 'f' AND p.idstud = old_pay.idstud "
+			" AND p.idopts = old_pay.idopt AND p.deleted = 0 ");
 	}
 	// этап 2
 	// у стедента могут несколько категорий оплат за текущий период, то есть два сценария поведения
@@ -578,8 +601,10 @@ void CActionBuhReport::ProcessPay()
 		" ( "
 		"  id        int(11) NOT NULL AUTO_INCREMENT, "
 		"  idstud    int(11) NOT NULL, "
+		"  idopt     int(11) NOT NULL, "
 		"  plan      int(11) NOT NULL, "
 		"  pay       int(11) NOT NULL, "
+		"  type      char(1) NOT NULL, "
 		"  INDEX (id),     "
 		"  INDEX (idstud)  "
 		" ) TYPE = HEAP ");
@@ -593,8 +618,8 @@ void CActionBuhReport::ProcessPay()
 		string_t d3 = "'" + second + "-02-01'";   // 2011-02-01
 
 		//# это обычная сентябрьская оплата
-		theApp.GetCon().Query("INSERT pay1 (idstud, plan, pay)                         "
-			" SELECT s.idstud, s.commoncountmoney, SUM(COALESCE(fact.moneypay, 0))     "
+		theApp.GetCon().Query("INSERT pay1 (idstud, idopt, plan, pay, type)            "
+			" SELECT s.idstud, s.idopt, s.commoncountmoney, SUM(COALESCE(fact.moneypay, 0)), 'a'"
 			" FROM (                                                                   "
 			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney "
 			"      FROM full_table AS st, payoptstest as opts                          "
@@ -604,10 +629,15 @@ void CActionBuhReport::ProcessPay()
 			" LEFT JOIN payfactstest AS fact                                           "
 			" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0 " + GetRange("fact.datepay") +
 			" GROUP BY s.idstud, s.idopt");
+		// проверим на наличие персональных категорий оплат
+		theApp.GetCon().Query("UPDATE pay1, paypersonaltest as p "
+			" SET pay1.plan = p.commoncountmoney "
+			" WHERE pay1.type = 'a' AND p.idstud = pay1.idstud "
+			" AND p.idopts = pay1.idopt AND p.deleted = 0 ");
 
 		//# это февральские предыдущие
-		theApp.GetCon().Query("INSERT pay1 (idstud, plan, pay)                                              "
-			" SELECT s.idstud, s.commoncountmoney/2, SUM(COALESCE(fact.moneypay, 0)) - s.commoncountmoney/2  "
+		theApp.GetCon().Query("INSERT pay1 (idstud, idopt, plan, pay, type)                    "
+			" SELECT s.idstud, s.idopt, s.commoncountmoney/2, SUM(COALESCE(fact.moneypay, 0)), 'b'  "
 			" FROM (                                                                    "
 			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney  "
 			"      FROM full_table AS st, payoptstest as opts                           "
@@ -617,12 +647,19 @@ void CActionBuhReport::ProcessPay()
 			" LEFT JOIN payfactstest AS fact                                            "
 			" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0 " + GetRange("fact.datepay") +
 			" GROUP BY s.idstud, s.idopt");
-		//# сделаеим для них проверку что бы не было отрицательных оплат
+		// проверим на наличие персональных категорий оплат
+		theApp.GetCon().Query("UPDATE pay1, paypersonaltest as p "
+			" SET pay1.plan = p.commoncountmoney/2 "
+			" WHERE pay1.type = 'b' AND p.idstud = pay1.idstud "
+			" AND p.idopts = pay1.idopt AND p.deleted = 0 ");
+		//скоректируем выплаты
+		theApp.GetCon().Query("UPDATE pay1 SET pay1.pay = pay1.pay - pay1.plan WHERE pay1.type = 'b' ");
+		// сделаеим для них проверку что бы не было отрицательных оплат
 		theApp.GetCon().Query("UPDATE pay1 SET pay1.pay = 0 WHERE pay1.pay < 0 ");
 
 		//# это февральские последующие
-		theApp.GetCon().Query("INSERT pay1 (idstud, plan, pay)                          "
-			" SELECT s.idstud, s.commoncountmoney/2, SUM(COALESCE(fact.moneypay, 0))    "
+		theApp.GetCon().Query("INSERT pay1 (idstud, idopt, plan, pay, type)                    "
+			" SELECT s.idstud, s.idopt, s.commoncountmoney/2, SUM(COALESCE(fact.moneypay, 0)), 'c'  "
 			" FROM (                                                                    "
 			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney  "
 			"      FROM full_table AS st, payoptstest as opts                           "
@@ -632,14 +669,19 @@ void CActionBuhReport::ProcessPay()
 			" LEFT JOIN payfactstest AS fact                                            "
 			" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0 " + GetRange("fact.datepay") +
 			" GROUP BY s.idstud, s.idopt");
-		//# сделаим для них проверку что бы не было оплаты больше плана
+		// проверим на наличие персональных категорий оплат
+		theApp.GetCon().Query("UPDATE pay1, paypersonaltest as p "
+			" SET pay1.plan = p.commoncountmoney/2 "
+			" WHERE pay1.type = 'c' AND p.idstud = pay1.idstud "
+			" AND p.idopts = pay1.idopt AND p.deleted = 0 ");
+		// сделаим для них проверку что бы не было оплаты больше плана
 		theApp.GetCon().Query("UPDATE pay1 SET pay1.pay = pay1.plan WHERE pay1.pay > pay1.plan ");
 	}
 	else // если была выбрана категоря оплаты
 	{
 		string_t d4 = "'" + cat_year + "'"; // 2010-02-01
-		theApp.GetCon().Query("INSERT pay1 (idstud, plan, pay)                         "
-			" SELECT s.idstud, s.commoncountmoney, SUM(COALESCE(fact.moneypay, 0))     "
+		theApp.GetCon().Query("INSERT pay1 (idstud, idopt, plan, pay, type)                   "
+			" SELECT s.idstud, s.idopt, s.commoncountmoney, SUM(COALESCE(fact.moneypay, 0)), 'f' "
 			" FROM (                                                                   "
 			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney "
 			"      FROM full_table AS st, payoptstest as opts                          "
@@ -649,6 +691,11 @@ void CActionBuhReport::ProcessPay()
 			" LEFT JOIN payfactstest AS fact                                           "
 			" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0 " + GetRange("fact.datepay") +
 			" GROUP BY s.idstud, s.idopt");
+		// проверим на наличие персональных категорий оплат
+		theApp.GetCon().Query("UPDATE pay1, paypersonaltest as p "
+			" SET pay1.plan = p.commoncountmoney "
+			" WHERE pay1.type = 'f' AND p.idstud = pay1.idstud "
+			" AND p.idopts = pay1.idopt AND p.deleted = 0 ");
 	}
 
 	// может быть несколько оплат
