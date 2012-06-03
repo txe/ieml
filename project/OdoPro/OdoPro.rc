@@ -111,6 +111,7 @@ END
 //
 
 IDR_HTML_BUH_REPORT     HTML                    "res\\buh-report.htm"
+IDR_HTML_BUH_REPORT_2   HTML                    "res\\buh-report2.htm"
 IDR_HTML_STAT           HTML                    "res\\statistic.htm"
 IDR_HTML_MAIN           HTML                    "res\\main.htm"
 IDR_HTML_CHANGE_SEM     HTML                    "res\\change-sem.htm"

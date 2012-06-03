@@ -4,6 +4,7 @@
 #include "ActionChangeSem.h"
 #include "ActionChangeTypeEstimation.h"
 #include "ActionBuhReport.h"
+#include "ActionBuhReport2.h"
 #include "StatisticDlg.h"
 #include "json-aux-ext.h"
 #include "LiteWnd.h"
@@ -63,6 +64,12 @@ BOOL CALLBACK ManagerOfActions::ElementEventProcMenu( LPVOID tag, HELEMENT he, U
 	if (aux::wcseq(id, L"buh-report"))
 	{
 		CActionBuhReport dlg(main->_parent);
+		dlg.DoModal();
+		return TRUE;
+	}
+	if (aux::wcseq(id, L"buh-report2"))
+	{
+		CActionBuhReport2 dlg(main->_parent);
 		dlg.DoModal();
 		return TRUE;
 	}
