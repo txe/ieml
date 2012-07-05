@@ -19,7 +19,7 @@ object FormReportForma3: TFormReportForma3
   object ToolBar: TToolBar
     Left = 0
     Top = 0
-    Width = 516
+    Width = 508
     Height = 29
     Caption = 'ToolBar'
     Flat = True

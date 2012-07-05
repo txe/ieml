@@ -226,11 +226,11 @@ Item1=C:\job\borland\test\bin
 DebugSourceDirs=$(BCB)\source\vcl
 
 [Parameters]
-RunParams=.\ReportsDLL.dll 1 52 6996
+RunParams=.\ReportsDLL.dll 27 52 6996
 Launcher=
 UseLauncher=0
 DebugCWD=
-HostApplication=C:\Users\alex\Desktop\ieml\borland\DLLReportsNEW\RunReport.exe
+HostApplication=C:\ieml3\borland\DLLReportsNEW\RunReport.exe
 RemoteHost=
 RemotePath=
 RemoteLauncher=

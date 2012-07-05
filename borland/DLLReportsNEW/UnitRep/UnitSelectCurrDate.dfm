@@ -1,8 +1,8 @@
 object FormSelectDate: TFormSelectDate
   Left = 192
   Top = 107
-  Width = 201
-  Height = 235
+  Width = 211
+  Height = 246
   Caption = #1042#1099#1073#1086#1088' '#1076#1072#1090#1099
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -34,7 +34,7 @@ object FormSelectDate: TFormSelectDate
     Top = 16
     Width = 191
     Height = 154
-    Date = 37934.8564046181
+    Date = 37934.868684919
     TabOrder = 0
   end
 end

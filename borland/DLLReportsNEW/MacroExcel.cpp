@@ -64,7 +64,7 @@ void __fastcall ExcelMacros::RunMacros(const AnsiString& tamplate)
         mas_macros = "";
     } catch(...) {
         Application->MessageBox("Ошибка открытия документа Microsoft Excel!\n"
-                                "Возможно в макросах Word не установлены следующие параметры:\n"
+                                "Возможно в макросах Excel не установлены следующие параметры:\n"
                                 " - низкий уровень безопасности\n",
                                          "Ошибка",MB_OK+MB_ICONERROR);
         ExcelApp.OlePropertySet("Visible",true);

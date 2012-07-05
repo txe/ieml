@@ -256,13 +256,19 @@ void __fastcall TFormReportForma3::CreateData(void)
             d->fio = row[1];
             d->namespec = row[2];
             AnsiString kod_spec = row[3];
-            d->kod_spec = (kod_spec.Pos(".65")==0)?kod_spec:kod_spec.SubString(1, kod_spec.Length() - 3);
+            try {
+              d->kod_spec = (kod_spec.Pos(".65")==0)?kod_spec:kod_spec.SubString(1, kod_spec.Length() - 3);
+            } catch (...) { d->kod_spec = kod_spec; }
             d->kod_kvalif = "65";
             d->namekvalif = row[4];
             d->namekvalif = d->namekvalif.LowerCase();
             d->otl =  (AnsiString(row[5]) == "0")?"нет":"да";
-            d->serdip = AnsiString(row[6]).SubString(1, 3);
-            d->numdip = AnsiString(row[6]).SubString(5, AnsiString(row[6]).Length()-4);
+            try {
+              d->serdip = AnsiString(row[6]).SubString(1, 3);
+            } catch (...) { d->serdip = row[6]; }
+            try {
+              d->numdip = AnsiString(row[6]).SubString(5, AnsiString(row[6]).Length()-4);
+            } catch (...) { d->numdip = row[6]; }
             d->datavid = row[7];
             d->datagak = row[8];
             d->numprotgak = row[9];
