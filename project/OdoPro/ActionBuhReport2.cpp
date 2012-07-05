@@ -168,6 +168,16 @@ void CActionBuhReport2::Report(void)
 		MessageBox(m_hWnd, L"Не введена дата", L"Сообщение", MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
 		return;
 	}
+	std::vector<std::wstring> result;
+	boost::split(result, std::wstring(data1), boost::is_any_of(L"-"));
+	int year = aux::wtoi((result.size() > 0)?result[0].c_str():L"0", 0);
+	int month = aux::wtoi((result.size() > 1)?result[1].c_str():L"0", 0);
+	int day = aux::wtoi((result.size() > 2)?result[2].c_str():L"0", 0);
+	if (day != 1)
+	{
+		MessageBox(m_hWnd, L"Можно задавать только первый день месяца", L"Сообщение", MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
+		return;
+	}
 
 	if (link_element("o-spec").get_state(STATE_CHECKED))
 		if (GetSpecLst("").empty())
@@ -225,7 +235,13 @@ void CActionBuhReport2::CreateBuhData()
 		" FROM students AS studs "
 		" WHERE studs.deleted = 0 AND " + GetGrpLst("studs") +
 		" GROUP BY studs.id ");
-	
+	else if (link_element("o-cur-grp").get_state(STATE_CHECKED))
+		theApp.GetCon().Query("INSERT full_table (idstud,grpid,specid) "
+		" SELECT studs.id, studs.grpid, studs.specid"
+		" FROM students AS studs "
+		" WHERE studs.deleted = 0 AND studs.grpid=" + string_t(aux::itow(theApp.GetCurrentGroupID())) + 
+		" GROUP BY studs.id ");
+
 	ProcessPlan();   // расчитаем план для текущего периода
 	ProcessPay();    // оплата на 01.09 за текущий год
 
