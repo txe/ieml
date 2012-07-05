@@ -130,7 +130,7 @@ MYSQL_RES* mybase::MyBase::Query( const string_t& query, bool check /*= true*/ )
 	assert(m_con != NULL);
 	if (0 != mysql_query(m_con, query.c_str()))
 	{
-		string_t msg = "Неправильный запрос:" + query + "/n" + mysql_error(m_con);
+		string_t msg = "Неправильный запрос:" + query + "\n" + mysql_error(m_con);
 		LOG_ERROR << msg;
 		assert(FALSE);
 

@@ -7,7 +7,7 @@ using namespace htmlayout::dom;
 
 class CActionBuhReport2 :
 	public LiteWnd
-{
+{ 
 public:
 	CActionBuhReport2(LiteWnd* parent = NULL);
 	~CActionBuhReport2(void);
@@ -20,13 +20,13 @@ private:
 	void InitDomElement(void);	// связывает элементы дом с отображением и инициирует
 	void FullGrpInLst();
 	void FullSpecInLst();
-	void CreateBuhData();
-	void ProcessPlan();
+	void CreateBuhData(int dKoef, int sKoef);
+	void ProcessPlan(int dKoef, int sKoef);
 	void ProcessPay();
 	string_t GetSpecLst(string_t name);
 	string_t GetGrpLst(string_t name);
-	string_t GetRange(string_t name);
-
+	void GetYearMonthDay(std::wstring date1, int& year, int& month, int& day);
+	
 	// 
 	void Report(void);
 	// обрабатывает кнопки

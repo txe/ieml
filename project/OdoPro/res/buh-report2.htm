@@ -33,7 +33,7 @@
 			<fieldset>
 				<legend style="color: black">Объем выборки</legend>
 				<div style="padding: 3px; padding-left: 15px">
-					<div><button id="o-all" type="radio" name="o" checked>По институту</button></div>
+					<div><button id="o-all" type="radio" name="o">По институту</button></div>
 					<div><button id="o-spec" type="radio" name="o">По специальностям </button>
 						<button id="spec-but" style="behavior:popup-menu;" disable>...
 							<popup> 
@@ -61,7 +61,7 @@
 							</popup>
 						</button>
 					</div>
-					<div><button id="o-cur-grp" type="radio" name"o">По текущей группе </button></div>	
+					<div><button id="o-cur-grp" type="radio" name="o" checked>По текущей группе </button></div>	
 				</div>
 			</fieldset>  
 			<fieldset>
@@ -76,6 +76,7 @@
 				<div style="padding: 3px; padding-left: 15px">
 					<div>Выбор учебного года</div>
 					<select id="pay-year" style="margin: 5px;margin-left: 0px;width:50px;text-align:center;">
+						<option value="2004">2004 - 2005</option>
 						<option value="2005">2005 - 2006</option>
 						<option value="2006">2006 - 2007</option>
 						<option value="2007">2007 - 2008</option>
@@ -91,7 +92,7 @@
 						<option value="2017">2017 - 2018</option>
 						</select>
 					<div>Выбор даты, по состоянию на которую нужен отчет</div>
-					<div style="margin: 5px;margin-left: 0px;width:50px;"><input type="date" id="date-1" /></div>
+					<div style="margin: 5px;margin-left: 0px;width:80px;"><input type="date" id="date-1" style="width: 100%%" /></div>
 				</div>
 			</fieldset>  
 		</div>
