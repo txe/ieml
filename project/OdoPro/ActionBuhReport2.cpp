@@ -16,7 +16,7 @@ CActionBuhReport2::~CActionBuhReport2(void)
 }
 
 BOOL CActionBuhReport2::PreCreateWindow(CREATESTRUCT& cs)
-{
+{ 
 	if (!LiteWnd::PreCreateWindow(cs))
 		return FALSE;
 
@@ -29,13 +29,13 @@ int CActionBuhReport2::OnCreate()
 	SetWindowPos(m_hWnd, NULL, -1, -1, 450, 450, 
 		SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOZORDER);
 	CenterWindow();
-
+ 
 	PBYTE pb; DWORD cb;
 	if (GetHtmlResource(L"IDR_HTML_BUH_REPORT_2", pb, cb))
 	{
 		assert(::IsWindow(m_hWnd));
 		::HTMLayoutLoadHtml(m_hWnd, pb, cb);
-	}
+	} 
 	else
 		assert(FALSE);
 
@@ -47,12 +47,6 @@ void CActionBuhReport2::InitDomElement()
 {
 	FullGrpInLst();
 	FullSpecInLst();
-
-	HTMLayoutAttachEventHandlerEx(link_element("o-all"), ElementEventProcFor, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
-	HTMLayoutAttachEventHandlerEx(link_element("o-spec"), ElementEventProcFor, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
-	HTMLayoutAttachEventHandlerEx(link_element("o-grp"), ElementEventProcFor, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
-	HTMLayoutAttachEventHandlerEx(link_element("pay-radio"), ElementEventProcFor, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
-	HTMLayoutAttachEventHandlerEx(link_element("cat-radio"), ElementEventProcFor, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
 
  	// присоединяем обоработчики к кнопкам
  	HTMLayoutAttachEventHandlerEx(link_element("bt-report"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
@@ -92,27 +86,9 @@ BOOL CALLBACK CActionBuhReport2::ElementEventProcFor(LPVOID tag, HELEMENT he, UI
 	BEHAVIOR_EVENT_PARAMS* pr = static_cast<BEHAVIOR_EVENT_PARAMS*>(prms);
 	if (pr->cmd == BUTTON_CLICK)
 	{
-		CActionBuhReport2* dlg = static_cast<CActionBuhReport2*>(tag);
-		dlg->StateChange();
-		return TRUE;
 	}
 	
 	return FALSE;
-}
-
-// отображает выбор
-void CActionBuhReport2::StateChange()
-{
-	// когда выбран выбор учебного года, то включим его и выключим категорию и наоборот
-	bool pay = link_element("pay-radio").get_state(STATE_CHECKED);
-	link_element("pay-year").set_state(pay ? 0 : STATE_DISABLED, !pay ? 0 : STATE_DISABLED);
-	link_element("cat-month").set_state(!pay ? 0 : STATE_DISABLED, pay ? 0 : STATE_DISABLED);
-	link_element("cat-year").set_state(!pay ? 0 : STATE_DISABLED, pay ? 0 : STATE_DISABLED);
-
-	bool sel_spec = link_element("o-spec").get_state(STATE_CHECKED);
-	link_element("spec-but").set_state(sel_spec ? 0 : STATE_DISABLED, !sel_spec ? 0 : STATE_DISABLED);
-	bool sel_grp = link_element("o-grp").get_state(STATE_CHECKED);
-	link_element("grp-but").set_state(sel_grp ? 0 : STATE_DISABLED, !sel_grp ? 0 : STATE_DISABLED);	
 }
 
 void CActionBuhReport2::FullGrpInLst()
@@ -187,19 +163,10 @@ void CActionBuhReport2::FullSpecInLst()
 void CActionBuhReport2::Report(void)
 {
 	string_t data1 = json::v2t(link_element("date-1").get_value());
-	string_t data2 = json::v2t(link_element("date-2").get_value());
-	if (link_element("date-box").get_state(STATE_CHECKED))
+    if (data1.empty())
 	{
-		if (data1.empty() && data2.empty())
-		{
-			MessageBox(m_hWnd, L"Не введена дата или диапазон", L"Сообщение", MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
-			return;
-		}
-		if (!data1.empty() && !data2.empty() && wcscmp(data1, data2) > 0)
-		{
-			MessageBox(m_hWnd, L"Первая дата диапазона больше второй даты.", L"Сообщение", MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
-			return;
-		}
+		MessageBox(m_hWnd, L"Не введена дата", L"Сообщение", MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
+		return;
 	}
 
 	if (link_element("o-spec").get_state(STATE_CHECKED))
@@ -208,12 +175,14 @@ void CActionBuhReport2::Report(void)
 			MessageBox(m_hWnd, L"Выберете специальности", L"Сообщение", MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
 			return;
 		}
+
 	if (link_element("o-grp").get_state(STATE_CHECKED))
 		if (GetGrpLst("").empty())
 		{
 			MessageBox(m_hWnd, L"Выберете группы", L"Сообщение", MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
 			return;
 		}
+
 	CreateBuhData();
 }
 

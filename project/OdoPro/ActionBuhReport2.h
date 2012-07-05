@@ -27,8 +27,6 @@ private:
 	string_t GetGrpLst(string_t name);
 	string_t GetRange(string_t name);
 
-	// отображает выбор
-	void StateChange();
 	// 
 	void Report(void);
 	// обрабатывает кнопки
