@@ -20,6 +20,7 @@ private:
 	void InitDomElement(void);	// связывает элементы дом с отображением и инициирует
 	void FullGrpInLst();
 	void FullSpecInLst();
+	void StateChange();
 	void CreateBuhData(int dKoef, int sKoef);
 	void ProcessPlan(int dKoef, int sKoef);
 	void ProcessPay();

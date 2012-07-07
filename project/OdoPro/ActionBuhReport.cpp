@@ -20,7 +20,7 @@ BOOL CActionBuhReport::PreCreateWindow(CREATESTRUCT& cs)
 	if (!LiteWnd::PreCreateWindow(cs))
 		return FALSE;
 
-	cs.lpszName = (LPCWSTR)"Buh Report";
+	cs.lpszName = (LPCWSTR)"Оплата подробно";
 	return TRUE;
 }
 

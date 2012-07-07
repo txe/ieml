@@ -20,7 +20,7 @@ BOOL CActionBuhReport2::PreCreateWindow(CREATESTRUCT& cs)
 	if (!LiteWnd::PreCreateWindow(cs))
 		return FALSE;
 
-	cs.lpszName = (LPCWSTR)"Buh Report 2";
+	cs.lpszName = (LPCWSTR)"ќплата на начало мес€ца";
 	return TRUE;
 }
 
@@ -47,6 +47,11 @@ void CActionBuhReport2::InitDomElement()
 {
 	FullGrpInLst();
 	FullSpecInLst();
+
+	HTMLayoutAttachEventHandlerEx(link_element("o-all"), ElementEventProcFor, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(link_element("o-spec"), ElementEventProcFor, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(link_element("o-grp"), ElementEventProcFor, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(link_element("o-cur-grp"), ElementEventProcFor, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
 
  	// присоедин€ем обоработчики к кнопкам
  	HTMLayoutAttachEventHandlerEx(link_element("bt-report"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
@@ -86,9 +91,21 @@ BOOL CALLBACK CActionBuhReport2::ElementEventProcFor(LPVOID tag, HELEMENT he, UI
 	BEHAVIOR_EVENT_PARAMS* pr = static_cast<BEHAVIOR_EVENT_PARAMS*>(prms);
 	if (pr->cmd == BUTTON_CLICK)
 	{
+		CActionBuhReport2* dlg = static_cast<CActionBuhReport2*>(tag);
+		dlg->StateChange();
+		return TRUE;
 	}
 	
 	return FALSE;
+}
+
+// отображает выбор
+void CActionBuhReport2::StateChange()
+{
+	bool sel_spec = link_element("o-spec").get_state(STATE_CHECKED);
+	link_element("spec-but").set_state(sel_spec ? 0 : STATE_DISABLED, !sel_spec ? 0 : STATE_DISABLED);
+	bool sel_grp = link_element("o-grp").get_state(STATE_CHECKED);
+	link_element("grp-but").set_state(sel_grp ? 0 : STATE_DISABLED, !sel_grp ? 0 : STATE_DISABLED);	
 }
 
 void CActionBuhReport2::FullGrpInLst()
