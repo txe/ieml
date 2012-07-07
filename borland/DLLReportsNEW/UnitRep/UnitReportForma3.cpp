@@ -227,20 +227,19 @@ void __fastcall TFormReportForma3::CreateData(void)
         ") TYPE = HEAP;                     ");
 
     mysql_query(mysql, "INSERT temp (specid,name_sp,kod_spec,name_kval)    "
-        "SELECT voc.num,voc.title, voc2.title,voc1.title    "
-        "FROM voc, voc as voc1, voc as voc2                 "
-        "WHERE                                              "
-        "voc.vkey = 'spec' AND voc.deleted = 0 AND          "
-        "voc1.num=voc.num AND voc1.vkey = 'qualific' AND voc1.deleted = 0 AND   "
-        "voc2.num=voc.num AND voc2.vkey = 'shifrspec' AND voc2.deleted = 0      ");
+      " SELECT v1.num, v1.title, v2.title, v3.title   "
+      " FROM voc as v1                                 "
+	    " left join voc as v2 ON v2.num = v1.num AND v2.vkey = 'shifrspec' AND v2.deleted = 0   "
+	    " left join voc as v3 on v3.num = v1.num and v3.vkey = 'qualific' AND v3.deleted = 0     "
+      " WHERE  v1.vkey = 'spec' AND v1.deleted = 0 ");
 
 
     mysql_query(mysql, "SELECT st.`edunumreg`, CONCAT(st.`secondname`, ' ', st.`firstname`, ' ', st.`thirdname`) as fio,   "
         "temp.name_sp,temp.kod_spec,temp.name_kval,`edudiplomotl`, `edunumdiplom`,`edudatediplom`,           "
         "`edudatequalif`,`edunumprotgak`,`exitnum`,`exitdate`,voc.title                                                      "
         "FROM students as st, temp,voc                                                                       "
-        "WHERE st.deleted = 0 AND YEAR(st.`exitdate`) = @year AND st.cityid != 0 AND temp.specid = st.specid "
-        "AND voc.deleted = 0 AND voc.vkey='grp' AND voc.num = st.grpid ORDER BY voc.title, fio ");
+        "WHERE st.deleted = 0 AND YEAR(st.`exitdate`) = @year AND temp.specid = st.specid "
+        "AND voc.deleted = 0 AND voc.vkey='grp' AND voc.num = st.grpid AND voc.title not like '%отчис%' ORDER BY voc.title, fio ");
 
     MYSQL_RES *result;
     MYSQL_ROW row;
