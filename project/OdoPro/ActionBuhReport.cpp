@@ -409,6 +409,7 @@ void CActionBuhReport::ProcessPlan()
 		"  idstud    int(11) NOT NULL, "
 		"  idopt     int(11) NOT NULL, "
 		"  plan      int(11) NOT NULL, "
+		"  half_year int(1)  NOT NULL, "
 		"  pay       int(11) NOT NULL, "
 		"  type      char(1) NOT NULL, "
 		"  INDEX (id),     "
@@ -424,10 +425,10 @@ void CActionBuhReport::ProcessPlan()
 		string_t d3 = "'" + second + "-02-01'"; // 2010-02-01
 
 		//# это обычная сентябрьская оплата
-		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, pay, type)                        "
-			" SELECT s.idstud, s.idopt, s.commoncountmoney, SUM(COALESCE(fact.moneypay, 0)), 'a'      "
+		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, half_year, pay, type)            "
+			" SELECT s.idstud, s.idopt, s.commoncountmoney, s.half_year, SUM(COALESCE(fact.moneypay, 0)), 'a'      "
 			" FROM (                                                                                  "
-			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney				  "
+			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney, opts.half_year	  "
 			"      FROM full_table AS st, payoptstest as opts										  "
 			"      WHERE opts.deleted = 0 AND opts.idgroup = st.grpid						          "
 			"      AND opts.datestart= " + d2 + "  							                          "
@@ -442,10 +443,10 @@ void CActionBuhReport::ProcessPlan()
 			" AND p.idopts = old_pay.idopt AND p.deleted = 0 ");
 		
 		//# это февральские предыдущие
-		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, pay, type)                        "
-			" SELECT s.idstud, s.idopt, s.commoncountmoney/2, SUM(COALESCE(fact.moneypay, 0)), 'b'    "
+		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, half_year, pay, type)             "
+			" SELECT s.idstud, s.idopt, s.commoncountmoney, s.half_year, SUM(COALESCE(fact.moneypay, 0)), 'b'    "
 			" FROM (                                                                                  "
-			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney                "
+			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney, opts.half_year "
 			"      FROM full_table AS st, payoptstest as opts										  "
 			"	   WHERE opts.deleted = 0 AND opts.idgroup = st.grpid						          "
 			"      AND opts.datestart=" + d1 + "						                              "
@@ -455,19 +456,21 @@ void CActionBuhReport::ProcessPlan()
 			" GROUP BY s.idstud, s.idopt");
 		// проверим на наличие персональных категорий оплат
 		theApp.GetCon().Query("UPDATE old_pay, paypersonaltest as p "
-			" SET old_pay.plan = p.commoncountmoney/2 "
+			" SET old_pay.plan = p.commoncountmoney "
 			" WHERE old_pay.type = 'b' AND p.idstud = old_pay.idstud "
 			" AND p.idopts = old_pay.idopt AND p.deleted = 0 ");
+		// уполовиним план, но если это сокращенный год, то этого делать не надо
+		theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = old_pay.plan/2 WHERE old_pay.type = 'b' AND old_pay.half_year = 0 ");
 		//скоректируем выплаты
 		theApp.GetCon().Query("UPDATE old_pay SET old_pay.pay = old_pay.pay - old_pay.plan WHERE old_pay.type = 'b' ");
 		//сделаеим для них проверку что бы не было отрицательных оплат
 		theApp.GetCon().Query("UPDATE old_pay SET old_pay.pay = 0 WHERE old_pay.pay < 0 ");
 
 		//# это февральские последующие
-		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, pay, type)                        "
-			" SELECT s.idstud, s.idopt, s.commoncountmoney/2, SUM(COALESCE(fact.moneypay, 0)), 'c'    "
+		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, half_year, pay, type)            "
+			" SELECT s.idstud, s.idopt, s.commoncountmoney, s.half_year, SUM(COALESCE(fact.moneypay, 0)), 'c'    "
 			" FROM (                                                                                  "
-			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney                "
+			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney, opts.half_year "
 			"      FROM full_table AS st, payoptstest as opts                                         "
 			"	   WHERE opts.deleted = 0 AND opts.idgroup = st.grpid AND opts.datestart=" + d3 + "	  "
 			" ) as s                                                                                  "
@@ -476,19 +479,21 @@ void CActionBuhReport::ProcessPlan()
 			" GROUP BY s.idstud, s.idopt");
 		// проверим на наличие персональных категорий оплат
 		theApp.GetCon().Query("UPDATE old_pay, paypersonaltest as p "
-			" SET old_pay.plan = p.commoncountmoney/2 "
+			" SET old_pay.plan = p.commoncountmoney "
 			" WHERE old_pay.type = 'c' AND p.idstud = old_pay.idstud "
 			" AND p.idopts = old_pay.idopt AND p.deleted = 0 ");
+		// уполовиним план, но если это сокращенный год, то этого делать не надо
+		theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = old_pay.plan/2 WHERE old_pay.type = 'c' AND old_pay.half_year = 0 ");
 		//# сделаеим для них проверку что бы не было оплаты больше плана
 		theApp.GetCon().Query("UPDATE old_pay SET old_pay.pay = old_pay.plan WHERE old_pay.pay > old_pay.plan ");
 	}
 	else // если была выбрана категоря оплаты
 	{
 		string_t d4 = "'" + cat_year + "'"; // 2010-02-01
-		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, pay, type)                        "
-			" SELECT s.idstud, s.idopt, s.commoncountmoney, SUM(COALESCE(fact.moneypay, 0)), 'f'      "
+		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, half_year, pay, type)                        "
+			" SELECT s.idstud, s.idopt, s.commoncountmoney, s.half_year, SUM(COALESCE(fact.moneypay, 0)), 'f'      "
 			" FROM (                                                                                  "
-			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney				  "
+			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney, opts.half_year				  "
 			"      FROM full_table AS st, payoptstest as opts										  "
 			"      WHERE opts.deleted = 0 AND opts.idgroup = st.grpid						          "
 			"      AND opts.datestart=" + d4 + " 							                          "
@@ -603,6 +608,7 @@ void CActionBuhReport::ProcessPay()
 		"  idstud    int(11) NOT NULL, "
 		"  idopt     int(11) NOT NULL, "
 		"  plan      int(11) NOT NULL, "
+		"  half_year int(1)  NOT NULL, "
 		"  pay       int(11) NOT NULL, "
 		"  type      char(1) NOT NULL, "
 		"  INDEX (id),     "
@@ -618,10 +624,10 @@ void CActionBuhReport::ProcessPay()
 		string_t d3 = "'" + second + "-02-01'";   // 2011-02-01
 
 		//# это обычная сентябрьская оплата
-		theApp.GetCon().Query("INSERT pay1 (idstud, idopt, plan, pay, type)            "
-			" SELECT s.idstud, s.idopt, s.commoncountmoney, SUM(COALESCE(fact.moneypay, 0)), 'a'"
+		theApp.GetCon().Query("INSERT pay1 (idstud, idopt, plan, half_year, pay, type)            "
+			" SELECT s.idstud, s.idopt, s.commoncountmoney, s.half_year, SUM(COALESCE(fact.moneypay, 0)), 'a'"
 			" FROM (                                                                   "
-			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney "
+			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney, opts.half_year "
 			"      FROM full_table AS st, payoptstest as opts                          "
 			"      WHERE opts.deleted = 0 AND opts.idgroup = st.grpid				   "
 			"      AND opts.datestart=" + d2 + "                                       "
@@ -636,10 +642,10 @@ void CActionBuhReport::ProcessPay()
 			" AND p.idopts = pay1.idopt AND p.deleted = 0 ");
 
 		//# это февральские предыдущие
-		theApp.GetCon().Query("INSERT pay1 (idstud, idopt, plan, pay, type)                    "
-			" SELECT s.idstud, s.idopt, s.commoncountmoney/2, SUM(COALESCE(fact.moneypay, 0)), 'b'  "
+		theApp.GetCon().Query("INSERT pay1 (idstud, idopt, plan, half_year, pay, type)                    "
+			" SELECT s.idstud, s.idopt, s.commoncountmoney, s.half_year, SUM(COALESCE(fact.moneypay, 0)), 'b'  "
 			" FROM (                                                                    "
-			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney  "
+			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney, opts.half_year  "
 			"      FROM full_table AS st, payoptstest as opts                           "
 			"	     WHERE opts.deleted = 0 AND opts.idgroup = st.grpid                 "
 			"      AND opts.datestart=" + d1 + "                                        "
@@ -649,19 +655,21 @@ void CActionBuhReport::ProcessPay()
 			" GROUP BY s.idstud, s.idopt");
 		// проверим на наличие персональных категорий оплат
 		theApp.GetCon().Query("UPDATE pay1, paypersonaltest as p "
-			" SET pay1.plan = p.commoncountmoney/2 "
+			" SET pay1.plan = p.commoncountmoney "
 			" WHERE pay1.type = 'b' AND p.idstud = pay1.idstud "
 			" AND p.idopts = pay1.idopt AND p.deleted = 0 ");
+		// уполовиним план, но если это сокращенный год, то этого делать не надо
+		theApp.GetCon().Query("UPDATE pay1 SET pay1.plan = pay1.plan/2 WHERE pay1.type = 'b' AND pay1.half_year = 0 ");
 		//скоректируем выплаты
 		theApp.GetCon().Query("UPDATE pay1 SET pay1.pay = pay1.pay - pay1.plan WHERE pay1.type = 'b' ");
 		// сделаеим для них проверку что бы не было отрицательных оплат
 		theApp.GetCon().Query("UPDATE pay1 SET pay1.pay = 0 WHERE pay1.pay < 0 ");
 
 		//# это февральские последующие
-		theApp.GetCon().Query("INSERT pay1 (idstud, idopt, plan, pay, type)                    "
-			" SELECT s.idstud, s.idopt, s.commoncountmoney/2, SUM(COALESCE(fact.moneypay, 0)), 'c'  "
+		theApp.GetCon().Query("INSERT pay1 (idstud, idopt, plan, half_year, pay, type)                    "
+			" SELECT s.idstud, s.idopt, s.commoncountmoney, s.half_year, SUM(COALESCE(fact.moneypay, 0)), 'c'  "
 			" FROM (                                                                    "
-			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney  "
+			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney, opts.half_year  "
 			"      FROM full_table AS st, payoptstest as opts                           "
 			"	     WHERE opts.deleted = 0 AND opts.idgroup = st.grpid                 "
 			"      AND opts.datestart=" + d3 + "                                        "
@@ -671,19 +679,21 @@ void CActionBuhReport::ProcessPay()
 			" GROUP BY s.idstud, s.idopt");
 		// проверим на наличие персональных категорий оплат
 		theApp.GetCon().Query("UPDATE pay1, paypersonaltest as p "
-			" SET pay1.plan = p.commoncountmoney/2 "
+			" SET pay1.plan = p.commoncountmoney "
 			" WHERE pay1.type = 'c' AND p.idstud = pay1.idstud "
 			" AND p.idopts = pay1.idopt AND p.deleted = 0 ");
+		// уполовиним план, но если это сокращенный год, то этого делать не надо
+		theApp.GetCon().Query("UPDATE pay1 SET pay1.plan = pay1.plan/2 WHERE pay1.type = 'c' AND pay1.half_year = 0 ");
 		// сделаим для них проверку что бы не было оплаты больше плана
 		theApp.GetCon().Query("UPDATE pay1 SET pay1.pay = pay1.plan WHERE pay1.pay > pay1.plan ");
 	}
 	else // если была выбрана категоря оплаты
 	{
 		string_t d4 = "'" + cat_year + "'"; // 2010-02-01
-		theApp.GetCon().Query("INSERT pay1 (idstud, idopt, plan, pay, type)                   "
-			" SELECT s.idstud, s.idopt, s.commoncountmoney, SUM(COALESCE(fact.moneypay, 0)), 'f' "
+		theApp.GetCon().Query("INSERT pay1 (idstud, idopt, plan, half_year, pay, type)                   "
+			" SELECT s.idstud, s.idopt, s.commoncountmoney, s.half_year, SUM(COALESCE(fact.moneypay, 0)), 'f' "
 			" FROM (                                                                   "
-			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney "
+			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney, opts.half_year "
 			"      FROM full_table AS st, payoptstest as opts                          "
 			"      WHERE opts.deleted = 0 AND opts.idgroup = st.grpid				   "
 			"      AND opts.datestart=" + d4 + "                                       "
