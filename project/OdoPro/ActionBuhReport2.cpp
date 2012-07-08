@@ -212,10 +212,6 @@ void CActionBuhReport2::Report(void)
 
 	int dKoef = (xMonth - dMonth) + (xYear - dYear) * 12;
 	int sKoef = (xMonth - sMonth) + (xYear - sYear) * 12;
-	if (dKoef < 0)  dKoef = 0;
-	if (dKoef > 12) dKoef = 12;
-	if (sKoef < 0)  sKoef = 0;
-	if (sKoef > 12) sKoef = 12;
 
 	if (link_element("o-spec").get_state(STATE_CHECKED))
 		if (GetSpecLst("").empty())
@@ -430,6 +426,7 @@ void CActionBuhReport2::ProcessPlan(int dKoef, int sKoef)
 		"  idstud    int(11) NOT NULL, "
 		"  idopt     int(11) NOT NULL, "
 		"  plan      DECIMAL NOT NULL, "
+		"  half_year int(1)  NOT NULL, "
 		"  pay       int(11) NOT NULL, "
 		"  dt        date    NOT NULL, "
 		"  INDEX (id),     "
@@ -442,10 +439,10 @@ void CActionBuhReport2::ProcessPlan(int dKoef, int sKoef)
 	string_t septemStud = "'" + first + "-09-01'";  // 2009-09-01
 
 	//# это обычная оплата
-	theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, pay, dt)                            "
-		" SELECT s.idstud, s.idopt, s.commoncountmoney, SUM(COALESCE(fact.moneypay, 0)),s.datestart "
+	theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, half_year, pay, dt)                            "
+		" SELECT s.idstud, s.idopt, s.commoncountmoney, s.half_year, SUM(COALESCE(fact.moneypay, 0)),s.datestart "
 		" FROM (                                                                                    "
-		"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney, opts.datestart  "
+		"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney, opts.half_year, opts.datestart  "
 		"      FROM full_table AS st, payoptstest as opts										    "
 		"      WHERE opts.deleted = 0 AND opts.idgroup = st.grpid						            "
 		"      AND (opts.datestart= " + decabStud + " OR opts.datestart= " + septemStud + ")        "
@@ -459,23 +456,40 @@ void CActionBuhReport2::ProcessPlan(int dKoef, int sKoef)
 		" WHERE p.idstud = old_pay.idstud "
 		" AND p.idopts = old_pay.idopt AND p.deleted = 0 ");
 	
-	// сделаем им коэффициент, за каждый месяц 1/12 плана
-	// если == 12, то ничего делать не надо
-	if (dKoef == 0)
-		theApp.GetCon().Query("UPDATE old_pay "
-			" SET old_pay.plan = 0 WHERE old_pay.dt = " + decabStud);
-	else if (dKoef != 12)
-		theApp.GetCon().Query("UPDATE old_pay "
-		" SET old_pay.plan =  (old_pay.plan * " +string_t(aux::itow(dKoef)) + " / 12.0)"
-		" WHERE old_pay.dt = " + decabStud);
-
-	if (sKoef == 0)
-		theApp.GetCon().Query("UPDATE old_pay "
-			" SET old_pay.plan =  0 WHERE old_pay.dt = " + septemStud);
-	else if (sKoef != 12)
-		theApp.GetCon().Query("UPDATE old_pay "
-			" SET old_pay.plan =  (old_pay.plan * " +string_t(aux::itow(sKoef)) + " / 12.0)"
-			" WHERE old_pay.dt = " + septemStud);
+	// поправим план, за каждый месяц 1/12(6) плана
+	// если >= 12(6), то ничего делать не надо
+	// для декабристов
+	if (dKoef <= 0)
+		theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = 0 WHERE old_pay.dt = " + decabStud);
+	else
+	{
+		// полный учебрый год
+		if (dKoef < 12)	
+			theApp.GetCon().Query("UPDATE old_pay "
+				" SET old_pay.plan = (old_pay.plan * " +string_t(aux::itow(dKoef)) + " / 12.0)"
+				" WHERE old_pay.half_year = 0 AND old_pay.dt = " + decabStud);
+		// сокращенный учебрый год
+		if (dKoef < 6)	
+			theApp.GetCon().Query("UPDATE old_pay "
+				" SET old_pay.plan = (old_pay.plan * " +string_t(aux::itow(dKoef)) + " / 6.0)"
+				" WHERE old_pay.half_year = 1 AND old_pay.dt = " + decabStud);
+	}
+	// тоже самое для сентябристов
+	if (sKoef <= 0)
+		theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = 0 WHERE old_pay.dt = " + septemStud);
+	else 
+	{
+		// полный учебрый год
+		if (sKoef < 12)
+			theApp.GetCon().Query("UPDATE old_pay "
+				" SET old_pay.plan =  (old_pay.plan * " +string_t(aux::itow(sKoef)) + " / 12.0)"
+				" WHERE old_pay.half_year = 0 AND old_pay.dt = " + septemStud);
+		// сокращенный учебрый год
+		if (sKoef < 6)
+			theApp.GetCon().Query("UPDATE old_pay "
+				" SET old_pay.plan =  (old_pay.plan * " +string_t(aux::itow(sKoef)) + " / 6.0)"
+				" WHERE old_pay.half_year = 1 AND old_pay.dt = " + septemStud);
+	}
 
 	// этап 2
 	// у стедента могут несколько категорий оплат за текущий период, то есть два сценария поведения
