@@ -23,3 +23,5 @@ ALTER TABLE students MODIFY egereg VARCHAR(15) NOT NULL DEFAULT "00-000000000-00
                 `deleted` tinyint(1) NOT NULL default '0',                                   
                 PRIMARY KEY  (`id`)                                                                                                       
               ) ENGINE=InnoDB ;
+
+ALTER TABLE payoptstest ADD COLUMN half_year INT(1) NOT NULL DEFAULT '0' AFTER commoncountmoney

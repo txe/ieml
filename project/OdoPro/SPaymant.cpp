@@ -25,6 +25,7 @@ void SPayment::Init(htmlayout::dom::element root)
 	_cat_month		= LiteWnd::link_element(_root, "pay-cat-manth"); 
 	_cat_year		= LiteWnd::link_element(_root, "pay-cat-year"); 
 	_cat_money		= LiteWnd::link_element(_root, "pay-cat-money"); 
+	_cat_half_year	= LiteWnd::link_element(_root, "pay-cat-half-year");
 	
 	// инициируем обработчики кнопок
 	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "pay-save"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
@@ -91,7 +92,6 @@ BOOL CALLBACK SPayment::ElementEventProcBt(LPVOID tag, HELEMENT he, UINT evtg, L
 	return FALSE;
 }
 
-// обновляет на экране успеваимость студента
 void SPayment::UpdateView(void)
 {
 	UpdateViewPayment();
@@ -99,7 +99,6 @@ void SPayment::UpdateView(void)
 	InitPayPay();
 }
 
-// обновляет таблицу оценок для выбранного предмета
 void SPayment::UpdateViewPayment()
 {
 	// удаляем все строки
@@ -127,7 +126,7 @@ void SPayment::UpdateViewPayment()
 
 	// информация о категориях оплаты
 	string_t info_query = string_t() +
-		" SELECT po.datestart, po.dateend, po.commoncountmoney, po.id, COUNT(ct.idstud) AS cnt "
+		" SELECT po.datestart, po.dateend, po.commoncountmoney, po.half_year, po.id, COUNT(ct.idstud) AS cnt "
 		" FROM (SELECT o.id, f.idstud FROM payoptstest as o left  join payfactstest as f " 
 		" ON f.idopts = o.id "
 		" WHERE o.deleted = 0 AND o.idgroup = "  + aux::itow(theApp.GetCurrentGroupID()) + 
@@ -166,16 +165,21 @@ void SPayment::UpdateViewPayment()
 			" dolg=" + (per_id == L"" ? aux::itow(aux::wtoi(info_row["commoncountmoney"]) - pay[optid]) : aux::itow(per_money - pay[optid])) + 
 			" period=\"" + period +"\" " +
 			" money=" + info_row["commoncountmoney"] +
+			" half_year=" + info_row["half_year"] +
 			" datestart=\"" + info_row["datestart"] + "\"";
 		std::wstring dolg;
 		if (!info_pay[optid].empty())
 			dolg = string_t() + "[долг: " + (per_id == L"" ? aux::itow(aux::wtoi(info_row["commoncountmoney"]) - pay[optid]) : aux::itow(per_money - pay[optid])) + " руб.]";			
 		buf += string_t() + "<options" + atr +"><caption>";
 		buf += string_t() + period + " [студ: " + info_row["cnt"] + "]";
-		if (per_id == L"")
-			buf += string_t() + "<br/>[сумма: " + info_row["commoncountmoney"] + " руб.]";
+		if (0 == aux::wtoi(info_row["half_year"]))
+			buf += string_t() + "<br/>[сокр: нет]";
 		else
-			buf += string_t() + "<br/>[сумма: " + aux::itow(per_money) + "(" + info_row["commoncountmoney"] + ") руб.]";
+			buf += string_t() + "<br/>[сокр: <font color='#9900FF'>да</font>" + "]";
+		if (per_id == L"")
+			buf += string_t() + "[сумма: " + info_row["commoncountmoney"] + " руб.]";
+		else
+			buf += string_t() + "[сумма: " + aux::itow(per_money) + "(" + info_row["commoncountmoney"] + ") руб.]";
 		buf += dolg;
 		buf += "</caption>";
 		buf += info_pay[optid];
@@ -202,7 +206,7 @@ void SPayment::UpdateViewPayment()
 // обрабатывает выбор категории/оплаты
 BOOL CALLBACK SPayment::ElementEventProcForPayTable(LPVOID tag, HELEMENT he, UINT evtg, LPVOID prms)
 {
-	LOG_DEBUG << evtg;
+	//LOG_DEBUG << evtg;
 	if (evtg != HANDLE_BEHAVIOR_EVENT)
 		return FALSE;
 	
@@ -363,7 +367,7 @@ void SPayment::UpdateViewCat(void)
 	json::t2v(_cat_month, date[1]);
 	json::t2v(_cat_year, date[0]);
 	json::t2v(_cat_money, cat.get_attribute("money"));
-	
+	json::t2v(_cat_half_year, cat.get_attribute("half_year"));	
 }
 
 // добавить категорию оплаты
@@ -377,21 +381,22 @@ void SPayment::AddCat(void)
 			return;
 	}
 	
-	string_t monye		= json::v2t(_cat_money.get_value());
+	string_t money		= json::v2t(_cat_money.get_value());
+	string_t half_year	= json::v2t(_cat_half_year.get_value());
 	string_t grpid		= aux::itow(theApp.GetCurrentGroupID());
 	string_t startdate;
 	string_t enddate;
 	GetDateCat(startdate, enddate);
 
-	if (aux::wtoi(monye, -1) < 1)
+	if (aux::wtoi(money, -1) < 1)
 	{
 		string_t msg = "Сумма оплаты должна задаваться как целое положительное число.\nИсправьте пожалуйста.";
 		MessageBox(::GetActiveWindow(), msg, L"Ошибка", MB_OK | MB_ICONERROR | MB_APPLMODAL);
 		return;
 	}
 
-	string_t query = "INSERT INTO  payoptstest (idgroup, datestart, dateend, commoncountmoney, deleted) "
-		" VALUES(" + grpid + ", '" + startdate + "', '" + enddate + "', " + monye + ", 0)";
+	string_t query = "INSERT INTO  payoptstest (idgroup, datestart, dateend, commoncountmoney, half_year, deleted) "
+		" VALUES(" + grpid + ", '" + startdate + "', '" + enddate + "', " + money + ", " + half_year + ", 0)";
 	theApp.GetCon().Query(query);
 	
 	UpdateView();
@@ -444,6 +449,7 @@ void SPayment::SaveUpdateCat(void)
 	}
 	
 	string_t money		= json::v2t(_cat_money.get_value());
+	string_t half_year	= json::v2t(_cat_half_year.get_value());
 	string_t grpid		= aux::itow(theApp.GetCurrentGroupID());
 	string_t catid		= GetCurrentCat().get_attribute("optid");
 	string_t startdate;
@@ -460,7 +466,8 @@ void SPayment::SaveUpdateCat(void)
 	string_t query = 
 		" UPDATE payoptstest "
 		" SET idgroup = " + grpid + ", datestart = '" + startdate + "', "
-		" dateend = '" + enddate + "' , commoncountmoney = " + money + 
+		" dateend = '" + enddate + "' , commoncountmoney = " + money + ", " 
+		" half_year = " + half_year +
 		" WHERE id = " + catid;
 
 	theApp.GetCon().Query(query);

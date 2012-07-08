@@ -17,6 +17,7 @@ private:
 	element _cat_month;
 	element _cat_year;
 	element _cat_money;
+	element _cat_half_year;
 
 public:
 	// инициализирует дом объекты и все такое
