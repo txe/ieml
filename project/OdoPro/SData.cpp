@@ -776,7 +776,7 @@ void SData::FastSetEnter()
 	string_t find_query = string_t() +  
 		" SELECT id FROM students " 
 		" WHERE deleted = 0 AND grpid = " + aux::itow(theApp.GetCurrentGroupID()) +
-		" AND enternum IS NOT NULL AND enternum != '' AND enternum != " + enternum;
+		" AND enternum IS NOT NULL AND enternum != '' AND enternum != '" + enternum + "'";
 	mybase::MYFASTRESULT find_res = theApp.GetCon().Query(find_query);
 	
 	string_t info = 
@@ -810,7 +810,7 @@ void SData::FastSetExit()
 	string_t find_query = string_t() +  
 		" SELECT id FROM students " 
 		" WHERE deleted = 0 AND grpid = " + aux::itow(theApp.GetCurrentGroupID()) +
-		" AND exitnum IS NOT NULL AND exitnum != '' AND exitnum != " + exitnum;
+		" AND exitnum IS NOT NULL AND exitnum != '' AND exitnum != '" + exitnum + "'";
 	mybase::MYFASTRESULT find_res = theApp.GetCon().Query(find_query);
 
 	string_t info = 
@@ -821,7 +821,7 @@ void SData::FastSetExit()
 	else
 	{
 		info += string_t() + 
-			"В группе есть несколько студентов (" + aux::itow((long)find_res.size()) + ") с заполненными номерами приказов, отличными от №" + exitnum + ".\n"
+			"В группе есть несколько студентов (" + aux::itow((long)find_res.size()) + ") с заполненными номерами приказов, отличными от № " + exitnum + ".\n"
 			"Нажмите ОК, если уверены и хотите установить номер и дату приказа об отчислении для всей группы.";
 	}
 	if (IDOK != MessageBox(::GetActiveWindow(), info, 
