@@ -26,7 +26,7 @@ BOOL CPropertyDlg::PreCreateWindow(CREATESTRUCT& cs)
 
 int CPropertyDlg::OnCreate()
 {
-	SetWindowPos(m_hWnd, NULL, -1, -1, 640, 550, 
+	SetWindowPos(m_hWnd, NULL, -1, -1, 640, 570, 
 		SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOZORDER);
 	CenterWindow();
 

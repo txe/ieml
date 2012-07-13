@@ -388,9 +388,9 @@ void SPayment::AddCat(void)
 	string_t enddate;
 	GetDateCat(startdate, enddate);
 
-	if (aux::wtoi(money, -1) < 1)
+	if (aux::wtoi(money, -1) < 0)
 	{
-		string_t msg = "Сумма оплаты должна задаваться как целое положительное число.\nИсправьте пожалуйста.";
+		string_t msg = "Сумма оплаты не может быть отрицательной.\nИсправьте пожалуйста.";
 		MessageBox(::GetActiveWindow(), msg, L"Ошибка", MB_OK | MB_ICONERROR | MB_APPLMODAL);
 		return;
 	}
@@ -456,9 +456,9 @@ void SPayment::SaveUpdateCat(void)
 	string_t enddate;
 	GetDateCat(startdate, enddate);
 
-	if (aux::wtoi(money, -1) < 1)
+	if (aux::wtoi(money, -1) < 0)
 	{
-		string_t msg = "Сумма оплаты должна задаваться как целое положительное число.\nИсправьте пожалуйста.";
+		string_t msg = "Сумма оплаты не может быть отрицательной.\nИсправьте пожалуйста.";
 		MessageBox(::GetActiveWindow(), msg, L"Ошибка", MB_OK | MB_ICONERROR | MB_APPLMODAL);
 		return;
 	}
@@ -523,9 +523,9 @@ void SPayment::PersonalCat()
 	string_t catid  = GetCurrentCat().get_attribute("optid");
 	string_t studid	= aux::itow(theApp.GetCurrentStudentID());
 
-	if (aux::wtoi(money, -1) < 1)
+	if (aux::wtoi(money, -1) < 0)
 	{
-		string_t msg = "Сумма оплаты должна задаваться как целое положительное число.\nИсправьте пожалуйста.";
+		string_t msg = "Сумма оплаты не может быть отрицательной.\nИсправьте пожалуйста.";
 		MessageBox(::GetActiveWindow(), msg, L"Ошибка", MB_OK | MB_ICONERROR | MB_APPLMODAL);
 		return;
 	}
