@@ -21,8 +21,8 @@ private:
 	void FullGrpInLst();
 	void FullSpecInLst();
 	void StateChange();
-	void CreateBuhData(int dKoef, int sKoef);
-	void ProcessPlan(int dKoef, int sKoef);
+	void CreateBuhData(int dKoef);
+	void ProcessPlan(int dKoef);
 	void ProcessPay();
 	string_t GetSpecLst(string_t name);
 	string_t GetGrpLst(string_t name);

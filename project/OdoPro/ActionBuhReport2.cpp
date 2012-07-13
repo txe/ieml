@@ -202,16 +202,11 @@ void CActionBuhReport2::Report(void)
 		return;
 	}
 
-	string_t first  = json::v2t(link_element("pay-year").get_value());
-	string_t decabStud = first + "-02-01";   // 2009-02-01
-	string_t septemStud = first + "-09-01";  // 2009-09-01
-	int dYear, dMonth, dDay;
-	GetYearMonthDay(std::wstring(decabStud), dYear, dMonth, dDay);
-	int sYear, sMonth, sDay;
-	GetYearMonthDay(std::wstring(septemStud), sYear, sMonth, sDay);
-
+	string_t year  = json::v2t(link_element("cat-year").get_value());
+	string_t month = json::v2t(link_element("cat-month").get_value());
+	int dYear  = aux::wtoi(year);
+	int dMonth = aux::wtoi(month); 
 	int dKoef = (xMonth - dMonth) + (xYear - dYear) * 12;
-	int sKoef = (xMonth - sMonth) + (xYear - sYear) * 12;
 
 	if (link_element("o-spec").get_state(STATE_CHECKED))
 		if (GetSpecLst("").empty())
@@ -227,11 +222,11 @@ void CActionBuhReport2::Report(void)
 			return;
 		}
 
-	CreateBuhData(dKoef, sKoef);
+	CreateBuhData(dKoef);
 }
 
 //---------------------------------------------------------------------------
-void CActionBuhReport2::CreateBuhData(int dKoef, int sKoef)
+void CActionBuhReport2::CreateBuhData(int dKoef)
 {
 	theApp.GetCon().Query("drop temporary table if exists full_table");
 	theApp.GetCon().Query(
@@ -277,8 +272,8 @@ void CActionBuhReport2::CreateBuhData(int dKoef, int sKoef)
 		" WHERE studs.deleted = 0 AND studs.grpid=" + string_t(aux::itow(theApp.GetCurrentGroupID())) + 
 		" GROUP BY studs.id ");
 
-	ProcessPlan(dKoef, sKoef);   // расчитаем план для текущего периода
-	ProcessPay();    // оплата на 01 число за текущий год
+	ProcessPlan(dKoef);   // расчитаем план для текущего периода
+	ProcessPay();         // оплата на 01 число за текущий год
 
 	// расчитаем долг и переплату
 	theApp.GetCon().Query(" UPDATE full_table SET dolg = plan - pay WHERE plan > pay");
@@ -415,7 +410,7 @@ void CActionBuhReport2::CreateBuhData(int dKoef, int sKoef)
 	ShellExecute(NULL, L"open", name.str().c_str(), NULL, NULL, SW_SHOWNORMAL);
 }
 
-void CActionBuhReport2::ProcessPlan(int dKoef, int sKoef)
+void CActionBuhReport2::ProcessPlan(int dKoef)
 {
 	// соберем оплаты по каждой категории
 	theApp.GetCon().Query("drop temporary table if exists old_pay");
@@ -433,10 +428,10 @@ void CActionBuhReport2::ProcessPlan(int dKoef, int sKoef)
 		"  INDEX (idstud)  "
 		" ) TYPE = HEAP ");
 
-	// зададим даты периода 2009-2010
-	string_t first  = json::v2t(link_element("pay-year").get_value());
-	string_t decabStud = "'" + first + "-02-01'";  // 2009-02-01
-	string_t septemStud = "'" + first + "-09-01'";  // 2009-09-01
+	// зададим даты
+	string_t cat_year = json::v2t(link_element("cat-year").get_value());
+	cat_year += "-" + json::v2t(link_element("cat-month").get_value()) + "-01";
+	cat_year = "'" + cat_year + "'";
 
 	//# это обычная оплата
 	theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, half_year, pay, dt)                            "
@@ -445,7 +440,7 @@ void CActionBuhReport2::ProcessPlan(int dKoef, int sKoef)
 		"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney, opts.half_year, opts.datestart  "
 		"      FROM full_table AS st, payoptstest as opts										    "
 		"      WHERE opts.deleted = 0 AND opts.idgroup = st.grpid						            "
-		"      AND (opts.datestart= " + decabStud + " OR opts.datestart= " + septemStud + ")        "
+		"      AND opts.datestart = " + cat_year + "                                                "
 		" ) as s                                                                                    "
 		" LEFT JOIN payfactstest AS fact                                                            "
 		" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0                  "
@@ -460,35 +455,19 @@ void CActionBuhReport2::ProcessPlan(int dKoef, int sKoef)
 	// если >= 12(6), то ничего делать не надо
 	// для декабристов
 	if (dKoef <= 0)
-		theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = 0 WHERE old_pay.dt = " + decabStud);
+		theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = 0 WHERE old_pay.dt = " + cat_year);
 	else
 	{
 		// полный учебрый год
 		if (dKoef < 12)	
 			theApp.GetCon().Query("UPDATE old_pay "
 				" SET old_pay.plan = (old_pay.plan * " +string_t(aux::itow(dKoef)) + " / 12.0)"
-				" WHERE old_pay.half_year = 0 AND old_pay.dt = " + decabStud);
+				" WHERE old_pay.half_year = 0 AND old_pay.dt = " + cat_year);
 		// сокращенный учебрый год
 		if (dKoef < 6)	
 			theApp.GetCon().Query("UPDATE old_pay "
 				" SET old_pay.plan = (old_pay.plan * " +string_t(aux::itow(dKoef)) + " / 6.0)"
-				" WHERE old_pay.half_year = 1 AND old_pay.dt = " + decabStud);
-	}
-	// тоже самое для сентябристов
-	if (sKoef <= 0)
-		theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = 0 WHERE old_pay.dt = " + septemStud);
-	else 
-	{
-		// полный учебрый год
-		if (sKoef < 12)
-			theApp.GetCon().Query("UPDATE old_pay "
-				" SET old_pay.plan =  (old_pay.plan * " +string_t(aux::itow(sKoef)) + " / 12.0)"
-				" WHERE old_pay.half_year = 0 AND old_pay.dt = " + septemStud);
-		// сокращенный учебрый год
-		if (sKoef < 6)
-			theApp.GetCon().Query("UPDATE old_pay "
-				" SET old_pay.plan =  (old_pay.plan * " +string_t(aux::itow(sKoef)) + " / 6.0)"
-				" WHERE old_pay.half_year = 1 AND old_pay.dt = " + septemStud);
+				" WHERE old_pay.half_year = 1 AND old_pay.dt = " + cat_year);
 	}
 
 	// этап 2
@@ -592,10 +571,10 @@ void CActionBuhReport2::ProcessPay()
 		"  INDEX (idstud)  "
 		" ) TYPE = HEAP ");
 
-	// зададим даты для текущего периода 2010-2011
-	string_t first  = json::v2t(link_element("pay-year").get_value());
-	string_t decabStud = "'" + first + "-02-01'";    // 2010-02-01
-	string_t septemStud = "'" + first + "-09-01'";    // 2010-09-01
+	// зададим даты
+	string_t cat_year = json::v2t(link_element("cat-year").get_value());
+	cat_year += "-" + json::v2t(link_element("cat-month").get_value()) + "-01";
+	cat_year = "'" + cat_year + "'";
 
 	// дата, по которую требуется отчет
 	string_t data1 = json::v2t(link_element("date-1").get_value());
@@ -607,7 +586,7 @@ void CActionBuhReport2::ProcessPay()
 		"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney "
 		"      FROM full_table AS st, payoptstest as opts                          "
 		"      WHERE opts.deleted = 0 AND opts.idgroup = st.grpid				   "
-		"      AND (opts.datestart=" + decabStud + " OR opts.datestart=" + septemStud + ")        "
+		"      AND opts.datestart = " + cat_year + "                               "
 		" ) as s                                                                   "
 		" LEFT JOIN payfactstest AS fact                                           "
 		" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0 "

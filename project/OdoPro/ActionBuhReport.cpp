@@ -117,6 +117,7 @@ void CActionBuhReport::StateChange()
 
 void CActionBuhReport::FullGrpInLst()
 {
+	// don't forget check in CActionBuhReport2 - it's copy past
 	string_t filter[10] = {"¡”%", "ÃŒ%", "Ã–%", "ﬁ%", "›œ%", "›”Õ%", "œÃ%", "œ√—%", "“√¬%",
 		"%'"
 		" AND title NOT like '¡”%'"
