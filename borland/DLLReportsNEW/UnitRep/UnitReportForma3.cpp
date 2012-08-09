@@ -262,11 +262,18 @@ void __fastcall TFormReportForma3::CreateData(void)
             d->namekvalif = row[4];
             d->namekvalif = d->namekvalif.LowerCase();
             d->otl =  (AnsiString(row[5]) == "0")?"нет":"да";
+
+            AnsiString serNum = row[6];
+            int index = serNum.Pos("№");
+            if (index == 0)
+              index = serNum.Pos(" ");
+            if (index == 0)
+              index = 4;
             try {
-              d->serdip = AnsiString(row[6]).SubString(1, 3);
+              d->serdip = serNum.SubString(1, index - 1).Trim();
             } catch (...) { d->serdip = row[6]; }
             try {
-              d->numdip = AnsiString(row[6]).SubString(5, AnsiString(row[6]).Length()-4);
+              d->numdip = serNum.SubString(index + 1, serNum.Length()).Trim();
             } catch (...) { d->numdip = row[6]; }
             d->datavid = row[7];
             d->datagak = row[8];
