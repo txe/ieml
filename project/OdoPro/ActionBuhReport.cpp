@@ -465,7 +465,7 @@ void CActionBuhReport::ProcessPlan()
 		//скоректируем выплаты
 		theApp.GetCon().Query("UPDATE old_pay SET old_pay.pay = old_pay.pay - old_pay.plan WHERE old_pay.type = 'b' ");
 		//сделаеим для них проверку что бы не было отрицательных оплат
-		theApp.GetCon().Query("UPDATE old_pay SET old_pay.pay = 0 WHERE old_pay.pay < 0 ");
+		theApp.GetCon().Query("UPDATE old_pay SET old_pay.pay = 0 WHERE old_pay.pay < 0 AND old_pay.type = 'b' ");
 
 		//# это февральские последующие
 		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, half_year, pay, type)            "
@@ -486,7 +486,7 @@ void CActionBuhReport::ProcessPlan()
 		// уполовиним план, но если это сокращенный год, то этого делать не надо
 		theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = old_pay.plan/2 WHERE old_pay.type = 'c' AND old_pay.half_year = 0 ");
 		//# сделаеим для них проверку что бы не было оплаты больше плана
-		theApp.GetCon().Query("UPDATE old_pay SET old_pay.pay = old_pay.plan WHERE old_pay.pay > old_pay.plan ");
+		theApp.GetCon().Query("UPDATE old_pay SET old_pay.pay = old_pay.plan WHERE old_pay.pay > old_pay.plan AND old_pay.type = 'c' ");
 	}
 	else // если была выбрана категоря оплаты
 	{
@@ -664,7 +664,7 @@ void CActionBuhReport::ProcessPay()
 		//скоректируем выплаты
 		theApp.GetCon().Query("UPDATE pay1 SET pay1.pay = pay1.pay - pay1.plan WHERE pay1.type = 'b' ");
 		// сделаеим для них проверку что бы не было отрицательных оплат
-		theApp.GetCon().Query("UPDATE pay1 SET pay1.pay = 0 WHERE pay1.pay < 0 ");
+		theApp.GetCon().Query("UPDATE pay1 SET pay1.pay = 0 WHERE pay1.pay < 0 AND pay1.type = 'b' ");
 
 		//# это февральские последующие
 		theApp.GetCon().Query("INSERT pay1 (idstud, idopt, plan, half_year, pay, type)                    "
@@ -686,7 +686,7 @@ void CActionBuhReport::ProcessPay()
 		// уполовиним план, но если это сокращенный год, то этого делать не надо
 		theApp.GetCon().Query("UPDATE pay1 SET pay1.plan = pay1.plan/2 WHERE pay1.type = 'c' AND pay1.half_year = 0 ");
 		// сделаим для них проверку что бы не было оплаты больше плана
-		theApp.GetCon().Query("UPDATE pay1 SET pay1.pay = pay1.plan WHERE pay1.pay > pay1.plan ");
+		theApp.GetCon().Query("UPDATE pay1 SET pay1.pay = pay1.plan WHERE pay1.pay > pay1.plan AND pay1.type = 'c' ");
 	}
 	else // если была выбрана категоря оплаты
 	{
