@@ -8,6 +8,8 @@
 #include "UnitInfoOcenk.h"
 #include <stdio.h>
 #include "MacroWord.h"
+#include "UnitFuncs.h"
+#include "mysql.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 
@@ -21,6 +23,7 @@ TFormReportStudsCandRedDiplom *FormReportStudsCandRedDiplom;
 extern AnsiString arrOcenk[];
 
 extern EDRegOpts opts;
+extern MYSQL *mysql;
 //---------------------------------------------------------------------------
 __fastcall TFormReportStudsCandRedDiplom::TFormReportStudsCandRedDiplom(TComponent* Owner)
         : TForm(Owner)
@@ -125,8 +128,6 @@ void __fastcall TFormReportStudsCandRedDiplom::FormClose(TObject *Sender,
 //---------------------------------------------------------------------------
 void __fastcall TFormReportStudsCandRedDiplom::CreateWordDocument(void)
 {
-    int numgroup;
-
     InitReportQuery();
 
     if (ZMySqlQuery->RecordCount==0)
@@ -149,20 +150,22 @@ void __fastcall TFormReportStudsCandRedDiplom::CreateWordDocument(void)
     macros.SelectionFont("Bold=false");
     macros.SelectionParagraphFormat("Alignment = wdAlignParagraphLeft");
 
-    numgroup=-1;
-    TStringList* listNumUsefullStuds=new TStringList;
     int CountTables=0;
     int CountRows;
-    int CountUsefullStuds;
-    AnsiString Str,ZnumStr;
     for (int i=0;i<ZMySqlQuery->RecordCount;i++)
     {
         ZMySqlQuery->RecNo=i+1;
-        numgroup=ZMySqlQuery->Fields->FieldByNumber(1)->AsString.ToInt();
+        int numgroup=ZMySqlQuery->Fields->FieldByNumber(1)->AsString.ToInt();
 
-        InitStudentsForGroup(numgroup);
-        CountUsefullStuds=GetCountUsefullStudents(listNumUsefullStuds);
-        if (CountUsefullStuds==0)  continue;
+        // подготавливает запрос на список студенов
+        //InitStudentsForGroup(numgroup);
+        // получает список студентов на красный диплом
+        //CountUsefullStuds=GetCountUsefullStudents(listNumUsefullStuds);
+        //if (CountUsefullStuds==0)  continue;
+        std::vector<red_student> redStudents = GetRedStudents(numgroup);
+        if (redStudents.empty())
+          continue;
+        int CountUsefullStuds = redStudents.size();
 
         macros.SelectionTypeParagraph();
         macros.SelectionParagraphFormat("Alignment = wdAlignParagraphLeft");
@@ -226,25 +229,26 @@ void __fastcall TFormReportStudsCandRedDiplom::CreateWordDocument(void)
         macros.TablesCell(CountTables, 1, 7, "Range.Select");
         macros.SelectionParagraphFormat("Alignment = wdAlignParagraphCenter");
 
-        for (int j=0;j<listNumUsefullStuds->Count;j++)
+        // проходим по списку на красный диплом
+        for (int j = 0; j < redStudents.size(); ++j)
         {
-            ZMySqlQueryStudsOfGrp->RecNo=listNumUsefullStuds->Strings[j].ToInt();
-
+            red_student& redStudent = redStudents[j];
+            // номер позиции
             macros.TablesCell(CountTables, j+2,1, "Range.Text= \"" + AnsiString(j+1) + "\"");
-            macros.TablesCell(CountTables, j+2,2, "Range.Text= \"" + ZMySqlQueryStudsOfGrp->Fields->FieldByNumber(2)->AsString + "\"");
-            ZnumStr=ZMySqlQueryStudsOfGrp->Fields->FieldByNumber(3)->AsString;
-            int CountZero=6-ZnumStr.Length();
-            for (int it=0;it<CountZero;it++) ZnumStr="0"+ZnumStr;
-            macros.TablesCell(CountTables, j+2,3, "Range.Text= \"" + ZnumStr + "\"");
+            // фио
+            macros.TablesCell(CountTables, j+2,2, "Range.Text= \"" + redStudent.name + "\"");
+            // номер зачетки
+            macros.TablesCell(CountTables, j+2,3, "Range.Text= \"" + redStudent.znum + "\"");
 
-            int countUDOVL,countHOR,countOTL;
-            double percUDOVL,percHOR,percOTL;
-            AnsiString AvrgBallStr;
-            GetBallsCount(countUDOVL,percUDOVL,countHOR,percHOR,countOTL,percOTL,AvrgBallStr,ZMySqlQueryStudsOfGrp->Fields->FieldByNumber(1)->AsString);
+            // вычисляет баллы для студента
+            //int countUDOVL,countHOR,countOTL;
+            //double percUDOVL,percHOR,percOTL;
+            //AnsiString AvrgBallStr;
+            //GetBallsCount(countUDOVL,percUDOVL,countHOR,percHOR,countOTL,percOTL,AvrgBallStr,ZMySqlQueryStudsOfGrp->Fields->FieldByNumber(1)->AsString);
 
-            AnsiString percUDOVLStr=AnsiString(percUDOVL),
-                 percHORStr=AnsiString(percHOR),
-                 percOTLStr=AnsiString(percOTL);
+            AnsiString percUDOVLStr = AnsiString(redStudent.perc_ud);
+            AnsiString percHORStr   = AnsiString(redStudent.perc_hor);
+            AnsiString percOTLStr   = AnsiString(redStudent.perc_otl);
             char str[10];
             sprintf(str,"%4.2lf",percUDOVLStr.ToDouble());
             percUDOVLStr = AnsiString(str);
@@ -253,19 +257,19 @@ void __fastcall TFormReportStudsCandRedDiplom::CreateWordDocument(void)
             sprintf(str,"%4.2lf",percOTLStr.ToDouble());
             percOTLStr = AnsiString(str);
 
-            Str=AnsiString(countUDOVL)+" ("+percUDOVLStr+"%)";
+            AnsiString Str=AnsiString(redStudent.count_ud)+" ("+percUDOVLStr+"%)";
             macros.TablesCell(CountTables, j+2,4, "Range.Text= \"" + Str + "\"");
-            Str=AnsiString(countHOR)+" ("+percHORStr+"%)";
+            Str=AnsiString(redStudent.count_hor)+" ("+percHORStr+"%)";
             macros.TablesCell(CountTables, j+2,5, "Range.Text= \"" + Str+ "\"");
-            Str=AnsiString(countOTL)+" ("+percOTLStr+"%)";
+            Str=AnsiString(redStudent.count_otl)+" ("+percOTLStr+"%)";
             macros.TablesCell(CountTables, j+2,6, "Range.Text= \"" + Str+ "\"");
-            macros.TablesCell(CountTables, j+2,7, "Range.Text= \"" + AvrgBallStr + "\"");
+            macros.TablesCell(CountTables, j+2,7, "Range.Text= \"" + redStudent.avrBall + "\"");
         }
 
         macros.TablesCell(CountTables, CountRows+1, 1, "Range.Select");
         macros.InsertLine("Selection.MoveDown Unit := wdLine");
     }
-    delete listNumUsefullStuds;
+    //delete listNumUsefullStuds;
 
     macros.SelectionParagraphFormat("Alignment = wdAlignParagraphRight");
     macros.SelectionFont("Size=8");
@@ -327,3 +331,94 @@ void __fastcall TFormReportStudsCandRedDiplom::FormDestroy(TObject *Sender)
   WCDisconnect();
 }
 //---------------------------------------------------------------------------
+red_students __fastcall  TFormReportStudsCandRedDiplom::GetRedStudents(int idGroup)
+{
+  ClearRedStudentsQuery();
+
+    MYSQL_RES *result;
+    MYSQL_ROW row;
+
+    AnsiString query = "set @grpid = " + IntToStr(idGroup);
+    mysql_query(mysql, query.c_str());
+    mysql_query(mysql,"CREATE TEMPORARY TABLE temp_stud TYPE = HEAP "
+        "SELECT st.id, st.firstname, st.secondname, st.thirdname, st.znum "
+        "FROM students as st "
+        "WHERE  st.grpid = @grpid AND st.deleted = 0 ");
+
+    mysql_query(mysql,"CREATE TEMPORARY TABLE temp_progress1 TYPE = HEAP "
+        "SELECT pr.*, st.firstname, st.secondname, st.thirdname, st.znum "
+        "FROM progress as pr, temp_stud  as st "
+        "WHERE  pr.idstud = st.id AND pr.deleted = 0 AND pr.estimation < 3 ");
+
+    mysql_query(mysql,"CREATE TEMPORARY TABLE temp_progress2 TYPE = HEAP "
+        "SELECT idstud, iddiscip, MAX(numplansemestr) as numplansemestr "
+        "FROM temp_progress1 "
+        "GROUP BY idstud, iddiscip ");
+
+    mysql_query(mysql,"CREATE TEMPORARY TABLE temp_progress3 TYPE = HEAP "
+        "SELECT pr1.* "
+        "FROM temp_progress1 as pr1, temp_progress2 as pr2 "
+        "WHERE pr1.idstud = pr2.idstud AND pr1.iddiscip = pr2.iddiscip "
+        "AND pr1.numplansemestr = pr2.numplansemestr ");
+
+    mysql_query(mysql,"select idstud,secondname,firstname, thirdname, znum, "
+        "sum(case  when estimation=0 then 1 else 0 end) as otl, "
+        "sum(case  when estimation=1 then 1 else 0 end) as hor, "
+        "sum(case  when estimation=2 then 1 else 0 end) as ud, "
+        "AVG(ball) as sr "
+        "from temp_progress3 "
+        "group by idstud "
+        "order by secondname ");
+
+    std::vector<red_student> redStudents;
+
+    result=mysql_store_result(mysql);
+    if (result && mysql_num_rows(result))
+    {
+        while (row = mysql_fetch_row(result))
+        {
+            red_student redStudent;
+            redStudent.name = row[1] + AnsiString(" ") + row[2] + AnsiString(" ") + row[3];
+            redStudent.znum = row[4];
+
+            int CountZero = 6 - redStudent.znum.Length();
+            for (int it = 0;it < CountZero; it++)
+              redStudent.znum = "0" + redStudent.znum;
+
+            redStudent.count_otl = AnsiString(row[5]).ToInt();
+            redStudent.count_hor = AnsiString(row[6]).ToInt();
+            redStudent.count_ud  = AnsiString(row[7]).ToInt();
+
+            int ballCount = redStudent.count_otl + redStudent.count_hor + redStudent.count_ud;
+            if (ballCount == 0)
+              continue;
+
+            redStudent.perc_otl = 100.0 * double(redStudent.count_otl) / double(ballCount);
+            redStudent.perc_hor = 100.0 * double(redStudent.count_hor) / double(ballCount);
+            redStudent.perc_ud  = 100.0 * double(redStudent.count_ud) / double(ballCount);
+
+            TReplaceFlags flags;
+            flags << rfReplaceAll << rfIgnoreCase;
+            redStudent.avrBall = StringReplace(row[8], ".", ",", flags);
+            char str[10];
+            sprintf(str,"%4.2lf", redStudent.avrBall.ToDouble());
+            redStudent.avrBall = AnsiString(str);
+
+            if (redStudent.count_ud <= 1 && redStudent.perc_otl >= 75.00)
+              redStudents.push_back(redStudent);
+        }
+    }
+    mysql_free_result(result);
+
+  ClearRedStudentsQuery();
+  return redStudents;
+}
+//---------------------------------------------------------------------------
+void __fastcall  TFormReportStudsCandRedDiplom::ClearRedStudentsQuery()
+{
+    mysql_query(mysql,"drop temporary table if exists temp_stud");
+    mysql_query(mysql,"drop temporary table if exists temp_progress1");
+    mysql_query(mysql,"drop temporary table if exists temp_progress2");
+    mysql_query(mysql,"drop temporary table if exists temp_progress3");
+}
+

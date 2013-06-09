@@ -226,7 +226,7 @@ Item1=C:\job\borland\test\bin
 DebugSourceDirs=$(BCB)\source\vcl
 
 [Parameters]
-RunParams=.\ReportsDLL.dll 27 52 6996
+RunParams=.\ReportsDLL.dll 21 52 6996
 Launcher=
 UseLauncher=0
 DebugCWD=
