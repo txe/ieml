@@ -263,14 +263,14 @@ void CActionBuhReport::CreateBuhData()
 	// расчитаем долг 
 	theApp.GetCon().Query(" UPDATE full_table SET dolg = pay - plan");
 
-	// для групп, в которых отчисленные, уберем план и долг, но сохраним оплаты
+	// для групп, в которых отчисленные, уберем долг, а план будет равен оплате
 	theApp.GetCon().Query(" UPDATE full_table as f, voc as v "
-		" SET f.plan = 0, f.dolg = 0 "
+		" SET f.plan = f.pay, f.dolg = 0 "
 		" WHERE f.grpid = v.num AND v.deleted = 0 "
 		" AND v.vkey='grp' AND title like '%отчисл%'");
 
 	// удалим тех, кто не учиться в этом году
-	//theApp.GetCon().Query(" DELETE FROM full_table WHERE plan = 0");
+	theApp.GetCon().Query(" DELETE FROM full_table WHERE plan = 0");
 
 	// получим значения из таблицы
 	// посчитаем и запомним итоги для каждой специальности
