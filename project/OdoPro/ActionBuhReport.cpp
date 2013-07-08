@@ -409,6 +409,7 @@ void CActionBuhReport::ProcessPlan()
 		"  id        int(11) NOT NULL AUTO_INCREMENT, "
 		"  idstud    int(11) NOT NULL, "
 		"  idopt     int(11) NOT NULL, "
+	    "  datestart date    NOT NULL, "
 		"  plan      int(11) NOT NULL, "
 		"  half_year int(1)  NOT NULL, "
 		"  pay       int(11) NOT NULL, "
@@ -426,8 +427,8 @@ void CActionBuhReport::ProcessPlan()
 		string_t d3 = "'" + second + "-02-01'"; // 2010-02-01
 
 		//# это обычная сентябрьская оплата
-		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, half_year, pay, type)            "
-			" SELECT s.idstud, s.idopt, s.commoncountmoney, s.half_year, SUM(COALESCE(fact.moneypay, 0)), 'a'      "
+		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, datestart, plan, half_year, pay, type)       "
+			" SELECT s.idstud, s.idopt, " + d2 + ",s.commoncountmoney, s.half_year, SUM(COALESCE(fact.moneypay, 0)), 'a'      "
 			" FROM (                                                                                  "
 			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney, opts.half_year	  "
 			"      FROM full_table AS st, payoptstest as opts										  "
@@ -444,8 +445,8 @@ void CActionBuhReport::ProcessPlan()
 			" AND p.idopts = old_pay.idopt AND p.deleted = 0 ");
 		
 		//# это февральские предыдущие
-		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, half_year, pay, type)             "
-			" SELECT s.idstud, s.idopt, s.commoncountmoney, s.half_year, SUM(COALESCE(fact.moneypay, 0)), 'b'    "
+		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, datestart, plan, half_year, pay, type)             "
+			" SELECT s.idstud, s.idopt, " + d1 + ",s.commoncountmoney, s.half_year, SUM(COALESCE(fact.moneypay, 0)), 'b'    "
 			" FROM (                                                                                  "
 			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney, opts.half_year "
 			"      FROM full_table AS st, payoptstest as opts										  "
@@ -468,8 +469,8 @@ void CActionBuhReport::ProcessPlan()
 		theApp.GetCon().Query("UPDATE old_pay SET old_pay.pay = 0 WHERE old_pay.pay < 0 AND old_pay.type = 'b' ");
 
 		//# это февральские последующие
-		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, half_year, pay, type)            "
-			" SELECT s.idstud, s.idopt, s.commoncountmoney, s.half_year, SUM(COALESCE(fact.moneypay, 0)), 'c'    "
+		theApp.GetCon().Query("INSERT old_pay (idstud, idopt, datestart, plan, half_year, pay, type)            "
+			" SELECT s.idstud, s.idopt," + d3+ ", s.commoncountmoney, s.half_year, SUM(COALESCE(fact.moneypay, 0)), 'c'    "
 			" FROM (                                                                                  "
 			"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney, opts.half_year "
 			"      FROM full_table AS st, payoptstest as opts                                         "
@@ -509,9 +510,12 @@ void CActionBuhReport::ProcessPlan()
 			" AND p.idopts = old_pay.idopt AND p.deleted = 0 ");
 	}
 	// этап 2
-	// у стедента могут несколько категорий оплат за текущий период, то есть два сценария поведения
-	// 1 если хотя бы по одной было заплачено(может быть несколько), то удалить те которые без оплаты
-	// 2 если ни по одной не заплачено, то оставить только ту которая основная в группе
+	// у стедента могут несколько категорий оплат за текущий период (у февр два периода), то есть два сценария поведения
+	// 1 или если хотя бы по одной было заплачено(может быть несколько), то удалить те которые без оплаты
+	// 2 или если ни по одной не заплачено, то оставить только ту которая основная в группе
+
+	// сдесь исправил, у ферв пред и послед всегда будет несколько категорий, и если по ней небудет заплачено
+    // то она удалится
 
 	// найдем студентов у которых проблемы
 	theApp.GetCon().Query("drop temporary table if exists bad_stud");
@@ -520,15 +524,16 @@ void CActionBuhReport::ProcessPlan()
 		" (                                                "
 		"  id        int(11) NOT NULL AUTO_INCREMENT,      "
 		"  idstud    int(11) NOT NULL,                     "
+		"  datestart date    NOT NULL,                     "
 		"  _count    int(11) NOT NULL,                     "
 		"  pay       int(11) NOT NULL,                     "
 		"  INDEX (id),                                     "
 		"  INDEX (idstud)                                  "
 		" ) TYPE = HEAP ");
-	theApp.GetCon().Query("INSERT bad_stud (idstud, _count, pay) "
-		" SELECT idstud, COUNT(0) as c, SUM(pay)           "
+	theApp.GetCon().Query("INSERT bad_stud (idstud, datestart, _count, pay) "
+		" SELECT idstud, datestart, COUNT(0) as c, SUM(pay)           "
 		" FROM old_pay                                     "
-		" GROUP BY idstud "
+		" GROUP BY idstud, datestart "
 		" HAVING c > 1");
 
 	// найдем котагории которые являются для проблемных студентов основными
@@ -552,18 +557,20 @@ void CActionBuhReport::ProcessPlan()
 		"      ) as m                                     "
 		" GROUP BY m.grpid");
 
-	// сценарий 1
+	// или сценарий 1 ( если хотя бы по одной было заплачено(может быть несколько), то удалить те которые без оплаты)
 	theApp.GetCon().Query(" DELETE old_pay                "
 		" FROM old_pay, bad_stud                  "
 		" WHERE old_pay.idstud = bad_stud.idstud  "
+		" AND old_pay.datestart = bad_stud.datestart "
 		" AND bad_stud.pay > 0 AND old_pay.pay = 0");
-	// сценарий 2
+	// или сценарий 2 (если ни по одной не заплачено, то оставить только ту которая основная в группе)
 	theApp.GetCon().Query(" DELETE old_pay                     "
 		" FROM old_pay, bad_stud, full_table as s, main_opt    "
 		" WHERE old_pay.idstud = bad_stud.idstud               "
+		" AND old_pay.datestart = bad_stud.datestart           "
 		" AND bad_stud.pay = 0 AND s.idstud = bad_stud.idstud  "
 		" AND main_opt.grpid = s.grpid                         "
-		" AND old_pay.idopt != main_opt.idopt");
+		" AND old_pay.idopt != main_opt.idopt ");
 
 	theApp.GetCon().Query("drop temporary table if exists bad_stud");
 	theApp.GetCon().Query("drop temporary table if exists main_opt");
