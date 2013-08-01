@@ -463,6 +463,8 @@ void CActionBuhReport::ProcessPlan()
 			" AND p.idopts = old_pay.idopt AND p.deleted = 0 ");
 		// уполовиним план, но если это сокращенный год, то этого делать не надо
 		theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = old_pay.plan/2 WHERE old_pay.type = 'b' AND old_pay.half_year = 0 ");
+		// уберем план для сокращенных февральских, т.к. у них нет подходящей половинки 
+		theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = 0 WHERE old_pay.type = 'b' AND old_pay.half_year = 1 ");
 		//скоректируем выплаты
 		theApp.GetCon().Query("UPDATE old_pay SET old_pay.pay = old_pay.pay - old_pay.plan WHERE old_pay.type = 'b' ");
 		//сделаеим для них проверку что бы не было отрицательных оплат
