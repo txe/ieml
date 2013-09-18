@@ -48,14 +48,14 @@ void CActionBuhReport2::InitDomElement()
 	FullGrpInLst();
 	FullSpecInLst();
 
-	HTMLayoutAttachEventHandlerEx(link_element("o-all"), ElementEventProcFor, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
-	HTMLayoutAttachEventHandlerEx(link_element("o-spec"), ElementEventProcFor, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
-	HTMLayoutAttachEventHandlerEx(link_element("o-grp"), ElementEventProcFor, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(link_element("o-all"),     ElementEventProcFor, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(link_element("o-spec"),    ElementEventProcFor, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(link_element("o-grp"),     ElementEventProcFor, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
 	HTMLayoutAttachEventHandlerEx(link_element("o-cur-grp"), ElementEventProcFor, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
 
  	// присоединяем обоработчики к кнопкам
  	HTMLayoutAttachEventHandlerEx(link_element("bt-report"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
- 	HTMLayoutAttachEventHandlerEx(link_element("bt-close"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+ 	HTMLayoutAttachEventHandlerEx(link_element("bt-close"),  ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 }
 
 // обрабатывает кнопки
@@ -202,11 +202,16 @@ void CActionBuhReport2::Report(void)
 		return;
 	}
 
-	string_t year  = json::v2t(link_element("cat-year").get_value());
-	string_t month = json::v2t(link_element("cat-month").get_value());
+	string_t year  = json::v2t(link_element("pay-year").get_value());
 	int dYear  = aux::wtoi(year);
-	int dMonth = aux::wtoi(month); 
-	int dKoef = (xMonth - dMonth) + (xYear - dYear) * 12;
+
+	// если учебый год 2013-2014 то коэфициент изменения плана
+	// на февр 13-14, начало будет в августе 13
+	int koef1 = (xMonth - 8) + (xYear - dYear) * 12;
+	// на сент 13-14, начало будет в сентябре 13
+	int koef2 = (xMonth - 9) + (xYear - dYear) * 12;
+	// на февр 14-15, начало будет в феврале 14
+	int koef3 = (xMonth - 2) + (xYear - dYear - 1) * 12;
 
 	if (link_element("o-spec").get_state(STATE_CHECKED))
 		if (GetSpecLst("").empty())
@@ -222,11 +227,11 @@ void CActionBuhReport2::Report(void)
 			return;
 		}
 
-	CreateBuhData(dKoef);
+	CreateBuhData(koef1, koef2, koef3);
 }
 
 //---------------------------------------------------------------------------
-void CActionBuhReport2::CreateBuhData(int dKoef)
+void CActionBuhReport2::CreateBuhData(int koef1, int koef2, int koef3)
 {
 	theApp.GetCon().Query("drop temporary table if exists full_table");
 	theApp.GetCon().Query(
@@ -273,7 +278,7 @@ void CActionBuhReport2::CreateBuhData(int dKoef)
 		" WHERE studs.deleted = 0 AND studs.grpid=" + string_t(aux::itow(theApp.GetCurrentGroupID())) + 
 		" GROUP BY studs.id ");
 
-	ProcessPlan(dKoef);   // расчитаем план для текущего периода
+	ProcessPlan(koef1, koef2, koef3);   // расчитаем план для учебного года
 	ProcessPay();         // оплата на 01 число за текущий год
 
 	// удалим из основной таблицы группы (студентов) которые не имеют категорий оплаты
@@ -415,7 +420,28 @@ void CActionBuhReport2::CreateBuhData(int dKoef)
 	ShellExecute(NULL, L"open", name.str().c_str(), NULL, NULL, SW_SHOWNORMAL);
 }
 
-void CActionBuhReport2::ProcessPlan(int dKoef)
+void CActionBuhReport2::SetKoefPlan(int koef, string_t koefType, bool isFeb)
+{
+	// поправим план, за каждый месяц 1/12(6) плана
+	// если >= 12(6), то ничего делать не надо
+	if (koef <= 0)
+		theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = 0 WHERE old_pay.type = " + koefType);
+	else
+	{
+		// полный учебрый год для сентябрьских
+		if (!isFeb && koef < 12)	
+			theApp.GetCon().Query("UPDATE old_pay "
+			" SET old_pay.plan = (old_pay.plan * " +string_t(aux::itow(koef)) + " / 12.0)"
+			" WHERE old_pay.type = " + koefType);
+		// половина года для февральских
+		if (isFeb && koef < 6)	
+			theApp.GetCon().Query("UPDATE old_pay "
+			" SET old_pay.plan = (old_pay.plan * " +string_t(aux::itow(koef)) + " / 6.0)"
+			" WHERE old_pay.type = " + koefType);
+	}
+}
+
+void CActionBuhReport2::ProcessPlan(int koef1, int koef2, int koef3)
 {
 	// соберем оплаты по каждой категории
 	theApp.GetCon().Query("drop temporary table if exists old_pay");
@@ -428,57 +454,102 @@ void CActionBuhReport2::ProcessPlan(int dKoef)
 		"  plan      DECIMAL NOT NULL, "
 		"  half_year int(1)  NOT NULL, "
 		"  pay       int(11) NOT NULL, "
-		"  dt        date    NOT NULL, "
+		"  datestart date    NOT NULL, "
+		"  type      char(1) NOT NULL, "
 		"  INDEX (id),     "
 		"  INDEX (idstud)  "
 		" ) TYPE = HEAP ");
 
 	// зададим даты
-	string_t cat_year = json::v2t(link_element("cat-year").get_value());
-	cat_year += "-" + json::v2t(link_element("cat-month").get_value()) + "-01";
-	cat_year = "'" + cat_year + "'";
+	string_t first  = json::v2t(link_element("pay-year").get_value());
+	string_t second = aux::itow(aux::wtoi(first) + 1);
+	// зададим даты периода 2013-2014
+	string_t d1 = "'" + first + "-02-01'";  // 2013-02-01
+	string_t d2 = "'" + first + "-09-01'";  // 2013-09-01
+	string_t d3 = "'" + second + "-02-01'"; // 2014-02-01
 
-	//# это обычная оплата
-	theApp.GetCon().Query("INSERT old_pay (idstud, idopt, plan, half_year, pay, dt)                            "
-		" SELECT s.idstud, s.idopt, s.commoncountmoney, s.half_year, SUM(COALESCE(fact.moneypay, 0)),s.datestart "
-		" FROM (                                                                                    "
-		"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney, opts.half_year, opts.datestart  "
-		"      FROM full_table AS st, payoptstest as opts										    "
-		"      WHERE opts.deleted = 0 AND opts.idgroup = st.grpid						            "
-		"      AND opts.datestart = " + cat_year + "                                                "
-		" ) as s                                                                                    "
-		" LEFT JOIN payfactstest AS fact                                                            "
-		" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0                  "
+	//# это обычная сентябрьская оплата
+	theApp.GetCon().Query("INSERT old_pay (idstud, idopt, datestart, plan, half_year, pay, type)       "
+		" SELECT s.idstud, s.idopt, " + d2 + ",s.commoncountmoney, s.half_year, SUM(COALESCE(fact.moneypay, 0)), 'a'      "
+		" FROM (                                                                                  "
+		"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney, opts.half_year	  "
+		"      FROM full_table AS st, payoptstest as opts										  "
+		"      WHERE opts.deleted = 0 AND opts.idgroup = st.grpid						          "
+		"      AND opts.datestart= " + d2 + "  							                          "
+		" ) as s                                                                                  "
+		" LEFT JOIN payfactstest AS fact                                                          "
+		" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0                "
 		" GROUP BY s.idstud, s.idopt");
 	// проверим на наличие персональных категорий оплат
 	theApp.GetCon().Query("UPDATE old_pay, paypersonaltest as p "
 		" SET old_pay.plan = p.commoncountmoney "
-		" WHERE p.idstud = old_pay.idstud "
+		" WHERE old_pay.type = 'a' AND p.idstud = old_pay.idstud "
 		" AND p.idopts = old_pay.idopt AND p.deleted = 0 ");
-	
-	// поправим план, за каждый месяц 1/12(6) плана
-	// если >= 12(6), то ничего делать не надо
-	// для декабристов
-	if (dKoef <= 0)
-		theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = 0 WHERE old_pay.dt = " + cat_year);
-	else
-	{
-		// полный учебрый год
-		if (dKoef < 12)	
-			theApp.GetCon().Query("UPDATE old_pay "
-				" SET old_pay.plan = (old_pay.plan * " +string_t(aux::itow(dKoef)) + " / 12.0)"
-				" WHERE old_pay.half_year = 0 AND old_pay.dt = " + cat_year);
-		// сокращенный учебрый год
-		if (dKoef < 6)	
-			theApp.GetCon().Query("UPDATE old_pay "
-				" SET old_pay.plan = (old_pay.plan * " +string_t(aux::itow(dKoef)) + " / 6.0)"
-				" WHERE old_pay.half_year = 1 AND old_pay.dt = " + cat_year);
-	}
+
+	// поправим план, за каждый месяц 1/12 плана
+	SetKoefPlan(koef2, "'a'", false);
+
+	//# это февральские предыдущие
+	theApp.GetCon().Query("INSERT old_pay (idstud, idopt, datestart, plan, half_year, pay, type)             "
+		" SELECT s.idstud, s.idopt, " + d1 + ",s.commoncountmoney, s.half_year, SUM(COALESCE(fact.moneypay, 0)), 'b'    "
+		" FROM (                                                                                  "
+		"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney, opts.half_year "
+		"      FROM full_table AS st, payoptstest as opts										  "
+		"	   WHERE opts.deleted = 0 AND opts.idgroup = st.grpid						          "
+		"      AND opts.datestart=" + d1 + "						                              "
+		" ) as s                                                                                  "
+		" LEFT JOIN payfactstest AS fact                                                          "
+		" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0                "
+		" GROUP BY s.idstud, s.idopt");
+	// проверим на наличие персональных категорий оплат
+	theApp.GetCon().Query("UPDATE old_pay, paypersonaltest as p "
+		" SET old_pay.plan = p.commoncountmoney "
+		" WHERE old_pay.type = 'b' AND p.idstud = old_pay.idstud "
+		" AND p.idopts = old_pay.idopt AND p.deleted = 0 ");
+	// уполовиним план, если это не сокращенный год
+	theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = old_pay.plan/2 WHERE old_pay.type = 'b' AND old_pay.half_year = 0 ");
+	// уберем план для сокращенных февральских, т.к. у них нет подходящей половинки 
+	theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = 0 WHERE old_pay.type = 'b' AND old_pay.half_year = 1 ");
+	//скоректируем выплаты
+	theApp.GetCon().Query("UPDATE old_pay SET old_pay.pay = old_pay.pay - old_pay.plan WHERE old_pay.type = 'b' ");
+	//сделаеим для них проверку что бы не было отрицательных оплат
+	theApp.GetCon().Query("UPDATE old_pay SET old_pay.pay = 0 WHERE old_pay.pay < 0 AND old_pay.type = 'b' ");
+
+	// поправим план, за каждый месяц 1/6 плана
+	SetKoefPlan(koef1, "'b'", true);
+
+	//# это февральские последующие
+	theApp.GetCon().Query("INSERT old_pay (idstud, idopt, datestart, plan, half_year, pay, type)            "
+		" SELECT s.idstud, s.idopt," + d3+ ", s.commoncountmoney, s.half_year, SUM(COALESCE(fact.moneypay, 0)), 'c'    "
+		" FROM (                                                                                  "
+		"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney, opts.half_year "
+		"      FROM full_table AS st, payoptstest as opts                                         "
+		"	   WHERE opts.deleted = 0 AND opts.idgroup = st.grpid AND opts.datestart=" + d3 + "	  "
+		" ) as s                                                                                  "
+		" LEFT JOIN payfactstest AS fact                                                          "
+		" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0                "
+		" GROUP BY s.idstud, s.idopt");
+	// проверим на наличие персональных категорий оплат
+	theApp.GetCon().Query("UPDATE old_pay, paypersonaltest as p "
+		" SET old_pay.plan = p.commoncountmoney "
+		" WHERE old_pay.type = 'c' AND p.idstud = old_pay.idstud "
+		" AND p.idopts = old_pay.idopt AND p.deleted = 0 ");
+	// уполовиним план, но если это сокращенный год, то этого делать не надо
+	theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = old_pay.plan/2 WHERE old_pay.type = 'c' AND old_pay.half_year = 0 ");
+	//# сделаеим для них проверку что бы не было оплаты больше плана
+	theApp.GetCon().Query("UPDATE old_pay SET old_pay.pay = old_pay.plan WHERE old_pay.pay > old_pay.plan AND old_pay.type = 'c' ");
+
+	// поправим план, за каждый месяц 1/6 плана
+	SetKoefPlan(koef3, "'c'", true);
+
 
 	// этап 2
-	// у стедента могут несколько категорий оплат за текущий период, то есть два сценария поведения
-	// 1 если хотя бы по одной было заплачено(может быть несколько), то удалить те которые без оплаты
-	// 2 если ни по одной не заплачено, то оставить только ту которая основная в группе
+	// у стедента могут несколько категорий оплат за текущий период (у февр два периода), то есть два сценария поведения
+	// 1 или если хотя бы по одной было заплачено(может быть несколько), то удалить те которые без оплаты
+	// 2 или если ни по одной не заплачено, то оставить только ту которая основная в группе
+
+	// сдесь исправил, у ферв пред и послед всегда будет несколько категорий, и если по ней небудет заплачено
+	// то она удалится
 
 	// найдем студентов у которых проблемы
 	theApp.GetCon().Query("drop temporary table if exists bad_stud");
@@ -487,15 +558,16 @@ void CActionBuhReport2::ProcessPlan(int dKoef)
 		" (                                                "
 		"  id        int(11) NOT NULL AUTO_INCREMENT,      "
 		"  idstud    int(11) NOT NULL,                     "
+		"  datestart date    NOT NULL,                     "
 		"  _count    int(11) NOT NULL,                     "
 		"  pay       int(11) NOT NULL,                     "
 		"  INDEX (id),                                     "
 		"  INDEX (idstud)                                  "
 		" ) TYPE = HEAP ");
-	theApp.GetCon().Query("INSERT bad_stud (idstud, _count, pay) "
-		" SELECT idstud, COUNT(0) as c, SUM(pay)           "
+	theApp.GetCon().Query("INSERT bad_stud (idstud, datestart, _count, pay) "
+		" SELECT idstud, datestart, COUNT(0) as c, SUM(pay)           "
 		" FROM old_pay                                     "
-		" GROUP BY idstud "
+		" GROUP BY idstud, datestart "
 		" HAVING c > 1");
 
 	// найдем котагории которые являются для проблемных студентов основными
@@ -519,18 +591,20 @@ void CActionBuhReport2::ProcessPlan(int dKoef)
 		"      ) as m                                     "
 		" GROUP BY m.grpid");
 
-	// сценарий 1
+	// или сценарий 1 ( если хотя бы по одной было заплачено(может быть несколько), то удалить те которые без оплаты)
 	theApp.GetCon().Query(" DELETE old_pay                "
 		" FROM old_pay, bad_stud                  "
 		" WHERE old_pay.idstud = bad_stud.idstud  "
+		" AND old_pay.datestart = bad_stud.datestart "
 		" AND bad_stud.pay > 0 AND old_pay.pay = 0");
-	// сценарий 2
+	// или сценарий 2 (если ни по одной не заплачено, то оставить только ту которая основная в группе)
 	theApp.GetCon().Query(" DELETE old_pay                     "
 		" FROM old_pay, bad_stud, full_table as s, main_opt    "
 		" WHERE old_pay.idstud = bad_stud.idstud               "
+		" AND old_pay.datestart = bad_stud.datestart           "
 		" AND bad_stud.pay = 0 AND s.idstud = bad_stud.idstud  "
 		" AND main_opt.grpid = s.grpid                         "
-		" AND old_pay.idopt != main_opt.idopt");
+		" AND old_pay.idopt != main_opt.idopt ");
 
 	theApp.GetCon().Query("drop temporary table if exists bad_stud");
 	theApp.GetCon().Query("drop temporary table if exists main_opt");
@@ -550,7 +624,9 @@ void CActionBuhReport2::ProcessPlan(int dKoef)
 		" SELECT pay.idstud, SUM(pay.plan - 0)	"
 		" FROM old_pay AS pay					"
 		" GROUP BY pay.idstud ");
-	// перенесем в основную таблицу
+
+
+	// перенесем в основную таблицу и пометим что эти студенты попали в вычисления
 	theApp.GetCon().Query(" UPDATE full_table, plan "
 		" SET full_table.plan = plan.plan, full_table.remove = 0 "
 		" WHERE full_table.idstud = plan.idstud");
@@ -571,37 +647,92 @@ void CActionBuhReport2::ProcessPay()
 		"  idstud    int(11) NOT NULL, "
 		"  idopt     int(11) NOT NULL, "
 		"  plan      int(11) NOT NULL, "
+		"  half_year int(1)  NOT NULL, "
 		"  pay       int(11) NOT NULL, "
+		"  type      char(1) NOT NULL, "
 		"  INDEX (id),     "
 		"  INDEX (idstud)  "
 		" ) TYPE = HEAP ");
 
-	// зададим даты
-	string_t cat_year = json::v2t(link_element("cat-year").get_value());
-	cat_year += "-" + json::v2t(link_element("cat-month").get_value()) + "-01";
-	cat_year = "'" + cat_year + "'";
 
+	// зададим даты
+	string_t first  = json::v2t(link_element("pay-year").get_value());
+	string_t second = aux::itow(aux::wtoi(first) + 1);
+	// зададим даты для текущего периода 2013-2014
+	string_t d1 = "'" + first + "-02-01'";    // 2013-02-01
+	string_t d2 = "'" + first + "-09-01'";    // 2013-09-01
+	string_t d3 = "'" + second + "-02-01'";   // 2014-02-01
 	// дата, по которую требуется отчет
 	string_t data1 = json::v2t(link_element("date-1").get_value());
 
-	//# это обычная оплата
-	theApp.GetCon().Query("INSERT pay1 (idstud, idopt, plan, pay)                  "
-		" SELECT s.idstud, s.idopt, s.commoncountmoney, SUM(COALESCE(fact.moneypay, 0)) "
+	//# это обычная сентябрьская оплата
+	theApp.GetCon().Query("INSERT pay1 (idstud, idopt, plan, half_year, pay, type)            "
+		" SELECT s.idstud, s.idopt, s.commoncountmoney, s.half_year, SUM(COALESCE(fact.moneypay, 0)), 'a'"
 		" FROM (                                                                   "
-		"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney "
+		"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney, opts.half_year "
 		"      FROM full_table AS st, payoptstest as opts                          "
 		"      WHERE opts.deleted = 0 AND opts.idgroup = st.grpid				   "
-		"      AND opts.datestart = " + cat_year + "                               "
+		"      AND opts.datestart=" + d2 + "                                       "
 		" ) as s                                                                   "
 		" LEFT JOIN payfactstest AS fact                                           "
 		" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0 "
-		" AND fact.datepay <= '" + t::date2t(data1) + "'                           " 
+		" AND fact.datepay <= '" + t::date2t(data1) + "' "  
 		" GROUP BY s.idstud, s.idopt");
 	// проверим на наличие персональных категорий оплат
 	theApp.GetCon().Query("UPDATE pay1, paypersonaltest as p "
 		" SET pay1.plan = p.commoncountmoney "
-		" WHERE p.idstud = pay1.idstud "
+		" WHERE pay1.type = 'a' AND p.idstud = pay1.idstud "
 		" AND p.idopts = pay1.idopt AND p.deleted = 0 ");
+
+
+	//# это февральские предыдущие
+	theApp.GetCon().Query("INSERT pay1 (idstud, idopt, plan, half_year, pay, type)                    "
+		" SELECT s.idstud, s.idopt, s.commoncountmoney, s.half_year, SUM(COALESCE(fact.moneypay, 0)), 'b'  "
+		" FROM (                                                                    "
+		"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney, opts.half_year  "
+		"      FROM full_table AS st, payoptstest as opts                           "
+		"	     WHERE opts.deleted = 0 AND opts.idgroup = st.grpid                 "
+		"      AND opts.datestart=" + d1 + "                                        "
+		" ) as s                                                                    "
+		" LEFT JOIN payfactstest AS fact                                            "
+		" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0 " 
+		" AND fact.datepay <= '" + t::date2t(data1) + "' "  
+		" GROUP BY s.idstud, s.idopt");
+	// проверим на наличие персональных категорий оплат
+	theApp.GetCon().Query("UPDATE pay1, paypersonaltest as p "
+		" SET pay1.plan = p.commoncountmoney "
+		" WHERE pay1.type = 'b' AND p.idstud = pay1.idstud "
+		" AND p.idopts = pay1.idopt AND p.deleted = 0 ");
+	// уполовиним план, но если это сокращенный год, то этого делать не надо
+	theApp.GetCon().Query("UPDATE pay1 SET pay1.plan = pay1.plan/2 WHERE pay1.type = 'b' AND pay1.half_year = 0 ");
+	//скоректируем выплаты
+	theApp.GetCon().Query("UPDATE pay1 SET pay1.pay = pay1.pay - pay1.plan WHERE pay1.type = 'b' ");
+	// сделаеим для них проверку что бы не было отрицательных оплат
+	theApp.GetCon().Query("UPDATE pay1 SET pay1.pay = 0 WHERE pay1.pay < 0 AND pay1.type = 'b' ");
+
+
+	//# это февральские последующие
+	theApp.GetCon().Query("INSERT pay1 (idstud, idopt, plan, half_year, pay, type)                    "
+		" SELECT s.idstud, s.idopt, s.commoncountmoney, s.half_year, SUM(COALESCE(fact.moneypay, 0)), 'c'  "
+		" FROM (                                                                    "
+		"      SELECT st.idstud as idstud, opts.id as idopt, opts.commoncountmoney, opts.half_year  "
+		"      FROM full_table AS st, payoptstest as opts                           "
+		"	     WHERE opts.deleted = 0 AND opts.idgroup = st.grpid                 "
+		"      AND opts.datestart=" + d3 + "                                        "
+		" ) as s                                                                    "
+		" LEFT JOIN payfactstest AS fact                                            "
+		" ON s.idopt = fact.idopts AND s.idstud = fact.idstud AND fact.deleted = 0 " 
+		" AND fact.datepay <= '" + t::date2t(data1) + "' "  
+		" GROUP BY s.idstud, s.idopt");
+	// проверим на наличие персональных категорий оплат
+	theApp.GetCon().Query("UPDATE pay1, paypersonaltest as p "
+		" SET pay1.plan = p.commoncountmoney "
+		" WHERE pay1.type = 'c' AND p.idstud = pay1.idstud "
+		" AND p.idopts = pay1.idopt AND p.deleted = 0 ");
+	// уполовиним план, но если это сокращенный год, то этого делать не надо
+	theApp.GetCon().Query("UPDATE pay1 SET pay1.plan = pay1.plan/2 WHERE pay1.type = 'c' AND pay1.half_year = 0 ");
+	// сделаим для них проверку что бы не было оплаты больше плана
+	theApp.GetCon().Query("UPDATE pay1 SET pay1.pay = pay1.plan WHERE pay1.pay > pay1.plan AND pay1.type = 'c' ");
 
 
 	// может быть несколько оплат
@@ -624,7 +755,8 @@ void CActionBuhReport2::ProcessPay()
 	theApp.GetCon().Query(" UPDATE full_table, pay2 "
 		" SET full_table.pay = pay2.pay "
 		" WHERE full_table.idstud = pay2.idstud");
-	
+
+
 	theApp.GetCon().Query("drop temporary table if exists pay1");
 	theApp.GetCon().Query("drop temporary table if exists pay2");
 }

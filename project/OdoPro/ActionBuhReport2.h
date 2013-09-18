@@ -21,8 +21,9 @@ private:
 	void FullGrpInLst();
 	void FullSpecInLst();
 	void StateChange();
-	void CreateBuhData(int dKoef);
-	void ProcessPlan(int dKoef);
+	void CreateBuhData(int koef1, int koef2, int koef3);
+	void SetKoefPlan(int koef, string_t koefType, bool isFeb);
+	void ProcessPlan(int koef1, int koef2, int koef3);
 	void ProcessPay();
 	string_t GetSpecLst(string_t name);
 	string_t GetGrpLst(string_t name);
