@@ -239,6 +239,7 @@ void CActionBuhReport2::CreateBuhData(int dKoef)
 		"  pay       int(11) DEFAULT '0', "
 		"  dolg      DECIMAL DEFAULT '0', "
 		"  pere      DECIMAL DEFAULT '0', "
+		"  remove    int(11) DEFAULT '1', "
 		"  INDEX (idstud), "
 		"  INDEX (grpid) "
 		" ) TYPE = HEAP ");
@@ -274,6 +275,10 @@ void CActionBuhReport2::CreateBuhData(int dKoef)
 
 	ProcessPlan(dKoef);   // расчитаем план для текущего периода
 	ProcessPay();         // оплата на 01 число за текущий год
+
+	// удалим из основной таблицы группы (студентов) которые не имеют категорий оплаты
+	theApp.GetCon().Query(" DELETE FROM full_table "
+						  " WHERE full_table.remove = 1 ");
 
 	// расчитаем долг и переплату
 	theApp.GetCon().Query(" UPDATE full_table SET dolg = plan - pay WHERE plan > pay");
@@ -547,7 +552,7 @@ void CActionBuhReport2::ProcessPlan(int dKoef)
 		" GROUP BY pay.idstud ");
 	// перенесем в основную таблицу
 	theApp.GetCon().Query(" UPDATE full_table, plan "
-		" SET full_table.plan = plan.plan "
+		" SET full_table.plan = plan.plan, full_table.remove = 0 "
 		" WHERE full_table.idstud = plan.idstud");
 
 	theApp.GetCon().Query("drop temporary table if exists plan");
