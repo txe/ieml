@@ -85,7 +85,7 @@ int CMainDlg::OnCreate()
 	manag_actions_.Init(this, link_element("menu-bar"));
 	theApp.GetUpdater().Init(m_hWnd);
 	//  обновляем таблицу студентов
-	theApp.SetCurrentGroupID(52);
+	theApp.SetCurrentGroupID(1538);
 	UpdateGrid();
 
 	return 0;

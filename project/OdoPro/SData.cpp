@@ -411,27 +411,27 @@ void SData::UpdateAllProgressForStudent(void)
 }
 
 // возвращает город для группы
-long SData::GetCityIdForGroup(long GroupId)
-{
-	std::string group  = theApp.GetGroupName(GroupId);
-	std::string digits = "-0123456789";
-	// ищим первое вхождение числа в названии группы
-	int d_pos  = -1;
-	for (int pos = 0; pos < (int)group.size(); ++pos)
-		if (digits.find(group[pos], 0) != std::string::npos)
-		{
-			d_pos = pos; 
-			break;
-		}
-
-	if (d_pos == -1 || (group.find('/', 0) == std::string::npos))
-		return 0;
-	
-	int			sp_pos	= (int)group.find('/', 0);
-	std::string city    = group.substr(d_pos + 1, sp_pos - 2 - d_pos);
-
-	return aux::atoi(city.c_str(), 0);
-}
+// long SData::GetCityIdForGroup(long GroupId)
+// {
+// 	std::string group  = theApp.GetGroupName(GroupId);
+// 	std::string digits = "-0123456789";
+// 	// ищим первое вхождение числа в названии группы
+// 	int d_pos  = -1;
+// 	for (int pos = 0; pos < (int)group.size(); ++pos)
+// 		if (digits.find(group[pos], 0) != std::string::npos)
+// 		{
+// 			d_pos = pos; 
+// 			break;
+// 		}
+// 
+// 	if (d_pos == -1 || (group.find('/', 0) == std::string::npos))
+// 		return 0;
+// 	
+// 	int			sp_pos	= (int)group.find('/', 0);
+// 	std::string city    = group.substr(d_pos + 1, sp_pos - 2 - d_pos);
+// 
+// 	return aux::atoi(city.c_str(), 0);
+// }
 
 // проверяет корректность введенных данных, корректирует их
 void SData::get_current_value(std::map<string_t, string_t>& value)
@@ -511,9 +511,10 @@ BOOL CALLBACK SData::ElementEventProcChangedGroup(LPVOID tag, HELEMENT he, UINT 
 	if (pr->cmd != SELECT_SELECTION_CHANGED)
 		return FALSE;
 
-	SData* data = static_cast<SData*>(tag);
-	long city = data->GetCityIdForGroup(aux::wtoi(json::v2t(data->map_elements_["grpid"].get_value())));
-	json::t2v(data->map_elements_["cityid"], string_t(aux::itow(city)));
+    // более это не требуется
+	//SData* data = static_cast<SData*>(tag);
+	//long city = data->GetCityIdForGroup(aux::wtoi(json::v2t(data->map_elements_["grpid"].get_value())));
+	//json::t2v(data->map_elements_["cityid"], string_t(aux::itow(city)));
 
 	return TRUE;	
 }

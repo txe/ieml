@@ -51,7 +51,7 @@ private:
 	// изменяет все оценки если изменилась специальность
 	void UpdateAllProgressForStudent(void);
 	// возвращает город для группы
-	long GetCityIdForGroup(long GroupId);
+	//long GetCityIdForGroup(long GroupId);
 	// проверяет корректность введенных данных, корректирует их
 	void get_current_value(std::map<string_t, string_t>& value);
 	// устанавливает для всей группы номер и дату приказа о зачислении
