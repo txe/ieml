@@ -22,7 +22,7 @@ public:
 
 	bool					empty() const { return _str.empty(); }
 	void					erase(int off, int count) { _str.erase(off, count); }
-	std::wstring::size_type	size() { return _str.size(); }
+	std::wstring::size_type	size() const { return _str.size(); }
 	//std::wstring::size_type length() { return _str.length(); }
 	const char* c_str() const { return (const char*)(*this); }
 //
@@ -75,4 +75,15 @@ public:
 		_buf = (char*)(const byte*)aux::w2utf(_str.c_str());
 		return (unsigned char*)_buf.c_str();	
 	}
+
+	int indexOf(const std::wstring& str) const
+	{
+		return _str.find(str);
+	}
+
+	string_t subString(int begin, int count) const
+	{
+		return _str.substr(begin, count);
+	}
+
 };
