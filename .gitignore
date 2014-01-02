@@ -21,3 +21,12 @@
 /project/OdoPro/*.suo
 
 /borland/DLLReportsNEW/bin/*.tds
+/borland/DLLReportsNEW/UnitRep/*.obj
+/borland/DLLReportsNEW/UnitRep/*.~cpp
+/borland/DLLReportsNEW/UnitRep/*.~ddp
+
+/borland/DLLReportsNEW/UnitRep/*.~h
+
+/borland/DLLReportsNEW/UnitRep/*.~dfm
+
+/borland/DLLReportsNEW/*.pdb
