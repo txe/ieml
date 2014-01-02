@@ -8,6 +8,7 @@
 #include "Dictionary.h"
 #include "json-aux-ext.h"
 #include "logger.h"
+#include "for_version.h"
 
 using namespace htmlayout::dom;
 
