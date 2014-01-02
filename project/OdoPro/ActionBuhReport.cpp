@@ -6,6 +6,7 @@
 #include <sstream>
 #include <iomanip>
 #include <map>
+#include <ctime>
 
 CActionBuhReport::CActionBuhReport(LiteWnd* parent /* = NULL */):LiteWnd(parent)
 {

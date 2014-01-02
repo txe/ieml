@@ -2,15 +2,29 @@
 
 #include <json-aux.h>
 #include "string_t.h"
-#include <boost\algorithm\string.hpp>
 #include <vector>
+#include <sstream>
 #include <float.h>
 #include "SingeltonApp.h"
 #include <mbstring.h>
+#include <algorithm>
 
 
 enum { CHECK_ALL = (FIRST_APPLICATION_EVENT_CODE + 1) };
 
+namespace aux
+{
+	inline std::vector<std::wstring> split(const std::wstring &s, wchar_t delim) 
+	{
+		std::wstringstream ss(s);
+		std::wstring item;
+		std::vector<std::wstring> elems;
+		while (std::getline(ss, item, delim)) {
+			elems.push_back(item);
+		}
+		return elems;
+	}
+}
 
 namespace t
 {
@@ -99,13 +113,11 @@ namespace t
 	// проверяет валидность даты и коректирует ее
 	inline string_t date2t(string_t date)
 	{
-		std::vector<std::wstring> result;
-		std::wstring buf = date;
-		boost::split(result, buf, boost::is_any_of(L"-"));
+		std::vector<std::wstring> result = aux::split(std::wstring(date), L'-');
 		// год
-		int year = aux::wtoi((result.size() > 0)?result[0].c_str():L"0", 0);
-		int month = aux::wtoi((result.size() > 1)?result[1].c_str():L"0", 0);
-		int day = aux::wtoi((result.size() > 2)?result[2].c_str():L"0", 0);
+		int year  = aux::wtoi((result.size() > 0) ? result[0].c_str() : L"0", 0);
+		int month = aux::wtoi((result.size() > 1) ? result[1].c_str() : L"0", 0);
+		int day   = aux::wtoi((result.size() > 2) ? result[2].c_str() : L"0", 0);
 
 		if (year > 2020)
 			year = 0;
@@ -120,9 +132,7 @@ namespace t
 	// получает год
 	inline string_t get_year(const string_t& date)
 	{
-		std::vector<std::wstring> result;
-		std::wstring buf = date;
-		boost::split(result, buf, boost::is_any_of(L"-"));
+		std::vector<std::wstring> result = aux::split(std::wstring(date), L'-');
 		return result[0];
 	}
 	// переводит балл в формат из x,yz  в x.y0 для совместимости с SQL
@@ -223,7 +233,6 @@ namespace t
 
 namespace aux
 {
-
 	// (c) Den Chetverikov
 	inline bool Parse(const char* string, long double& var)
 	{

@@ -5,6 +5,7 @@
 #include <sys/timeb.h>
 #include <sstream>
 #include <iomanip>
+#include <ctime>
 #include <map>
 
 CActionBuhReport2::CActionBuhReport2(LiteWnd* parent /* = NULL */):LiteWnd(parent)
@@ -179,11 +180,11 @@ void CActionBuhReport2::FullSpecInLst()
 
 void CActionBuhReport2::GetYearMonthDay(std::wstring date1, int& year, int& month, int& day)
 {
-	std::vector<std::wstring> result;
-	boost::split(result, date1, boost::is_any_of(L"-"));
-	year = aux::wtoi((result.size() > 0)?result[0].c_str():L"0", 0);
+	std::vector<std::wstring> result = aux::split(date1, L'-');
+
+	year  = aux::wtoi((result.size() > 0)?result[0].c_str():L"0", 0);
 	month = aux::wtoi((result.size() > 1)?result[1].c_str():L"0", 0);
-	day = aux::wtoi((result.size() > 2)?result[2].c_str():L"0", 0);
+	day   = aux::wtoi((result.size() > 2)?result[2].c_str():L"0", 0);
 }
 
 void CActionBuhReport2::Report(void)

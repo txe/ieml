@@ -138,8 +138,8 @@ public:
 	MYSQL*		GetCon(void) { return m_con; };		// возвращает дескриптор соединения
 	string_t	GetParam(UINT param);        // возвращает параметры, как хост, логтн и т.д.
 private:
-	bool LoadSetting(const string_t& cfg_name);	// чтение параметров подключения
-	bool CheckBase(void);							// проверка состояния базы	
+	bool LoadSetting();	   // чтение параметров подключения
+	bool CheckBase(void);  // проверка состояния базы	
 public:
 	// возвращает количество строк которые были затронуты измнениями и т.д. см. mysql_affected_rows
 	long AffectedRows(void);

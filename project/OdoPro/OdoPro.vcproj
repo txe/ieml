@@ -40,10 +40,11 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions=" /MP1"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..\dev\mysql\include&quot;;&quot;$(ProjectDir)\..\dev\HTMLayoutSDK\include&quot;;&quot;$(ProjectDir)\..\dev\boost&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
-				MinimalRebuild="true"
+				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"

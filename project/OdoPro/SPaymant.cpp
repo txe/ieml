@@ -224,13 +224,11 @@ BOOL CALLBACK SPayment::ElementEventProcForPayTable(LPVOID tag, HELEMENT he, UIN
 string_t SPayment::DateToPayFormat(const string_t& pay_date)
 {
 	// 2001-02-01
-	std::vector<std::string> result;
-	std::string buf = pay_date;
-	boost::split(result, buf, boost::is_any_of("-"));
-	if (result[1] == "02")
-		return "фев. " + result[0];
-	if (result[1] == "09")
-		return "сент. " + result[0];
+	std::vector<std::wstring> result = aux::split(std::wstring(pay_date), L'-');
+	if (result[1] == L"02")
+		return L"фев. " + result[0];
+	if (result[1] == L"09")
+		return L"сент. " + result[0];
 	
 	throw wss::exception(wss::reason_message(FULL_LOCATION()));
 }
@@ -360,9 +358,8 @@ void SPayment::UpdateViewCat(void)
 	if (!cat.is_valid()) // для пустой группы категории еще не введены
 		return;
 
-	std::vector<std::wstring> date;
 	std::wstring buf = cat.get_attribute("datestart"); 
-	boost::split(date, buf, boost::is_any_of(L"-"));
+	std::vector<std::wstring> date = aux::split(buf, L'-');
 
 	json::t2v(_cat_month, date[1]);
 	json::t2v(_cat_year, date[0]);

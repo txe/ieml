@@ -3,6 +3,11 @@
 - т.к. zeosdb использует старые версии клиента MySql, то в конфигурации Mysql сервера требуется установить поддержку старых версий в sql-mode;
 - отчеты берут информацию о месторасположении базы из реестра;
 
+
+не забыть изменить odoportal.cfg на config.ini и добавить секцию [link]
+
+
+
 для служебных целей
 гражданство
 ALTER TABLE students ADD COLUMN citizenryid INT(11) NOT NULL DEFAULT '1'
@@ -25,3 +30,4 @@ ALTER TABLE students MODIFY egereg VARCHAR(15) NOT NULL DEFAULT "00-000000000-00
               ) ENGINE=InnoDB ;
 
 ALTER TABLE payoptstest ADD COLUMN half_year INT(1) NOT NULL DEFAULT '0' AFTER commoncountmoney
+

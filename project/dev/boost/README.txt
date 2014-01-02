@@ -1,1 +1,0 @@
-bcp.exe  --boost=F:\boost_1_41_0 boost\algorithm\string.hpp boost\property_tree\ptree.hpp boost\property_tree\ini_parser.hpp c:\boost

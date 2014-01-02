@@ -4,8 +4,6 @@
 #include "SingeltonApp.h"
 #include <iostream>
 #include <fstream>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/ini_parser.hpp>
 #include "json-aux.h"
 #include "logger.h"
 
@@ -25,12 +23,15 @@ bool mybase::MyBase::Connect(void)
 {
 	LOG_DEBUG << "Подключение к базе данных";
 
-	if (!LoadSetting(string_t("odopro.cfg")))
+	if (!LoadSetting())
 		return false;
 
 	if ((m_con = mysql_init(NULL)) == NULL)
 	{
 		LOG_ERROR <<  "Ошибка при создании объекта MySQL";
+		LOG_ERROR <<  " host  = " << sHost;
+		LOG_ERROR <<  " login = " << sLogin;
+		LOG_ERROR <<  " base  = " << sBaseName;
 		return false;
 	}
 
@@ -53,32 +54,28 @@ bool mybase::MyBase::Connect(void)
 }
 
 // чтение параметров подключения
-bool mybase::MyBase::LoadSetting( const string_t& cfg_name )
+bool mybase::MyBase::LoadSetting()
 {
 	LOG_DEBUG << "Чтение параметров из конфиг. файла";
-	// TODO: необходимо включить проверку на валидность
-	try
+	struct local
 	{
-		// Create an empty property tree object
-		using boost::property_tree::ptree;
-		ptree pt;
+		static std::string get(std::string fileName, std::string secName, std::string keyName, std::string defVal)
+		{
+			char buf[255];
+			DWORD count = GetPrivateProfileStringA(secName.c_str(), keyName.c_str(), defVal.c_str(), buf, 245, fileName.c_str());
+			if (count != 0)
+				return buf;
+			return "";
+		}	
+	};
 
-		// Load the XML file into the property tree. If reading fails
-		// (cannot open file, parse error), an exception is thrown.
-		read_ini(cfg_name.c_str(), pt);
+	std::string cfg_name = theApp.GetModuleDir() + "config.ini";
+    sHost     = local::get(cfg_name, "link", "host",     "127.0.0.1");
+	sLogin    = local::get(cfg_name, "link", "login",    "app_user");
+	sPassword = local::get(cfg_name, "link", "password", "-Nu(q$j0Xnxk");
+	sBaseName = local::get(cfg_name, "link", "dbname",   "test");
+	sPort     = local::get(cfg_name, "link", "port",     "3306");
 
-		sHost     = pt.get("host",     "127.0.0.1");
-		sLogin    = pt.get("login",    "app_user");
-		sPassword = pt.get("password", "-Nu(q$j0Xnxk");
-		sBaseName = pt.get("dbname",   "test");
-		sPort     = pt.get("port",     "3306");
-	}
-	catch (...)
-	{
-		if ( -1 == theApp.ExceptionManage())
-			LOG_ERROR << "Неизвестная ошибка при чтении конфиг. файла";
-		return false;
-	}
 	return true;
 }
 

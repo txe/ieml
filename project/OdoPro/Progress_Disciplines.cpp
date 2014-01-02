@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Progress_Disciplines.h"
-#include <boost\algorithm\string.hpp>
 #include "SingeltonApp.h"
 #include "json-aux-ext.h"
 #include "logger.h"
@@ -206,8 +205,7 @@ void CManagDisciplinesDlg::UpdateViewDiscipData(void)
 	json::t2v(scan_namber_,json::v2t(element(discip.child(6)).get_value()));
 	
 	std::wstring hours = discip.get_attribute("sem_hours");
-	std::vector<std::wstring> hs;
-	boost::split(hs, hours, boost::is_any_of(L";"));
+	std::vector<std::wstring> hs = aux::split(hours, L';');
 	for (uint i = 0; i < sem_hours_.size(); ++i)
 		json::t2v(sem_hours_[i], (i < hs.size())?hs[i]:L"1");
 
