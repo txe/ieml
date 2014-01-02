@@ -488,22 +488,26 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Reports"
+			Name="reports"
+			>
+		</Filter>
+		<Filter
+			Name="msoffice"
 			>
 			<File
-				RelativePath=".\ExcelMacro.cpp"
+				RelativePath=".\msoffice\ExcelMacro.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ExcelMacro.h"
+				RelativePath=".\msoffice\ExcelMacro.h"
 				>
 			</File>
 			<File
-				RelativePath=".\WordMacro.cpp"
+				RelativePath=".\msoffice\WordMacro.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\WordMacro.h"
+				RelativePath=".\msoffice\WordMacro.h"
 				>
 			</File>
 		</Filter>
