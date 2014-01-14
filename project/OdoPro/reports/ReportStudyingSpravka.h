@@ -22,7 +22,7 @@ struct PrivateData
 class ReportStudyingSpravka : public ReportAbstract
 {
 public:
-  ReportStudyingSpravka(string_t name, string_t tip) : ReportAbstract(name, tip) {}
+  ReportStudyingSpravka(string_t name) : ReportAbstract(name) {}
   virtual void Run(int grpId, int studentId);
 
 private:

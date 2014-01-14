@@ -2,6 +2,7 @@
 
 #include <htmlayout.h>
 #include "string_t.h"
+#include "reports/ReportAbstract.h"
 
 using namespace htmlayout::dom;
 
@@ -10,10 +11,13 @@ class ManagerReports
 public:
 	ManagerReports(void);
 	~ManagerReports(void);
+
 private:
 	element		_menu;
 	HINSTANCE	_hinstRepLib;
-	HANDLE hRead, hWrite;
+	HANDLE      hRead, hWrite;
+	std::vector<ReportAbstract*> _reports;
+
 public:
 	// инициализация работы менеджера
 	void Init(element menu);
@@ -27,5 +31,6 @@ private:
 	// обрабатывает меню
 	static BOOL CALLBACK ElementEventProcMenu(LPVOID tag, HELEMENT he, UINT evtg, LPVOID prms);
 	// вызывает отчет
-	void CallReport(string_t id);
+	void CallNewReport(string_t title);
+	void CallOldReport(string_t id);
 };

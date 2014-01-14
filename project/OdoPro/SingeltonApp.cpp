@@ -172,15 +172,15 @@ string_t SingeltonApp::GetFIO(void)
 }
 
 // возвращает описание для индефикатора и ключа из таблицы VOC (UTF)
-string_t SingeltonApp::GetTitleForKeyFromVoc(VOK_KEY vkey, int num)
+string_t SingeltonApp::GetTitleForKeyFromVoc(VOK_KEY vkey, int num, bool no_throw /* = false */)
 {
 	string_t key;
 	switch (vkey)
 	{
 	case VK_GRP:        key = "grp";        break;
 	case VK_EDUDOC:     key = "edudoc";     break;
-	case VK_SPECS:      key = "specs";      break;
-	case VK_SPEZIALIZ:  key = "spezializs"; break;
+	case VK_SPECS:      key = "spec";       break;
+	case VK_SPEZIALIZ:  key = "specializ";  break;
 	case VK_QUALIFIC:   key = "qualific";   break;
 	case VK_DIRECT:     key = "directs";    break;
 	case VK_DISCIPCLASSIFIC: key = "discipclassific"; break;
@@ -196,6 +196,8 @@ string_t SingeltonApp::GetTitleForKeyFromVoc(VOK_KEY vkey, int num)
 
 	if (!(row = res.fetch_row()))
 	{
+		if (no_throw)
+			return "";
 		assert(false);
 		throw wss::exception(wss::reason_message(FULL_LOCATION()));
 	}
@@ -239,6 +241,10 @@ int SingeltonApp::ExceptionManage(void)
 	catch (std::exception& e)
 	{
 		LOG_ERROR << e.what();
+	}
+	catch (_com_error& e)
+	{
+		LOG_ERROR << (LPCSTR)aux::w2a(e.ErrorMessage());
 	}
 	catch (...)
 	{

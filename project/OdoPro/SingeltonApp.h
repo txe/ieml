@@ -40,7 +40,7 @@ public:
 	// возвращает ФИО текущего студента
 	string_t GetFIO(void);
 	// возвращает описание для индефикатора и ключа из таблицы VOC
-	string_t GetTitleForKeyFromVoc(VOK_KEY vkey, int num);
+	string_t GetTitleForKeyFromVoc(VOK_KEY vkey, int num, bool no_throw = false);
 	// возвращает для индификатора имя группы
 	string_t GetGroupName(int grpid);
 	// возвращает ид специальности для данного студента
@@ -49,11 +49,6 @@ public:
 	int ExceptionManage(void);
 	// возвращает положение файла программы
 	std::string GetModuleDir();
-
-public:
-  void RegisteReport(ReportAbstract* report) { _reposts.push_back(report); }
-  int ReportCount()                          { return _reposts.size(); }
-  ReportAbstract* GetReport(int num)         { return _reposts[num]; }
 
 private:
 	void UpgradeLocalParam(void);

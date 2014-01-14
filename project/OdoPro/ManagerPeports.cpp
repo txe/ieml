@@ -3,6 +3,7 @@
 #include "SingeltonApp.h"
 #include "json-aux-ext.h"
 #include "logger.h"
+#include "reports/ReportStudyingSpravka.h"
 
 typedef int   (__cdecl *TGetCountOfReportsInDLL)(void);
 typedef char* (__cdecl *TGetTitleOfReportByIndex)(int);
@@ -55,12 +56,16 @@ void ManagerReports::LoadReports(void)
 		throw wss::exception(wss::reason_message(FULL_LOCATION(), "неверная структура библиотеки"));
 	}
 	
+	_reports.push_back(new ReportStudyingSpravka("Обучающая справка (MS Word)"));
 }
 
 // выгружает библиотеки отчетов
 void ManagerReports::UnLoadReports(void)
 {
 	FreeLibrary(_hinstRepLib); 
+	for (int i = 0; i < _reports.size(); ++i)
+		delete _reports[i];
+	_reports.size();
 }
 
 // создание меню
@@ -84,8 +89,14 @@ void ManagerReports::CreateMenu(void)
 			"<li report id=" + id + " title=\"" + title + "\">" + title + "</li>"; 
 
 	}
-	buf += "</menu></li>";
+	for (int i = 0; i < _reports.size(); ++i)
+	{
+		string_t title	= _reports[i]->GetName();
+		buf += string_t() +
+			"<li report id=-1 title=\"" + title + "\">" + title + "</li>"; 
+	}
 
+	buf += "</menu></li>";
 	if (_mbslen(buf))
 		_menu.set_html(buf, _mbslen(buf), SIH_APPEND_AFTER_LAST);
 
@@ -110,13 +121,26 @@ BOOL CALLBACK ManagerReports::ElementEventProcMenu(LPVOID tag, HELEMENT he, UINT
 		return FALSE;
 
 	ManagerReports* main = static_cast<ManagerReports*>(tag);
-	main->CallReport(el.get_attribute("id"));
+	if (-1 == el.get_attribute_int("id"))
+		main->CallNewReport(el.get_attribute("title"));
+	else
+		main->CallOldReport(el.get_attribute("id"));
 
 	return TRUE;
 }
-
 // вызывает отчет
-void ManagerReports::CallReport(string_t id)
+void ManagerReports::CallNewReport(string_t title)
+{
+	ReportAbstract* report = NULL;
+	for (int i = 0; i < _reports.size(); ++i)
+		if (_reports[i]->GetName() == title)
+			report = _reports[i];
+	if (!report)
+		return;
+	report->Run(theApp.GetCurrentGroupID(), theApp.GetCurrentStudentID());
+}
+// вызывает отчет
+void ManagerReports::CallOldReport(string_t id)
 {
 	std::string com_line = theApp.GetModuleDir() + "bin\\RunReport.exe .\\ReportsDLL.dll " + id + 
 		" " + aux::itow(theApp.GetCurrentGroupID()) + " " + aux::itow(theApp.GetCurrentStudentID());

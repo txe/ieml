@@ -122,8 +122,8 @@ bool mybase::MyBase::IsError(void)
 // параметр check включ проверку, при ошибке exception
 MYSQL_RES* mybase::MyBase::Query( const string_t& query, bool check /*= true*/ )
 {
-	//LOG_WARNING << query;
-	//LOG_WARNING << "\n ---------------------------------------- \n";
+	LOG_WARNING << query;
+	LOG_WARNING << "\n ---------------------------------------- \n";
 	assert(m_con != NULL);
 	if (0 != mysql_query(m_con, query.c_str()))
 	{

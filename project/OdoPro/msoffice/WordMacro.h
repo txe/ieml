@@ -11,10 +11,9 @@ public:
 public:
 	WordMacros();
 
-	void LoadTamplate(string_t name);
 	void BeginMacros();
 	void EndMacros();
-	void RunMacros();
+	void RunMacros(string_t tempFile);
 	//---------------------------------------------------------------------------
 	void PageSetup(const string_t& param);
 	void SelectionParagraphFormat(const string_t& param);
@@ -35,7 +34,6 @@ public:
 public:
 	string_t m_Macros;
 	string_t m_CurMacros;
-	string_t m_Tamplate;
 	int      m_MacroCounter;
 	bool     m_LargeLock;  // блокирует работу IsLarge
 

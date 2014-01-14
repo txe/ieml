@@ -32,7 +32,7 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   // поступил
   string_t inS = " году в федеральное государственное бюджетное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет» (заочная форма)";
   if (data.inYear.toInt() < 2011 || (data.inYear.toInt() == 2011 && (data.inMonth.toInt() < 7 || (data.inMonth.toInt() == 7 && data.inDay.toInt() < 8))))
-    inS = " году в государственное образовательное учреждение высшего профессионального образования \"\"Нижегородский государственный архитектурно-строительный университет\"\"\n(заочная форма)";
+    inS = " году в государственное образовательное учреждение высшего профессионального образования \"\"Нижегородский государственный архитектурно-строительный университет\"\" (заочная форма)";
   if (data.male)
     inS = "Поступил в " + data.inYear + inS;
   else
@@ -48,13 +48,12 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
 
   WordMacros macros;
   macros.BeginMacros();
-  macros.LoadTamplate("spravka.dot");
 
   // заполнение первой таблицы
   macros.Cell(1, 1, 2, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.Cell(1, 1, 2, "VerticalAlignment=wdCellAlignVerticalTop");
-  macros.Cell(1, 1, 2, "Range.Text= \"" + data.secondName +"\n" + data.firstName + "\n" + data.thirdName + "\"");
+  macros.Cell(1, 1, 2, "Range.Text= \"" + data.secondName +"vbTab" + data.firstName + "vbTab" + data.thirdName + "\"");
 
   macros.Cell(1, 2, 1, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
@@ -76,10 +75,8 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   macros.Cell(1, 6, 1, "VerticalAlignment=wdCellAlignVerticalTop");
   macros.Cell(1, 6, 1, "Range.Text= \"" + outS + "\"");
 
-
-
   macros.EndMacros();
-  macros.RunMacros();
+  macros.RunMacros("spravka.doc");
 }
 //-------------------------------------------------------------------------
 void ReportStudyingSpravka::GetPrivateData(PrivateData& data, int studentId)
@@ -101,17 +98,21 @@ void ReportStudyingSpravka::GetPrivateData(PrivateData& data, int studentId)
   mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
   if (mybase::MYFASTROW	row = res.fetch_row())
   {
+	  int i1 = row["edudocid"].toInt();
+	  int i2 = row["edudocid"].toInt();
+	  int i3 = row["edudocid"].toInt();
+
     data.secondName = row["secondname"];
     data.firstName  = row["firstname"];
     data.thirdName  = GetDate(row["thirdname"]);
     data.bornDate   = row["bdate"];
     data.vipQualifWork = row["vkr_title"];
-    data.prevDoc       = theApp.GetTitleForKeyFromVoc(VK_EDUDOC, row["edudocid"].toInt());
+    data.prevDoc       = theApp.GetTitleForKeyFromVoc(VK_EDUDOC, row["edudocid"].toInt(), true);
     data.prevDocYear   = row ["eduenddate"];
-    data.specOrProfil  = theApp.GetTitleForKeyFromVoc(VK_SPECS, row["specid"].toInt());
-    data.specializ  = theApp.GetTitleForKeyFromVoc(VK_SPEZIALIZ, row["specid"].toInt());
-    data.qualific   = theApp.GetTitleForKeyFromVoc(VK_QUALIFIC, row["specid"].toInt());
-    data.direct     = theApp.GetTitleForKeyFromVoc(VK_DIRECT, row["directid"].toInt());
+    data.specOrProfil  = theApp.GetTitleForKeyFromVoc(VK_SPECS, row["specid"].toInt(), true);
+    data.specializ  = theApp.GetTitleForKeyFromVoc(VK_SPEZIALIZ, row["specid"].toInt(), true);
+    data.qualific   = theApp.GetTitleForKeyFromVoc(VK_QUALIFIC, row["specid"].toInt(), true);
+    data.direct     = theApp.GetTitleForKeyFromVoc(VK_DIRECT, row["directid"].toInt(), true);
     data.inYear     = GetYear(row["enterdate"]);
     data.inMonth    = GetMonth(row["enterdate"]);
     data.inDay      = GetDay(row["enterdate"]);
