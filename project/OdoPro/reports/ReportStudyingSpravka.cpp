@@ -3,21 +3,42 @@
 #include "ReportStudyingSpravka.h"
 #include "../SingeltonApp.h"
 
-string_t GetDate(string_t)
+//
+inline string_t GetDate(string_t str, bool isYear = false)
 {
-	return "";
+    static string_t mounthNames[12]={ "€нвар€", "феврал€", "марта", "апрел€", "ма€", "июн€", "июл€", "августа", "сент€бр€", "окт€бр€", "но€бр€", "декабр€"};
+    string_t res = "";
+    try
+    {
+        res += str.subString(8,2);
+        if (res.size() == 1) 
+            res = "0" + res;
+        res += " ";
+        int mNum = (str.subString(5, 2).toInt()-1) % 12;
+        if (mNum < 0)
+            return "<невалидна€ дата!>";
+        res += mounthNames[mNum] + " ";
+        res += str.subString(0,4);
+        if (isYear) 
+            res += " года";
+    }
+    catch(...)
+    {
+        return "<невалидна€ дата!>";
+    }
+    return res;
 }
-string_t GetYear(string_t)
+string_t GetYear(string_t str)
 {
-	return "";
+	return str.subString(0,4);
 }
-string_t GetMonth(string_t)
+string_t GetMonth(string_t str)
 {
-	return "";
+	return str.subString(5,2);
 }
-string_t GetDay(string_t)
+string_t GetDay(string_t str)
 {
-	return "";
+	return str.subString(8,2);
 }
 
 //-------------------------------------------------------------------------
@@ -53,7 +74,7 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   macros.Cell(1, 1, 2, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.Cell(1, 1, 2, "VerticalAlignment=wdCellAlignVerticalTop");
-  macros.Cell(1, 1, 2, "Range.Text= \"" + data.secondName +"vbTab" + data.firstName + "vbTab" + data.thirdName + "\"");
+  macros.SelectionText(data.secondName + "\n" + data.firstName + "\n" + data.thirdName);
 
   macros.Cell(1, 2, 1, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
@@ -104,11 +125,11 @@ void ReportStudyingSpravka::GetPrivateData(PrivateData& data, int studentId)
 
     data.secondName = row["secondname"];
     data.firstName  = row["firstname"];
-    data.thirdName  = GetDate(row["thirdname"]);
-    data.bornDate   = row["bdate"];
+    data.thirdName  = row["thirdname"];
+    data.bornDate   = GetDate(row["bdate"],true);
     data.vipQualifWork = row["vkr_title"];
     data.prevDoc       = theApp.GetTitleForKeyFromVoc(VK_EDUDOC, row["edudocid"].toInt(), true);
-    data.prevDocYear   = row ["eduenddate"];
+    data.prevDocYear   = GetYear(row ["eduenddate"]);
     data.specOrProfil  = theApp.GetTitleForKeyFromVoc(VK_SPECS, row["specid"].toInt(), true);
     data.specializ  = theApp.GetTitleForKeyFromVoc(VK_SPEZIALIZ, row["specid"].toInt(), true);
     data.qualific   = theApp.GetTitleForKeyFromVoc(VK_QUALIFIC, row["specid"].toInt(), true);
