@@ -76,7 +76,7 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   macros.Cell(1, 6, 1, "Range.Text= \"" + outS + "\"");
 
   macros.EndMacros();
-  macros.RunMacros("spravka.doc");
+  macros.RunMacros("spravka.dot");//"spravka.doc");
 }
 //-------------------------------------------------------------------------
 void ReportStudyingSpravka::GetPrivateData(PrivateData& data, int studentId)
