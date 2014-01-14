@@ -11,7 +11,7 @@ public:
 public:
 	WordMacros();
 
-	void LoadTamplate(string_t& name);
+	void LoadTamplate(string_t name);
 	void BeginMacros();
 	void EndMacros();
 	void RunMacros();
@@ -25,7 +25,7 @@ public:
 	//---------------------------------------------------------------------------
 	void TablesAdd(int rowCount, int colCount);
 	void TablesColumns(int tableNum, int colNum, const string_t& param);
-	void TablesCell(int tableNum, int x, int y, const string_t& param);
+	void Cell(int tableNum, int x, int y, const string_t& param);
 	void TableStyle(const EStyleBorder& style);
 	//---------------------------------------------------------------------------
 	void FilterText(string_t& text);

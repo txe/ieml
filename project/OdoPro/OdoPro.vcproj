@@ -494,6 +494,18 @@
 		<Filter
 			Name="reports"
 			>
+			<File
+				RelativePath=".\reports\ReportAbstract.h"
+				>
+			</File>
+			<File
+				RelativePath=".\reports\ReportStudyingSpravka.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\reports\ReportStudyingSpravka.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="msoffice"

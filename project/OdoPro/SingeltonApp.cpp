@@ -172,12 +172,24 @@ string_t SingeltonApp::GetFIO(void)
 }
 
 // возвращает описание для индефикатора и ключа из таблицы VOC (UTF)
-string_t SingeltonApp::GetTitleForKeyFromVoc( string_t vkey, int num )
+string_t SingeltonApp::GetTitleForKeyFromVoc(VOK_KEY vkey, int num)
 {
+	string_t key;
+	switch (vkey)
+	{
+	case VK_GRP:        key = "grp";        break;
+	case VK_EDUDOC:     key = "edudoc";     break;
+	case VK_SPECS:      key = "specs";      break;
+	case VK_SPEZIALIZ:  key = "spezializs"; break;
+	case VK_QUALIFIC:   key = "qualific";   break;
+	case VK_DIRECT:     key = "directs";    break;
+	case VK_DISCIPCLASSIFIC: key = "discipclassific"; break;
+	}
+
 	string_t query = string_t() + " SELECT title FROM voc "
 		+ " WHERE `deleted` = 0 AND "
 		+ " `num` = '" + aux::itow(num) + "' AND "
-		+ " `vkey` = '" + vkey + "' LIMIT 1";
+		+ " `vkey` = '" + key + "' LIMIT 1";
 
 	mybase::MYFASTRESULT res = GetCon().Query(query);
 	mybase::MYFASTROW	 row;
@@ -194,7 +206,7 @@ string_t SingeltonApp::GetTitleForKeyFromVoc( string_t vkey, int num )
 // возвращает для индификатора имя группы (UTF)
 string_t SingeltonApp::GetGroupName(int grpid)
 {
-	return GetTitleForKeyFromVoc("grp", grpid);
+	return GetTitleForKeyFromVoc(VK_GRP, grpid);
 }
 
 // возвращает ид специальности для данного студента

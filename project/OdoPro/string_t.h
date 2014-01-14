@@ -75,15 +75,16 @@ public:
 		_buf = (char*)(const byte*)aux::w2utf(_str.c_str());
 		return (unsigned char*)_buf.c_str();	
 	}
-
 	int indexOf(const std::wstring& str) const
 	{
 		return _str.find(str);
 	}
-
 	string_t subString(int begin, int count) const
 	{
 		return _str.substr(begin, count);
 	}
-
+	int toInt()
+	{
+		return aux::wtoi(_str.c_str());
+	}
 };

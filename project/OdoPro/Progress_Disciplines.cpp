@@ -160,7 +160,7 @@ void CManagDisciplinesDlg::UpdateViewDiscipTable(void)
 		string_t idclass;
 		try
 		{
-			idclass = theApp.GetTitleForKeyFromVoc("discipclassific", aux::wtoi(row["idclass"]));
+			idclass = theApp.GetTitleForKeyFromVoc(VK_DISCIPCLASSIFIC, aux::wtoi(row["idclass"]));
 		}
 		catch(wss::exception&)
 		{
