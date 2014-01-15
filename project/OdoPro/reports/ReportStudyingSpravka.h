@@ -13,9 +13,16 @@ struct PrivateData
   string_t inYear, inMonth, inDay, outYear, outMonth, outDay;
   string_t vipQualifWork, specOrProfil, specializ, qualific, lang;
   string_t diplomNum, regNum, dataVidachi, dataQualific, direct;
-  bool male;
+  bool isMale;
 };
 
+struct StudyData
+{
+  string_t kur;     // курсовые работы
+  string_t practic; // практика
+  string_t sci;     // научная
+  string_t gos;     // государственная аттестация
+};
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
@@ -27,4 +34,5 @@ public:
 
 private:
   void GetPrivateData(PrivateData& data, int studentId);
+  void GetStudyData(StudyData& data, int studentId, bool isMale);
 };

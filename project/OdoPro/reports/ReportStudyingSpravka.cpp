@@ -46,25 +46,23 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
 {
   PrivateData data;
   GetPrivateData(data, studentId);
-  std::vector<string_t> cursJob;
-  std::vector<string_t> practicJob;
-
+  StudyData studyData;
+  GetStudyData(studyData, studentId, data.isMale);
 
   // поступил
   string_t inS = " году в федеральное государственное бюджетное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет» (заочная форма)";
   if (data.inYear.toInt() < 2011 || (data.inYear.toInt() == 2011 && (data.inMonth.toInt() < 7 || (data.inMonth.toInt() == 7 && data.inDay.toInt() < 8))))
     inS = " году в государственное образовательное учреждение высшего профессионального образования \"\"Нижегородский государственный архитектурно-строительный университет\"\" (заочная форма)";
-  if (data.male)
+  if (data.isMale)
     inS = "Поступил в " + data.inYear + inS;
   else
     inS = "Поступила в " + data.inYear + inS;
   // выпустился
   string_t outS = " году в федеральном государственном бюджетном образовательном учреждении высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет» (заочная форма)";
-  if (data.male)
+  if (data.isMale)
     outS = "Завершил обучение в " + data.outYear + outS;
   else
     outS = "Завершила обучение в " + data.outYear + outS;
-
 
 
   WordMacros macros;
@@ -96,6 +94,26 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   macros.Cell(1, 6, 1, "VerticalAlignment=wdCellAlignVerticalTop");
   macros.Cell(1, 6, 1, "Range.Text= \"" + outS + "\"");
 
+  macros.Cell(1, 13, 1, "Range.Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
+  macros.Cell(1, 13, 1, "VerticalAlignment=wdCellAlignVerticalTop");
+  macros.SelectionText(studyData.kur);
+
+  macros.Cell(1, 15, 1, "Range.Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
+  macros.Cell(1, 15, 1, "VerticalAlignment=wdCellAlignVerticalTop");
+  macros.SelectionText(studyData.practic);
+
+  macros.Cell(1, 17, 1, "Range.Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
+  macros.Cell(1, 17, 1, "VerticalAlignment=wdCellAlignVerticalTop");
+  macros.SelectionText(studyData.sci);
+
+  macros.Cell(1, 19, 1, "Range.Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
+  macros.Cell(1, 19, 1, "VerticalAlignment=wdCellAlignVerticalTop");
+  macros.SelectionText(studyData.gos);
+  
   macros.EndMacros();
   macros.RunMacros("spravka.dot");//"spravka.doc");
 }
@@ -140,7 +158,7 @@ void ReportStudyingSpravka::GetPrivateData(PrivateData& data, int studentId)
     data.outYear    = GetYear(row["exitdate"]);
     data.outMonth   = GetMonth(row["exitdate"]);
     data.outDay     = GetDay(row["exitdate"]);
-    data.male       = row["sex"] != string_t("Ж") && row["sex"] != string_t("ж");
+    data.isMale       = row["sex"] != string_t("Ж") && row["sex"] != string_t("ж");
     data.lang       = row["lang"];
 
     data.diplomNum = row["edunumdiplom"];
@@ -148,4 +166,54 @@ void ReportStudyingSpravka::GetPrivateData(PrivateData& data, int studentId)
     data.dataVidachi = GetDate(row["edudatediplom"]);
     data.dataQualific = GetDate(row["edudatequalif"]);
   }
+}
+//-------------------------------------------------------------------------
+void ReportStudyingSpravka::GetStudyData(StudyData& data, int studentId, bool isMale)
+{
+  static string_t OcenkaList[]={"отлично","хорошо","удовлетворительно","неудовлетворительно","зачтено","незачтено"};
+  
+  data.kur = "";
+  data.practic = "";
+  data.gos = "";
+  data.practic = "";
+
+  string_t query = string_t() +
+   "SELECT di.fulltitle, di.num_hours, di.idclass, pr.estimation, pr.ball "
+   "FROM disciplines as di, progress as pr "
+   "WHERE di.deleted=0 and pr.deleted=0 and pr.idstud=" + aux::itow(studentId) + " and pr.iddiscip=di.id "
+   "ORDER BY di.scan_number";
+  mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
+  if (mybase::MYFASTROW	row = res.fetch_row())
+  {
+    int      idclass = row["idclass"].toInt();
+    string_t title   = row["fulltitle"];
+    string_t hours   = row["num_hours"];
+    string_t ocenka  = OcenkaList[row["estimation"].toInt()];
+
+    if (idclass == 2 || idclass == 3) // курсовые работы и проекты
+      data.kur += title + ", " + ocenka + "\n";
+    else if (idclass == 4) // практика
+      data.practic += title + " " + hours + " часов, " + ocenka + "\n";
+    else if (idclass == 8) // научно исследовательская работа
+      data.sci += title + "\n";
+    else if (idclass == 5) // итоговая аттестация
+      data.gos += title + ", " + ocenka + "\n";
+  }
+  
+  if (data.kur.empty())
+    data.kur = isMale ? "не выполнял" : "не выполняла";
+  else
+    data.kur = data.kur.subString(0, data.kur.size() - 2);
+  if (data.practic.empty())
+    data.practic = isMale ? "не проходил" : "не проходила";
+  else
+    data.practic = data.practic.subString(0, data.practic.size() - 2);
+  if (data.sci.empty())
+    data.sci = isMale ? "не выполнял" : "не выполняла";
+  else
+    data.sci = data.sci.subString(0, data.sci.size() - 2);
+  if (data.gos.empty())
+    data.gos = isMale ? "не сдавал" : "не сдавала";
+  else
+    data.gos = data.gos.subString(0, data.gos.size() - 2);
 }
