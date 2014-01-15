@@ -21,6 +21,8 @@ private:
 	htmlayout::dom::element	scan_namber_;
 	htmlayout::dom::element	num_hours_;
 	htmlayout::dom::element	spec_;
+  htmlayout::dom::element	zach_ed_;
+
 
 	std::vector<htmlayout::dom::element> sem_hours_;
 private:

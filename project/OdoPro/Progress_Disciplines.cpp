@@ -25,7 +25,7 @@ BOOL CManagDisciplinesDlg::PreCreateWindow(CREATESTRUCT& cs)
 
 int CManagDisciplinesDlg::OnCreate()
 {
-	SetWindowPos(m_hWnd, NULL, -1, -1, 640, 550, 
+	SetWindowPos(m_hWnd, NULL, -1, -1, 830, 560, 
 		SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOZORDER);
 	CenterWindow();
 
@@ -98,6 +98,7 @@ void CManagDisciplinesDlg::InitDomElement(void)
 	scan_namber_	= link_element("scan_namber");
 	num_hours_		= link_element("num_hours");
 	spec_			= link_element("spec");
+    zach_ed_        = link_element("zachet_edinica");
 	
 	// связываем с общими часами
 	for (htmlayout::dom::element h = link_element("hours").child(0); h.is_valid(); h = h.next_sibling())
@@ -107,9 +108,9 @@ void CManagDisciplinesDlg::InitDomElement(void)
 			sem_hours_.push_back(find);
 	}
 	// связывает с событиями кнопок
-	HTMLayoutAttachEventHandlerEx(link_element("bt-close"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
-	HTMLayoutAttachEventHandlerEx(link_element("bt-del"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
-	HTMLayoutAttachEventHandlerEx(link_element("bt-add"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(link_element("bt-close"),  ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(link_element("bt-del"),    ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(link_element("bt-add"),    ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 	HTMLayoutAttachEventHandlerEx(link_element("bt-update"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 	
 	// заполняем списки
@@ -135,7 +136,26 @@ bool CManagDisciplinesDlg::UpdateView(void)
 	UpdateViewDiscipData();
 	return true;
 }
-
+//
+string_t GetShortClassTitle(string_t str)
+{
+    if (str.empty())
+        return L"---";
+    static std::map<std::wstring, string_t> map;
+    if (map.empty())
+    {
+        map[L"Общие дисциплины"]    = L"Общ. дисц.";
+        map[L"Курсовые работы"]     = L"К. работы";
+        map[L"Курсовые проекты"]    = L"К. проекты";
+        map[L"Итоговая аттестация"] = L"Ит. аттестация";
+        map[L"Выпускная квалификационная работа"] = L"Вып. квалиф. работа";
+        map[L"Научно-исследовательская работа"]   = L"Науч. иссл. работа";
+    }
+    std::map<std::wstring, string_t>::iterator it = map.find((const wchar_t*)str);
+    if (it != map.end())
+        return it->second;
+    return str;
+}
 // обновляет таблицу дисциплин
 void CManagDisciplinesDlg::UpdateViewDiscipTable(void)
 {
@@ -143,9 +163,8 @@ void CManagDisciplinesDlg::UpdateViewDiscipTable(void)
 		htmlayout::dom::element(discip_table_.child(1)).destroy();
 
 	string_t specid = aux::itow(theApp.GetSpecIdForStudId(theApp.GetCurrentStudentID()));
-
 	string_t query = string_t() +
-		" SELECT id, fulltitle, shorttitle, idspec, idclass, num_hours, scan_number, sem_hours "
+		" SELECT id, fulltitle, shorttitle, idspec, idclass, num_hours, scan_number, sem_hours, zachet_edinica "
 		" FROM disciplines "
 		" WHERE deleted = 0 AND "
 		" idspec = " + specid + 
@@ -157,16 +176,9 @@ void CManagDisciplinesDlg::UpdateViewDiscipTable(void)
 	string_t				buf;
 	while (row = res.fetch_row())	
 	{	
-		string_t idclass;
-		try
-		{
-			idclass = theApp.GetTitleForKeyFromVoc(VK_DISCIPCLASSIFIC, aux::wtoi(row["idclass"]), true);
-		}
-		catch(wss::exception&)
-		{
-			;
-		}
-		buf += "<tr discip_id=" + row["id"] + 
+		string_t idclass = theApp.GetTitleForKeyFromVoc(VK_DISCIPCLASSIFIC, aux::wtoi(row["idclass"]), true);
+
+    buf += "<tr discip_id=" + row["id"] + 
 			" sem_hours=\"" + row["sem_hours"] + "\""
 			" idspec=" + row["idspec"] + 
 			" idclass=" + row["idclass"] + " >";
@@ -176,7 +188,8 @@ void CManagDisciplinesDlg::UpdateViewDiscipTable(void)
 			"<td>" + row["fulltitle"]	+ "</td>"
 			"<td>" + row["shorttitle"]	+ "</td>"
 			"<td>" + row["num_hours"]	+ "</td>"
-			"<td>" + idclass			+ "</td>"
+			"<td>" + GetShortClassTitle(idclass) + "</td>"
+            "<td>" + row["zachet_edinica"] + "</td>"      
 			"<td>" + row["scan_number"]	+ "</td>"
 			"</tr>";
 	}
@@ -202,8 +215,9 @@ void CManagDisciplinesDlg::UpdateViewDiscipData(void)
 	json::t2v(fulltitle_,  json::v2t(element(discip.child(2)).get_value()));
 	json::t2v(shorttitle_, json::v2t(element(discip.child(3)).get_value()));
 	json::t2v(num_hours_,  json::v2t(element(discip.child(4)).get_value()));
-	json::t2v(scan_namber_,json::v2t(element(discip.child(6)).get_value()));
-	
+    json::t2v(zach_ed_,    json::v2t(element(discip.child(6)).get_value()));
+    json::t2v(scan_namber_,json::v2t(element(discip.child(7)).get_value()));
+
 	std::wstring hours = discip.get_attribute("sem_hours");
 	std::vector<std::wstring> hs = aux::split(hours, L';');
 	for (uint i = 0; i < sem_hours_.size(); ++i)
@@ -239,10 +253,10 @@ void CManagDisciplinesDlg::DeleteDiscip(void)
 bool CManagDisciplinesDlg::IsExistDiscip(bool include_cur_discip /* = true */)
 {
 	string_t specid			= aux::itow(theApp.GetSpecIdForStudId(theApp.GetCurrentStudentID()));
-	string_t fulltitle		= json::v2t(fulltitle_.get_value());
-	string_t shorttitle		= json::v2t(shorttitle_.get_value());
-	string_t incl			= discip_table_.children_count() < 2 ? "" :
-		string_t() + " id != " + t::GetSelectedRow(discip_table_).get_attribute("discip_id") + " AND ";
+	string_t fulltitle	= json::v2t(fulltitle_.get_value());
+	string_t shorttitle	= json::v2t(shorttitle_.get_value());
+    string_t zach_ed	= json::v2t(zach_ed_.get_value());
+	string_t incl       = discip_table_.children_count() < 2 ? "" : string_t() + " id != " + t::GetSelectedRow(discip_table_).get_attribute("discip_id") + " AND ";
 
 	string_t query = "SELECT id FROM disciplines "
 		" WHERE idspec = " + specid + " AND "
@@ -272,12 +286,13 @@ void CManagDisciplinesDlg::AddDiscip(void)
 	string_t discip_class	= json::v2t(discip_class_.get_value());
 	string_t scan_namber	= json::v2t(scan_namber_.get_value());
 	string_t num_hours		= json::v2t(num_hours_.get_value());
+    string_t zach_ed        = json::v2t(zach_ed_.get_value());
 	string_t sem_hours		= AudHoursToStr();
 
 	string_t query = 
-		" INSERT INTO disciplines (idspec, fulltitle, shorttitle, idclass, num_hours, scan_number, sem_hours) "
+		" INSERT INTO disciplines (idspec, fulltitle, shorttitle, idclass, num_hours, scan_number, sem_hours, zachet_edinica) "
 		" VALUES(" + specid + ", '" + fulltitle + "', '" + shorttitle + "', '" + 
-		discip_class + "', " + num_hours + ", " + scan_namber + ", '" + sem_hours+"')";
+		discip_class + "', " + num_hours + ", " + scan_namber + ", '" + sem_hours+"', '" + zach_ed + "')";
 	theApp.GetCon().Query(query);
 
 	UpdateView();
@@ -322,6 +337,7 @@ void CManagDisciplinesDlg::SaveUpdateDiscip(void)
 	string_t discip_class	= json::v2t(discip_class_.get_value());
 	string_t scan_namber	= json::v2t(scan_namber_.get_value());
 	string_t num_hours		= json::v2t(num_hours_.get_value());
+    string_t zach_ed        = json::v2t(zach_ed_.get_value());
 	string_t sem_hours		= AudHoursToStr();
 
 	string_t query = 
@@ -329,7 +345,7 @@ void CManagDisciplinesDlg::SaveUpdateDiscip(void)
 		" SET idspec = " + specid + ", fulltitle = '" + fulltitle + 
 		"', shorttitle = '" + shorttitle + "', idclass = " + discip_class + 
 		", num_hours = " + num_hours + ", scan_number = " + scan_namber + 
-		", sem_hours = '" + sem_hours + "'"
+		", sem_hours = '" + sem_hours + "', zachet_edinica='" + zach_ed + "'"
 		" WHERE id = " + discip_id;
 	theApp.GetCon().Query(query);
 

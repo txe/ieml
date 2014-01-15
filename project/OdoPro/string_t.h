@@ -98,16 +98,6 @@ public:
       *it = towupper(*it);
     return str;
   }
-//   static bool isspace(int num)
-//   {
-//     if (num == ' ' || num == '\f' || num == 
-//       line feed (0x0a, '\n')
-//       carriage return (0x0d, '\r')
-//       horizontal tab (0x09, '\t')
-//       vertical tab (0x0b, '\v') 
-// 
-// 
-//   }
   string_t rtrim()
   {
     std::wstring s = _str;
