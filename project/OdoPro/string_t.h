@@ -3,6 +3,10 @@
 #include <json-aux.h>
 #include <ostream>
 #include <string>
+#include <algorithm> 
+#include <functional> 
+#include <cwctype>
+#include <locale>
 
 class string_t
 {
@@ -81,10 +85,54 @@ public:
 	}
 	string_t subString(int begin, int count) const
 	{
-		return _str.substr(begin, count);
+    return _str.substr(begin, count < 0 ? _str.size() + count : count);
 	}
 	int toInt()
 	{
 		return aux::wtoi(_str.c_str());
 	}
+  string_t toUpper()
+  {
+    std::wstring str = _str;
+    for (std::wstring::iterator it = str.begin(); it != str.end(); ++it)
+      *it = towupper(*it);
+    return str;
+  }
+//   static bool isspace(int num)
+//   {
+//     if (num == ' ' || num == '\f' || num == 
+//       line feed (0x0a, '\n')
+//       carriage return (0x0d, '\r')
+//       horizontal tab (0x09, '\t')
+//       vertical tab (0x0b, '\v') 
+// 
+// 
+//   }
+  string_t rtrim()
+  {
+    std::wstring s = _str;
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun(std::iswspace))));
+    return s;
+  }
+  string_t ltrim()
+  {
+    std::wstring s = _str;
+    s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun(std::iswspace))).base(), s.end());
+    return s;
+  }
+  string_t trim()
+  {
+    return rtrim().ltrim();
+  }
 };
+
+//-------------------------------------------------------------------------
+inline string_t toStr(int num)
+{
+  return (LPCWSTR)aux::itow(num);
+}
+//-------------------------------------------------------------------------
+inline string_t toWrap(string_t str)
+{
+  return "\"" + str + "\"";
+}

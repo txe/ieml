@@ -40,29 +40,35 @@ string_t GetDay(string_t str)
 {
 	return str.subString(8,2);
 }
-
+string_t toOcenka(int num)
+{
+  static string_t ocenkaList[]={"отлично","хорошо","удовлетворительно","неудовлетворительно","зачтено","незачтено"};
+  return ocenkaList[num];
+}
 //-------------------------------------------------------------------------
 void ReportStudyingSpravka::Run(int grpId, int studentId)
 {
-  PrivateData data;
-  GetPrivateData(data, studentId);
+  PrivateData privData;
+  GetPrivateData(privData, studentId);
   StudyData studyData;
-  GetStudyData(studyData, studentId, data.isMale);
+  GetStudyData(studyData, studentId, privData.isMale);
+  std::vector<DiscipData> discData;
+  GetDiscipData(discData, studentId);
 
   // поступил
   string_t inS = " году в федеральное государственное бюджетное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет» (заочная форма)";
-  if (data.inYear.toInt() < 2011 || (data.inYear.toInt() == 2011 && (data.inMonth.toInt() < 7 || (data.inMonth.toInt() == 7 && data.inDay.toInt() < 8))))
+  if (privData.inYear.toInt() < 2011 || (privData.inYear.toInt() == 2011 && (privData.inMonth.toInt() < 7 || (privData.inMonth.toInt() == 7 && privData.inDay.toInt() < 8))))
     inS = " году в государственное образовательное учреждение высшего профессионального образования \"\"Нижегородский государственный архитектурно-строительный университет\"\" (заочная форма)";
-  if (data.isMale)
-    inS = "Поступил в " + data.inYear + inS;
+  if (privData.isMale)
+    inS = "Поступил в " + privData.inYear + inS;
   else
-    inS = "Поступила в " + data.inYear + inS;
+    inS = "Поступила в " + privData.inYear + inS;
   // выпустился
   string_t outS = " году в федеральном государственном бюджетном образовательном учреждении высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет» (заочная форма)";
-  if (data.isMale)
-    outS = "Завершил обучение в " + data.outYear + outS;
+  if (privData.isMale)
+    outS = "Завершил обучение в " + privData.outYear + outS;
   else
-    outS = "Завершила обучение в " + data.outYear + outS;
+    outS = "Завершила обучение в " + privData.outYear + outS;
 
 
   WordMacros macros;
@@ -72,27 +78,27 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   macros.Cell(1, 1, 2, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.Cell(1, 1, 2, "VerticalAlignment=wdCellAlignVerticalTop");
-  macros.SelectionText(data.secondName + "\n" + data.firstName + "\n" + data.thirdName);
+  macros.SelectionText(privData.secondName + "\n" + privData.firstName + "\n" + privData.thirdName);
 
   macros.Cell(1, 2, 1, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.Cell(1, 2, 1, "VerticalAlignment=wdCellAlignVerticalTop");
-  macros.Cell(1, 2, 1, "Range.Text= \"Дата рождения " + data.bornDate + "\""); // TODO просклонять
+  macros.Cell(1, 2, 1, "Range.Text=" + toWrap("Дата рождения " + privData.bornDate)); // TODO просклонять
 
   macros.Cell(1, 4, 1, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.Cell(1, 4, 1, "VerticalAlignment=wdCellAlignVerticalTop");
-  macros.Cell(1, 4, 1, "Range.Text= \"" + data.prevDoc + " " + data.prevDocYear + " год\"");
+  macros.Cell(1, 4, 1, "Range.Text=" + toWrap(privData.prevDoc + " " + privData.prevDocYear + " год"));
 
   macros.Cell(1, 5, 1, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.Cell(1, 5, 1, "VerticalAlignment=wdCellAlignVerticalTop");
-  macros.Cell(1, 5, 1, "Range.Text= \"" + inS + "\"");
+  macros.Cell(1, 5, 1, "Range.Text=" + toWrap(inS));
 
   macros.Cell(1, 6, 1, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.Cell(1, 6, 1, "VerticalAlignment=wdCellAlignVerticalTop");
-  macros.Cell(1, 6, 1, "Range.Text= \"" + outS + "\"");
+  macros.Cell(1, 6, 1, "Range.Text=" + toWrap(outS));
 
   macros.Cell(1, 13, 1, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
@@ -113,6 +119,20 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.Cell(1, 19, 1, "VerticalAlignment=wdCellAlignVerticalTop");
   macros.SelectionText(studyData.gos);
+
+  // заполним таблицу дисциплин
+  macros.InsertLine("ActiveDocument.Tables.Item(4).Rows.Item(2).Range.Select");
+  macros.InsertLine("Selection.InsertRowsBelow " + toStr(discData.size()-1));
+  for (int i = 0; i < discData.size(); ++i)
+  {
+    string_t title = discData[i].title;
+    if (title.toUpper().trim() == string_t(L"ИНОСТРАННЫЙ ЯЗЫК"))
+      title += " (" + privData.lang + ")";
+    macros.Cell(4, i + 2, 1, "Range.Text=" + toWrap(title));
+    macros.Cell(4, i + 2, 2, "Range.Text=" + toWrap(discData[i].zachet_edinica));
+    macros.Cell(4, i + 2, 3, "Range.Text=" + toWrap(discData[i].hours));
+    macros.Cell(4, i + 2, 4, "Range.Text=" + toWrap(discData[i].ocenka));
+  }
   
   macros.EndMacros();
   macros.RunMacros("spravka.dot");//"spravka.doc");
@@ -170,11 +190,9 @@ void ReportStudyingSpravka::GetPrivateData(PrivateData& data, int studentId)
 //-------------------------------------------------------------------------
 void ReportStudyingSpravka::GetStudyData(StudyData& data, int studentId, bool isMale)
 {
-  static string_t OcenkaList[]={"отлично","хорошо","удовлетворительно","неудовлетворительно","зачтено","незачтено"};
-  
-  data.kur = "";
+  data.kur     = "";
   data.practic = "";
-  data.gos = "";
+  data.gos     = "";
   data.practic = "";
 
   string_t query = string_t() +
@@ -183,12 +201,12 @@ void ReportStudyingSpravka::GetStudyData(StudyData& data, int studentId, bool is
    "WHERE di.deleted=0 and pr.deleted=0 and pr.idstud=" + aux::itow(studentId) + " and pr.iddiscip=di.id "
    "ORDER BY di.scan_number";
   mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
-  if (mybase::MYFASTROW	row = res.fetch_row())
+  while (mybase::MYFASTROW	row = res.fetch_row())
   {
     int      idclass = row["idclass"].toInt();
     string_t title   = row["fulltitle"];
     string_t hours   = row["num_hours"];
-    string_t ocenka  = OcenkaList[row["estimation"].toInt()];
+    string_t ocenka  = toOcenka(row["estimation"].toInt());
 
     if (idclass == 2 || idclass == 3) // курсовые работы и проекты
       data.kur += title + ", " + ocenka + "\n";
@@ -203,17 +221,57 @@ void ReportStudyingSpravka::GetStudyData(StudyData& data, int studentId, bool is
   if (data.kur.empty())
     data.kur = isMale ? "не выполнял" : "не выполняла";
   else
-    data.kur = data.kur.subString(0, data.kur.size() - 2);
+    data.kur = data.kur.subString(0, -1);
   if (data.practic.empty())
     data.practic = isMale ? "не проходил" : "не проходила";
   else
-    data.practic = data.practic.subString(0, data.practic.size() - 2);
+    data.practic = data.practic.subString(0, -1);
   if (data.sci.empty())
     data.sci = isMale ? "не выполнял" : "не выполняла";
   else
-    data.sci = data.sci.subString(0, data.sci.size() - 2);
+    data.sci = data.sci.subString(0, -1);
   if (data.gos.empty())
     data.gos = isMale ? "не сдавал" : "не сдавала";
   else
-    data.gos = data.gos.subString(0, data.gos.size() - 2);
+    data.gos = data.gos.subString(0, -1);
+}
+//-------------------------------------------------------------------------
+void ReportStudyingSpravka::GetDiscipData(std::vector<DiscipData>& data, int studentId)
+{
+  data.clear();
+
+  // соберем сперва дисциплины
+  string_t query = 
+    "SELECT di.fulltitle,di.num_hours,di.idclass,di.zachet_edinica,pr.estimation,pr.iddiscip,pr.numplansemestr "
+    "FROM disciplines as di, progress as pr "
+    "WHERE di.deleted=0 and pr.deleted=0 and pr.idstud=" + toStr(studentId) + " and pr.iddiscip=di.id "
+    "ORDER BY di.scan_number, pr.numplansemestr";
+  
+  mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
+  while (mybase::MYFASTROW	row = res.fetch_row())
+  {
+    int idclass = row["idclass"].toInt();
+    if (idclass != 1) // требуются только обычные дисциплины
+      continue;
+
+    DiscipData disc;
+    disc.title   = row["fulltitle"];
+    disc.hours   = row["num_hours"];
+    disc.zachet_edinica = row["zachet_edinica"];
+    disc.ocenka  = toOcenka(row["estimation"].toInt());
+    disc.discId  = row["iddiscip"].toInt();
+    disc.semestr = row["numplansemestr"].toInt();
+
+    // проверим что может это слишком старая оценка
+    for (int i = 0; i < data.size(); ++i)
+      if (data[i].discId == disc.discId && data[i].title == disc.title)
+      {
+        if (disc.semestr >= data[i].semestr)
+          data[i] = disc;
+        disc.discId = -1; // уже заменили или не надо добавлять
+        break;
+      }
+    if (disc.discId != -1)
+      data.push_back(disc);
+  }
 }

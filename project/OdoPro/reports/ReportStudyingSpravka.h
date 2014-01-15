@@ -23,6 +23,17 @@ struct StudyData
   string_t sci;     // научная
   string_t gos;     // государственная аттестация
 };
+
+struct DiscipData
+{
+  string_t title;
+  string_t zachet_edinica;
+  string_t hours;
+  string_t ocenka;
+
+  int discId;
+  int semestr;
+};
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
@@ -35,4 +46,5 @@ public:
 private:
   void GetPrivateData(PrivateData& data, int studentId);
   void GetStudyData(StudyData& data, int studentId, bool isMale);
+  void GetDiscipData(std::vector<DiscipData>& data, int studentId);
 };

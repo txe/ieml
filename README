@@ -4,11 +4,15 @@
 - отчеты берут информацию о месторасположении базы из реестра;
 
 
-не забыть изменить odoportal.cfg на config.ini и добавить секцию [link]
 
+//***  для служебных целей  ***//
 
+1. не забыть изменить odoportal.cfg на config.ini и добавить секцию [link]
 
-для служебных целей
+2. зачетные единицы
+ALTER TABLE disciplines ADD COLUMN zachet_edinica INT(11) NOT NULL DEFAULT '1'
+
+// устарело
 гражданство
 ALTER TABLE students ADD COLUMN citizenryid INT(11) NOT NULL DEFAULT '1'
 добавить в словарь русский с номером 1
