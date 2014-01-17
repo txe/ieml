@@ -3,21 +3,24 @@
 #include "ReportStudyingSpravka.h"
 #include "../SingeltonApp.h"
 
-//
-inline string_t GetDate(string_t str, bool isYear = false)
+//-------------------------------------------------------------------------
+inline string_t date_to_str(string_t str, bool isYear = false)
 {
     static string_t mounthNames[12]={ "января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"};
     string_t res = "";
     try
     {
+      // число 
         res += str.subString(8,2);
         if (res.size() == 1) 
             res = "0" + res;
         res += " ";
+      // месяц 
         int mNum = (str.subString(5, 2).toInt()-1) % 12;
         if (mNum < 0)
             return "<невалидная дата!>";
         res += mounthNames[mNum] + " ";
+      // год
         res += str.subString(0,4);
         if (isYear) 
             res += " года";
@@ -28,6 +31,32 @@ inline string_t GetDate(string_t str, bool isYear = false)
     }
     return res;
 }
+//-------------------------------------------------------------------------
+inline string_t date_to_str2(string_t str)
+{
+  string_t res = "";
+  try
+  {
+    // число 
+    res += str.subString(8,2);
+    if (res.size() == 1) 
+      res = "0" + res;
+    res += ".";
+    // месяц
+    string_t m = str.subString(5, 2);
+    if (m.size() == 1)
+      m = m + res;
+    res += m + ".";
+    // год
+    res += str.subString(0,4);
+  }
+  catch(...)
+  {
+    return "<невалидная дата!>";
+  }
+  return res;
+}
+
 string_t GetYear(string_t str)
 {
 	return str.subString(0,4);
@@ -138,6 +167,11 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
     macros.Cell(4, i + 2, 3, "Range.Text=" + toWrap(discData[i].hours));
     macros.Cell(4, i + 2, 4, "Range.Text=" + toWrap(discData[i].ocenka));
   }
+
+  macros.Cell(5, 1, 1, "Range.Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
+  macros.Cell(5, 1, 1, "VerticalAlignment=wdCellAlignVerticalTop");
+  macros.SelectionText("Приказ об отчислении от " + privData.exitDate + " г. № " + privData.exitNum);
   
   macros.EndMacros();
   macros.RunMacros("spravka.dot");//"spravka.doc");
@@ -147,14 +181,14 @@ void ReportStudyingSpravka::GetPrivateData(PrivateData& data, int studentId)
 {
   data.firstName = data.secondName = data.thirdName = data.bornDate = data.vipQualifWork = data.prevDoc = data.prevDocYear = data.inYear = "???";
   data.inMonth = data.inMonth = "0";
-  data.outYear = data.outMonth = data.outDay = "???";
+  data.outYear = data.outMonth = data.outDay = data.exitDate = data.exitNum = "???";
   data.specOrProfil = data.direct = data.specializ = data.qualific = data.lang = "???";
   data.diplomNum = "xxx 000000";
   data.regNum = data.dataVidachi = data.dataQualific = "00.00.0000";
 
   string_t  query = string_t() +
     "SELECT s.secondname,s.firstname,s.thirdname,s.bdate,s.vkr_title," \
-    "s.edudocid,s.eduenddate,s.specid,s.enterdate,s.exitdate,s.sex,v.title as lang,s.edunumdiplom," \
+    "s.edudocid,s.eduenddate,s.specid,s.enterdate,s.exitdate, s.exitnum,s.sex,v.title as lang,s.edunumdiplom," \
     "s.edunumreg,s.edudatediplom,s.edudatequalif,s.directid " \
     " FROM students as s, "\
     " voc as v where s.deleted=0 and v.deleted=0 and s.id=" + aux::itow(studentId) + 
@@ -169,7 +203,7 @@ void ReportStudyingSpravka::GetPrivateData(PrivateData& data, int studentId)
     data.secondName = row["secondname"];
     data.firstName  = row["firstname"];
     data.thirdName  = row["thirdname"];
-    data.bornDate   = GetDate(row["bdate"],true);
+    data.bornDate   = date_to_str(row["bdate"],true);
     data.vipQualifWork = row["vkr_title"];
     data.prevDoc       = theApp.GetTitleForKeyFromVoc(VK_EDUDOC, row["edudocid"].toInt(), true);
     data.prevDocYear   = GetYear(row ["eduenddate"]);
@@ -183,13 +217,15 @@ void ReportStudyingSpravka::GetPrivateData(PrivateData& data, int studentId)
     data.outYear    = GetYear(row["exitdate"]);
     data.outMonth   = GetMonth(row["exitdate"]);
     data.outDay     = GetDay(row["exitdate"]);
-    data.isMale       = row["sex"] != string_t("Ж") && row["sex"] != string_t("ж");
+    data.exitDate   = date_to_str2(row["exitdate"]);
+    data.exitNum    = row["exitnum"];
+    data.isMale     = row["sex"] != string_t("Ж") && row["sex"] != string_t("ж");
     data.lang       = row["lang"];
 
     data.diplomNum = row["edunumdiplom"];
     data.regNum    = row["edunumreg"];
-    data.dataVidachi = GetDate(row["edudatediplom"]);
-    data.dataQualific = GetDate(row["edudatequalif"]);
+    data.dataVidachi = date_to_str(row["edudatediplom"]);
+    data.dataQualific = date_to_str(row["edudatequalif"]);
   }
 }
 //-------------------------------------------------------------------------
@@ -295,6 +331,6 @@ string_t ReportStudyingSpravka::CurrentDate()
 {
   mybase::MYFASTRESULT res = theApp.GetCon().Query("SELECT CURDATE() as date");
   if (mybase::MYFASTROW	row = res.fetch_row())
-    return GetDate(row["date"], true);
-  return GetDate("");
+    return date_to_str(row["date"], true);
+  return date_to_str("");
 }

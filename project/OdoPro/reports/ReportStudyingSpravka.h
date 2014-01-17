@@ -10,7 +10,7 @@ struct PrivateData
 {
   string_t secondName, firstName, thirdName, bornDate;
   string_t prevDoc, prevDocYear; 
-  string_t inYear, inMonth, inDay, outYear, outMonth, outDay;
+  string_t inYear, inMonth, inDay, outYear, outMonth, outDay, exitDate, exitNum;
   string_t vipQualifWork, specOrProfil, specializ, qualific, lang;
   string_t diplomNum, regNum, dataVidachi, dataQualific, direct;
   bool isMale;
