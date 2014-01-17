@@ -25,7 +25,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine=""
+				CommandLine="type NUL  &gt; $(ProjectDir)for_version.h"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -103,7 +103,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="touch for_version.h"
+				CommandLine="type NUL  &gt; $(ProjectDir)for_version.h"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
