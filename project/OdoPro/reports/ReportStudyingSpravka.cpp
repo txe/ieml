@@ -80,14 +80,14 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   PrivateData privData;
   GetPrivateData(privData, studentId);
   StudyData studyData;
-  GetStudyData(studyData, studentId, privData.isMale);
+  GetStudyData(studyData, studentId, privData.isMale, privData.vkrTitle);
   std::vector<DiscipData> discData;
   GetDiscipData(discData, studentId);
 
   // поступил
   string_t inS = " году в федеральное государственное бюджетное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет» (заочная форма)";
   if (privData.inYear.toInt() < 2011 || (privData.inYear.toInt() == 2011 && (privData.inMonth.toInt() < 7 || (privData.inMonth.toInt() == 7 && privData.inDay.toInt() < 8))))
-    inS = " году в государственное образовательное учреждение высшего профессионального образования \"\"Нижегородский государственный архитектурно-строительный университет\"\" (заочная форма)";
+    inS = " году в государственное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет» (заочная форма)";
   if (privData.isMale)
     inS = "Поступил в " + privData.inYear + inS;
   else
@@ -151,16 +151,15 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   macros.SelectionText(privData.stroka1Value);
 
   // Специализация/профиль/профильная направленность (программа):
-  // если было направление то это профиль, иначе Специализация, а если тег (маг) то профильная направленность
   macros.Cell(1, 10, 1, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.Cell(1, 10, 1, "VerticalAlignment=wdCellAlignVerticalTop");
-  macros.SelectionUnderlineText("Специализация", privData.stroka2 == PrivateData::S2_SPECIAL);//privData.direct.empty() && !privData.isMag);
+  macros.SelectionUnderlineText("Специализация", privData.stroka2 == PrivateData::S2_SPECIAL);
   macros.SelectionText("/");
-  macros.SelectionUnderlineText("профиль", privData.stroka2 == PrivateData::S2_PROFIL); //!privData.direct.empty());
+  macros.SelectionUnderlineText("профиль", privData.stroka2 == PrivateData::S2_PROFIL);
   macros.SelectionText("/");
-  macros.SelectionUnderlineText("профильная направленность", privData.stroka2 == PrivateData::S2_MAGISTR); //privData.direct.empty() && privData.isMag);
-  macros.SelectionText(" (программа):");
+  macros.SelectionUnderlineText("профильная направленность (программа)", privData.stroka2 == PrivateData::S2_MAGISTR);
+  macros.SelectionText(":");
 
   // значение предыдущей строки
   macros.SelectionTypeParagraph();
@@ -215,7 +214,7 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
 //-------------------------------------------------------------------------
 void ReportStudyingSpravka::GetPrivateData(PrivateData& data, int studentId)
 {
-  data.firstName = data.secondName = data.thirdName = data.bornDate = data.vipQualifWork = data.prevDoc = data.prevDocYear = data.inYear = "???";
+  data.firstName = data.secondName = data.thirdName = data.bornDate = data.vkrTitle = data.prevDoc = data.prevDocYear = data.inYear = "???";
   data.inMonth = data.inMonth = "0";
   data.outYear = data.outMonth = data.outDay = data.exitDate = data.exitNum = "???";
   data.specOrProfil = data.direct = data.specializ = data.qualific = data.lang = "???";
@@ -242,7 +241,7 @@ void ReportStudyingSpravka::GetPrivateData(PrivateData& data, int studentId)
     data.firstName  = row["firstname"];
     data.thirdName  = row["thirdname"];
     data.bornDate   = date_to_str(row["bdate"],true);
-    data.vipQualifWork = row["vkr_title"];
+    data.vkrTitle = row["vkr_title"];
     data.prevDoc       = theApp.GetTitleForKeyFromVoc(VK_EDUDOC, row["edudocid"].toInt(), true);
     data.prevDocYear   = GetYear(row ["eduenddate"]);
     data.specOrProfil  = theApp.GetTitleForKeyFromVoc(VK_SPECS, row["specid"].toInt(), true, &specOrProfilTag);
@@ -288,7 +287,7 @@ void ReportStudyingSpravka::GetPrivateData(PrivateData& data, int studentId)
     data.stroka2Value = data.specOrProfil;
 }
 //-------------------------------------------------------------------------
-void ReportStudyingSpravka::GetStudyData(StudyData& data, int studentId, bool isMale)
+void ReportStudyingSpravka::GetStudyData(StudyData& data, int studentId, bool isMale, string_t vkr_title)
 {
   data.kur     = "";
   data.practic = "";
@@ -333,6 +332,10 @@ void ReportStudyingSpravka::GetStudyData(StudyData& data, int studentId, bool is
       data.sci += title + "\n";
     else if (idclass == 5) // итоговая аттестация
       data.gos += title + ", " + ocenka + "\n";
+    else if (idclass == 6) // выпускная квалиф. работа
+    {
+      data.gos += "Выпускная квалификационная работа на тему «" + vkr_title + "», " + ocenka + "\n";
+    }
   }
   
   if (!data.kur.empty())     data.kur = data.kur.subString(0, -1);
