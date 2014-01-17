@@ -102,9 +102,9 @@ void SPayment::UpdateView(void)
 void SPayment::UpdateViewPayment()
 {
 	// удаляем все строки
-	while (_payment_table.children_count() > 0)
-		HTMLayoutDetachElement(_payment_table.child(0));
-	// информация об оплатах студента
+  t::ClearTable(_payment_table, 0);
+
+  // информация об оплатах студента
 	std::map<std::wstring, std::wstring> info_pay;
 	std::map<std::wstring, int>			 pay;
 	
@@ -578,9 +578,9 @@ void SPayment::InitPayPay(void)
 
 	element option	= LiteWnd::link_element(_root, "pay-pay").find_first("popup");
 	assert(option.is_valid());
+
 	// удаляем все строки
-	while (option.children_count())
-		HTMLayoutDetachElement(option.child(0));
+  t::ClearTable(option, 0);
 
 	string_t buf = "<option value=0>0</option>";;
 	for (int i = 4; i > 0; --i)

@@ -46,8 +46,7 @@ void SProgress::LoadListDiscip(void)
 	long cur_didcip_id = GetIDSelectedDiscip();
 
 	// удаляем все строки
-	while (_discip.children_count() > 1)
-		HTMLayoutDetachElement(_discip.child(1));
+  t::ClearTable(_discip, 1);
 
 	string_t query = string_t() +
 		"SELECT id, fulltitle, shorttitle, idclass " 
@@ -161,9 +160,10 @@ long SProgress::GetIDSelectedDiscip(void)
 void SProgress::UpdateViewEstimForDiscip()
 {
 	htmlayout::dom::element ball_table	= LiteWnd::link_element(_root, "prog-estim"); 
-	// удаляем все строки
-	while (ball_table.children_count() > 2)
-		HTMLayoutDetachElement(ball_table.child(2));
+
+  // удаляем все строки
+  while (ball_table.children_count() > 2)    HTMLayoutDetachElement(ball_table.child(2));
+  //t::ClearTable(ball_table, 2);
 
 	long discip_id = GetIDSelectedDiscip();
 	if (discip_id == -1)

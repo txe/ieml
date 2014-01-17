@@ -592,8 +592,7 @@ void SData::UpdateEgeTable()
 	int cur_discip = GetCurEgeDiscip().get_attribute_int("iddiscip", -1);
 
 	// удаляем все строки
-	while (list.children_count() > 1)
-		HTMLayoutDetachElement(list.child(1));
+  t::ClearTable(list, 1);
 
 	string_t query = string_t() +
 		"  SELECT pr.id, gr.iddiscip, v.title, pr.ball FROM ege_for_group AS gr " 

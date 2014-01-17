@@ -90,8 +90,7 @@ void CActionChangeSem::UpdateView(void)
 	assert(_table.is_valid());
 
 	// удаляем строки кроме заголовка таблицы
-	while (_table.children_count() > 1)
-		HTMLayoutDetachElement(_table.child(1));
+  t::ClearTable(_table, 1);
 
 	string_t sem = _type_sem == PLAN_SEM?"numplansemestr":"numgraphsemestr";
 	string_t  query = string_t() +

@@ -159,8 +159,7 @@ string_t GetShortClassTitle(string_t str)
 // обновляет таблицу дисциплин
 void CManagDisciplinesDlg::UpdateViewDiscipTable(int showDisc)
 {
-	while (discip_table_.children_count() > 1)
-		htmlayout::dom::element(discip_table_.child(1)).destroy();
+  t::ClearTable(discip_table_, 1);
 
 	string_t specid = aux::itow(theApp.GetSpecIdForStudId(theApp.GetCurrentStudentID()));
 	string_t query = string_t() +

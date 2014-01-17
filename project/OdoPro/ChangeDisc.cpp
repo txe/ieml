@@ -77,10 +77,8 @@ void ChangeDisc::InitDomElement(void)
 void ChangeDisc::UpdateTable()
 {
 	// удаляем все строки
-	while (table1_.children_count() > 1)
-		HTMLayoutDetachElement(table1_.child(1));
-	while (table2_.children_count() > 1)
-		HTMLayoutDetachElement(table2_.child(1));
+  t::ClearTable(table1_, 1);
+  t::ClearTable(table2_, 1);
 
 	string_t query = string_t() +
 		"SELECT id, fulltitle, shorttitle, idclass " 

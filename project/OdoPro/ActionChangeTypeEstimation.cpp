@@ -86,8 +86,7 @@ void CActionChangeTypeEstimation::UpdateView(void)
 	assert(_table.is_valid());
 
 	// удаляем строки кроме заголовка таблицы
-	while (_table.children_count() > 1)
-		HTMLayoutDetachElement(_table.child(1));
+  t::ClearTable(_table, 1);
 
 	string_t  query = string_t() +
 		" SELECT DISTINCT pr.numplansemestr, dis.fulltitle, pr.id, dis.shorttitle, pr.estimation, pr.ball, pr.iddiscip "

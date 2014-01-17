@@ -134,8 +134,7 @@ void CMainDlg::UpdateGrid(void)
 
 	SetStatusBar(SB_COUNT, "...");
 	// удаляем строки кроме заголовка таблицы
-	while (stud_grid_.children_count() > 1)
-		HTMLayoutDetachElement(stud_grid_.child(1));
+  t::ClearTable(stud_grid_, 1);
 		
 	while (row = res.fetch_row())	
 	{
@@ -499,8 +498,7 @@ void CMainDlg::ShowFindResult()
 
 	SetStatusBar(SB_COUNT, "...");
 	// удаляем строки кроме заголовка таблицы
-	while (stud_grid_.children_count() > 1)
-		HTMLayoutDetachElement(stud_grid_.child(1));
+  t::ClearTable(stud_grid_, 1);
 
 	while (row = res.fetch_row())	
 	{

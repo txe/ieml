@@ -217,6 +217,20 @@ namespace t
 		return row;
 	}
 
+  inline void ClearTable(htmlayout::dom::element table, int headerCount)
+  {
+    std::vector<htmlayout::dom::element> headers;
+    for (int i = 0, count = table.children_count(); i < headerCount && i < count; ++i)
+    {
+      htmlayout::dom::element header = table.child(i);
+      header.detach();
+      headers.push_back(header);
+    }
+    table.clear();
+    for (int i = 0; i < headers.size(); ++i)
+      table.insert(headers[i], i);
+  }
+
 	// переводит в rsync формат
 	inline std::string path2rsync(const std::string& path)
 	{
