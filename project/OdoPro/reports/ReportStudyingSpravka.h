@@ -47,4 +47,5 @@ private:
   void GetPrivateData(PrivateData& data, int studentId);
   void GetStudyData(StudyData& data, int studentId, bool isMale);
   void GetDiscipData(std::vector<DiscipData>& data, int studentId);
+  string_t CurrentDate();
 };

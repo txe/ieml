@@ -100,6 +100,11 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   macros.Cell(1, 6, 1, "VerticalAlignment=wdCellAlignVerticalTop");
   macros.Cell(1, 6, 1, "Range.Text=" + toWrap(outS));
 
+  macros.Cell(1, 11, 2, "Range.Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphCenter");
+  macros.Cell(1, 11, 2, "VerticalAlignment=wdCellAlignVerticalTop");
+  macros.Cell(1, 11, 2, "Range.Text=" + toWrap(CurrentDate()));
+
   macros.Cell(1, 13, 1, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.Cell(1, 13, 1, "VerticalAlignment=wdCellAlignVerticalTop");
@@ -195,6 +200,23 @@ void ReportStudyingSpravka::GetStudyData(StudyData& data, int studentId, bool is
   data.gos     = "";
   data.practic = "";
 
+  struct local
+  {
+    static string_t hours_to_str(string_t hours)
+    {
+      int num = hours.toInt();
+      if (num >= 5 && num <= 20) hours += " часов"; // исключение из правил
+      else
+      {
+        num %= 10;
+        if (num == 1) hours += " час";
+        else if (num >= 2 && num <= 4) hours += " часа";
+        else hours += " часов";
+      }
+      return hours;
+    }
+  };
+
   string_t query = string_t() +
    "SELECT di.fulltitle, di.num_hours, di.idclass, pr.estimation, pr.ball "
    "FROM disciplines as di, progress as pr "
@@ -211,7 +233,7 @@ void ReportStudyingSpravka::GetStudyData(StudyData& data, int studentId, bool is
     if (idclass == 2 || idclass == 3) // курсовые работы и проекты
       data.kur += title + ", " + ocenka + "\n";
     else if (idclass == 4) // практика
-      data.practic += title + " " + hours + " часов, " + ocenka + "\n";
+      data.practic += title + " " + local::hours_to_str(hours) + ", " + ocenka + "\n";
     else if (idclass == 8) // научно исследовательская работа
       data.sci += title + "\n";
     else if (idclass == 5) // итоговая аттестация
@@ -274,4 +296,12 @@ void ReportStudyingSpravka::GetDiscipData(std::vector<DiscipData>& data, int stu
     if (disc.discId != -1)
       data.push_back(disc);
   }
+}
+//-------------------------------------------------------------------------
+string_t ReportStudyingSpravka::CurrentDate()
+{
+  mybase::MYFASTRESULT res = theApp.GetCon().Query("SELECT CURDATE() as date");
+  if (mybase::MYFASTROW	row = res.fetch_row())
+    return GetDate(row["date"], true);
+  return GetDate("");
 }
