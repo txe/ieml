@@ -172,7 +172,7 @@ string_t SingeltonApp::GetFIO(void)
 }
 
 // возвращает описание для индефикатора и ключа из таблицы VOC (UTF)
-string_t SingeltonApp::GetTitleForKeyFromVoc(VOK_KEY vkey, int num, bool no_throw /* = false */)
+string_t SingeltonApp::GetTitleForKeyFromVoc(VOK_KEY vkey, int num, bool no_throw /* = false */, string_t* get_tag /* = NULL */)
 {
 	string_t key;
 	switch (vkey)
@@ -182,11 +182,11 @@ string_t SingeltonApp::GetTitleForKeyFromVoc(VOK_KEY vkey, int num, bool no_thro
 	case VK_SPECS:      key = "spec";       break;
 	case VK_SPEZIALIZ:  key = "specializ";  break;
 	case VK_QUALIFIC:   key = "qualific";   break;
-	case VK_DIRECT:     key = "directs";    break;
+	case VK_DIRECT:     key = "direct";    break;
 	case VK_DISCIPCLASSIFIC: key = "discipclassific"; break;
 	}
 
-	string_t query = string_t() + " SELECT title FROM voc "
+	string_t query = string_t() + " SELECT title, tag FROM voc "
 		+ " WHERE `deleted` = 0 AND "
 		+ " `num` = '" + aux::itow(num) + "' AND "
 		+ " `vkey` = '" + key + "' LIMIT 1";
@@ -202,6 +202,8 @@ string_t SingeltonApp::GetTitleForKeyFromVoc(VOK_KEY vkey, int num, bool no_thro
 		throw wss::exception(wss::reason_message(FULL_LOCATION()));
 	}
 
+  if (get_tag)
+    *get_tag = row["tag"];
 	return row["title"];
 }
 

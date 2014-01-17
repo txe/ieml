@@ -134,21 +134,57 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   macros.Cell(1, 11, 2, "VerticalAlignment=wdCellAlignVerticalTop");
   macros.Cell(1, 11, 2, "Range.Text=" + toWrap(CurrentDate()));
 
+  // Направление подготовки/специальность:
+  // если заполнено направление - использовать направление иначе специальности
+  macros.Cell(1, 8, 1, "Range.Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
+  macros.Cell(1, 8, 1, "VerticalAlignment=wdCellAlignVerticalTop");
+  macros.SelectionUnderlineText("Направление подготовки", privData.stroka1 == PrivateData::S1_DIRECT);
+  macros.SelectionText("/");
+  macros.SelectionUnderlineText("специальность", privData.stroka1 == PrivateData::S1_SPEC);
+  macros.SelectionText(":");
+
+  // значение предыдущей строки
+  macros.Cell(1, 9, 1, "Range.Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
+  macros.Cell(1, 9, 1, "VerticalAlignment=wdCellAlignVerticalTop");
+  macros.SelectionText(privData.stroka1Value);
+
+  // Специализация/профиль/профильная направленность (программа):
+  // если было направление то это профиль, иначе Специализация, а если тег (маг) то профильная направленность
+  macros.Cell(1, 10, 1, "Range.Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
+  macros.Cell(1, 10, 1, "VerticalAlignment=wdCellAlignVerticalTop");
+  macros.SelectionUnderlineText("Специализация", privData.stroka2 == PrivateData::S2_SPECIAL);//privData.direct.empty() && !privData.isMag);
+  macros.SelectionText("/");
+  macros.SelectionUnderlineText("профиль", privData.stroka2 == PrivateData::S2_PROFIL); //!privData.direct.empty());
+  macros.SelectionText("/");
+  macros.SelectionUnderlineText("профильная направленность", privData.stroka2 == PrivateData::S2_MAGISTR); //privData.direct.empty() && privData.isMag);
+  macros.SelectionText(" (программа):");
+
+  // значение предыдущей строки
+  macros.SelectionTypeParagraph();
+  macros.SelectionText(privData.stroka2Value);
+
+  // курсовые
   macros.Cell(1, 13, 1, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.Cell(1, 13, 1, "VerticalAlignment=wdCellAlignVerticalTop");
   macros.SelectionText(studyData.kur);
 
+  // практика 
   macros.Cell(1, 15, 1, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.Cell(1, 15, 1, "VerticalAlignment=wdCellAlignVerticalTop");
   macros.SelectionText(studyData.practic);
 
+  // научные работы
   macros.Cell(1, 17, 1, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.Cell(1, 17, 1, "VerticalAlignment=wdCellAlignVerticalTop");
   macros.SelectionText(studyData.sci);
 
+  // госы
   macros.Cell(1, 19, 1, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.Cell(1, 19, 1, "VerticalAlignment=wdCellAlignVerticalTop");
@@ -186,6 +222,8 @@ void ReportStudyingSpravka::GetPrivateData(PrivateData& data, int studentId)
   data.diplomNum = "xxx 000000";
   data.regNum = data.dataVidachi = data.dataQualific = "00.00.0000";
 
+  string_t specOrProfilTag;
+  bool isMag = false;
   string_t  query = string_t() +
     "SELECT s.secondname,s.firstname,s.thirdname,s.bdate,s.vkr_title," \
     "s.edudocid,s.eduenddate,s.specid,s.enterdate,s.exitdate, s.exitnum,s.sex,v.title as lang,s.edunumdiplom," \
@@ -207,7 +245,7 @@ void ReportStudyingSpravka::GetPrivateData(PrivateData& data, int studentId)
     data.vipQualifWork = row["vkr_title"];
     data.prevDoc       = theApp.GetTitleForKeyFromVoc(VK_EDUDOC, row["edudocid"].toInt(), true);
     data.prevDocYear   = GetYear(row ["eduenddate"]);
-    data.specOrProfil  = theApp.GetTitleForKeyFromVoc(VK_SPECS, row["specid"].toInt(), true);
+    data.specOrProfil  = theApp.GetTitleForKeyFromVoc(VK_SPECS, row["specid"].toInt(), true, &specOrProfilTag);
     data.specializ  = theApp.GetTitleForKeyFromVoc(VK_SPEZIALIZ, row["specid"].toInt(), true);
     data.qualific   = theApp.GetTitleForKeyFromVoc(VK_QUALIFIC, row["specid"].toInt(), true);
     data.direct     = theApp.GetTitleForKeyFromVoc(VK_DIRECT, row["directid"].toInt(), true);
@@ -226,7 +264,28 @@ void ReportStudyingSpravka::GetPrivateData(PrivateData& data, int studentId)
     data.regNum    = row["edunumreg"];
     data.dataVidachi = date_to_str(row["edudatediplom"]);
     data.dataQualific = date_to_str(row["edudatequalif"]);
+
+    isMag = specOrProfilTag.toUpper().trim() == "маг";
   }
+
+  // Направление подготовки/специальность:
+  // если заполнено направление - использовать направление иначе специальности
+  data.stroka1 = data.direct.empty() ? PrivateData::S1_SPEC : PrivateData::S1_DIRECT;
+  if (data.stroka1 == PrivateData::S1_DIRECT)
+    data.stroka1Value = data.direct;
+  else
+    data.stroka1Value = data.specOrProfil;
+
+  // Специализация/профиль/профильная направленность (программа):
+  // если было направление то это профиль, иначе Специализация, а если тег (маг) то профильная направленность
+  if (data.stroka1 == PrivateData::S1_DIRECT) data.stroka2 = PrivateData::S2_PROFIL;
+  else if (isMag)                             data.stroka2 = PrivateData::S2_MAGISTR;
+  else                                        data.stroka2 = PrivateData::S2_SPECIAL;
+
+  if (data.stroka2 == PrivateData::S2_SPECIAL)
+    data.stroka2Value = data.specializ;
+  else
+    data.stroka2Value = data.specOrProfil;
 }
 //-------------------------------------------------------------------------
 void ReportStudyingSpravka::GetStudyData(StudyData& data, int studentId, bool isMale)

@@ -14,6 +14,13 @@ struct PrivateData
   string_t vipQualifWork, specOrProfil, specializ, qualific, lang;
   string_t diplomNum, regNum, dataVidachi, dataQualific, direct;
   bool isMale;
+
+  enum STROKA_1 {S1_DIRECT, S1_SPEC};
+  enum STROKA_2 {S2_SPECIAL, S2_PROFIL, S2_MAGISTR};
+  STROKA_1 stroka1;
+  STROKA_2 stroka2;
+  string_t stroka1Value;
+  string_t stroka2Value;
 };
 
 struct StudyData

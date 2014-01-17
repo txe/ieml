@@ -19,6 +19,7 @@ public:
 	void SelectionParagraphFormat(const string_t& param);
 	void SelectionFont(const string_t& param);
 	void SelectionText(const string_t& text);
+  void SelectionUnderlineText(const string_t& text, bool underline); 
 	void SelectionTypeParagraph();
 	void InsertLine(const string_t& line);
 	//---------------------------------------------------------------------------

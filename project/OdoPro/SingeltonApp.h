@@ -40,7 +40,7 @@ public:
 	// возвращает ФИО текущего студента
 	string_t GetFIO(void);
 	// возвращает описание для индефикатора и ключа из таблицы VOC
-	string_t GetTitleForKeyFromVoc(VOK_KEY vkey, int num, bool no_throw = false);
+	string_t GetTitleForKeyFromVoc(VOK_KEY vkey, int num, bool no_throw = false, string_t* get_tag = NULL);
 	// возвращает для индификатора имя группы
 	string_t GetGroupName(int grpid);
 	// возвращает ид специальности для данного студента
