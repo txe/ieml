@@ -28,7 +28,7 @@ private:
 private:
 	void InitDomElement(void);	// связывает элементы дом с отображением и инициирует
 	// получение и отображение таблицы оценок
-	bool UpdateView(void);
+	bool UpdateView(int showDisc);
 	// проверка введенных данных
 	bool Check(void);
 	// обрабатывает кнопки
@@ -36,7 +36,7 @@ private:
 	// обрабатывает выбор дисциплины
 	static BOOL CALLBACK ElementEventProcDiscip(LPVOID tag, HELEMENT he, UINT evtg, LPVOID prms );
 	// обновляет таблицу дисциплин
-	void UpdateViewDiscipTable(void);
+	void UpdateViewDiscipTable(int showDisc);
 	// отображает данные на выбранную дисциплину
 	void UpdateViewDiscipData(void);
 	// удаляет дисциплину из базы

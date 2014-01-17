@@ -36,7 +36,7 @@ int CManagDisciplinesDlg::OnCreate()
 		::HTMLayoutLoadHtml(m_hWnd, pb, cb);
 	}
 	InitDomElement();
-	UpdateView();
+	UpdateView(-1);
 
 	return 0;
 }
@@ -130,9 +130,9 @@ bool CManagDisciplinesDlg::Check()
 }
 
 // получение и отображение свойств дисциплин
-bool CManagDisciplinesDlg::UpdateView(void)
+bool CManagDisciplinesDlg::UpdateView(int showDisc)
 {
-	UpdateViewDiscipTable();
+	UpdateViewDiscipTable(showDisc);
 	UpdateViewDiscipData();
 	return true;
 }
@@ -157,7 +157,7 @@ string_t GetShortClassTitle(string_t str)
     return str;
 }
 // обновляет таблицу дисциплин
-void CManagDisciplinesDlg::UpdateViewDiscipTable(void)
+void CManagDisciplinesDlg::UpdateViewDiscipTable(int showDisc)
 {
 	while (discip_table_.children_count() > 1)
 		htmlayout::dom::element(discip_table_.child(1)).destroy();
@@ -193,13 +193,28 @@ void CManagDisciplinesDlg::UpdateViewDiscipTable(void)
 			"<td>" + row["scan_number"]	+ "</td>"
 			"</tr>";
 	}
-	discip_table_.update();
 	if (_mbslen(buf))
 		discip_table_.set_html(buf, _mbslen(buf), SIH_APPEND_AFTER_LAST);
+    discip_table_.update();
 
-	if (discip_table_.children_count() > 1)
-		htmlayout::dom::element(discip_table_.child(1)).set_state(STATE_CURRENT);
-
+    int findRow = -1;
+    if (showDisc == -2 && discip_table_.children_count() > 1)
+        findRow = discip_table_.children_count() - 2;
+    else if (showDisc != -1)
+        for (int i = 1, count = discip_table_.children_count(); i < count && findRow == -1; ++i)
+        {
+            string_t id = htmlayout::dom::element(discip_table_.child(i)).get_attribute("discip_id");
+            if (id.toInt() == showDisc)
+                findRow = i;
+        }
+    if (findRow == -1 && discip_table_.children_count() > 1)
+        findRow = 1;
+    if (findRow != -1)
+    {
+        htmlayout::dom::element row = discip_table_.child(findRow);
+        row.set_state(STATE_CURRENT);		    
+        row.scroll_to_view();
+    }
 	discip_table_.update();
 }
 
@@ -245,14 +260,19 @@ void CManagDisciplinesDlg::DeleteDiscip(void)
 	string_t discip_id = t::GetSelectedRow(discip_table_).get_attribute("discip_id");
 	string_t query = "UPDATE disciplines SET deleted = 1 WHERE id = " + discip_id;
 	theApp.GetCon().Query(query);
-
-	UpdateView();
+    
+    htmlayout::dom::element row = t::GetSelectedRow(discip_table_);
+    htmlayout::dom::element next = row.next_sibling();
+    if (!next)
+        next = row.prev_sibling();
+    
+    UpdateView(string_t(next.get_attribute("discip_id")).toInt());
 }
 
 // проверяет существует ли дисциплина с такими параметрами
 bool CManagDisciplinesDlg::IsExistDiscip(bool include_cur_discip /* = true */)
 {
-	string_t specid			= aux::itow(theApp.GetSpecIdForStudId(theApp.GetCurrentStudentID()));
+	string_t specid		= aux::itow(theApp.GetSpecIdForStudId(theApp.GetCurrentStudentID()));
 	string_t fulltitle	= json::v2t(fulltitle_.get_value());
 	string_t shorttitle	= json::v2t(shorttitle_.get_value());
     string_t zach_ed	= json::v2t(zach_ed_.get_value());
@@ -295,7 +315,7 @@ void CManagDisciplinesDlg::AddDiscip(void)
 		discip_class + "', " + num_hours + ", " + scan_namber + ", '" + sem_hours+"', '" + zach_ed + "')";
 	theApp.GetCon().Query(query);
 
-	UpdateView();
+	UpdateView(-2);
 }
 
 // переводит аудиторные часы в строку
@@ -349,5 +369,5 @@ void CManagDisciplinesDlg::SaveUpdateDiscip(void)
 		" WHERE id = " + discip_id;
 	theApp.GetCon().Query(query);
 
-	UpdateView();
+	UpdateView(discip_id.toInt());
 }
