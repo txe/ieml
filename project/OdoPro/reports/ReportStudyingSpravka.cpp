@@ -155,8 +155,8 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   macros.SelectionText(studyData.gos);
 
   // заполним таблицу дисциплин
-  macros.InsertLine("ActiveDocument.Tables.Item(4).Rows.Item(2).Range.Select");
-  macros.InsertLine("Selection.InsertRowsBelow " + toStr(discData.size()-1));
+  macros.InsertLine("ActiveDocument.Tables.Item(4).Rows.Item(3).Range.Select");
+  macros.InsertLine("Selection.InsertRowsBelow " + toStr(discData.size()-2));
   for (size_t i = 0; i < discData.size(); ++i)
   {
     string_t title = discData[i].title;
