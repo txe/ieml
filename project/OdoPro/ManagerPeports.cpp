@@ -63,7 +63,7 @@ void ManagerReports::LoadReports(void)
 void ManagerReports::UnLoadReports(void)
 {
 	FreeLibrary(_hinstRepLib); 
-	for (int i = 0; i < _reports.size(); ++i)
+	for (size_t i = 0; i < _reports.size(); ++i)
 		delete _reports[i];
 	_reports.size();
 }
@@ -89,7 +89,7 @@ void ManagerReports::CreateMenu(void)
 			"<li report id=" + id + " title=\"" + title + "\">" + title + "</li>"; 
 
 	}
-	for (int i = 0; i < _reports.size(); ++i)
+	for (size_t i = 0; i < _reports.size(); ++i)
 	{
 		string_t title	= _reports[i]->GetName();
 		buf += string_t() +
@@ -132,7 +132,7 @@ BOOL CALLBACK ManagerReports::ElementEventProcMenu(LPVOID tag, HELEMENT he, UINT
 void ManagerReports::CallNewReport(string_t title)
 {
 	ReportAbstract* report = NULL;
-	for (int i = 0; i < _reports.size(); ++i)
+	for (size_t i = 0; i < _reports.size(); ++i)
 		if (_reports[i]->GetName() == title)
 			report = _reports[i];
 	if (!report)

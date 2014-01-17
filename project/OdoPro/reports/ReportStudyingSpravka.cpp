@@ -128,7 +128,7 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   // заполним таблицу дисциплин
   macros.InsertLine("ActiveDocument.Tables.Item(4).Rows.Item(2).Range.Select");
   macros.InsertLine("Selection.InsertRowsBelow " + toStr(discData.size()-1));
-  for (int i = 0; i < discData.size(); ++i)
+  for (size_t i = 0; i < discData.size(); ++i)
   {
     string_t title = discData[i].title;
     if (title.toUpper().trim() == string_t(L"»Ќќ—“–јЌЌџ… я«џ "))
@@ -240,22 +240,15 @@ void ReportStudyingSpravka::GetStudyData(StudyData& data, int studentId, bool is
       data.gos += title + ", " + ocenka + "\n";
   }
   
-  if (data.kur.empty())
-    data.kur = isMale ? "не выполн€л" : "не выполн€ла";
-  else
-    data.kur = data.kur.subString(0, -1);
-  if (data.practic.empty())
-    data.practic = isMale ? "не проходил" : "не проходила";
-  else
-    data.practic = data.practic.subString(0, -1);
-  if (data.sci.empty())
-    data.sci = isMale ? "не выполн€л" : "не выполн€ла";
-  else
-    data.sci = data.sci.subString(0, -1);
-  if (data.gos.empty())
-    data.gos = isMale ? "не сдавал" : "не сдавала";
-  else
-    data.gos = data.gos.subString(0, -1);
+  if (!data.kur.empty())     data.kur = data.kur.subString(0, -1);
+  if (!data.practic.empty()) data.practic = data.practic.subString(0, -1);
+  if (!data.sci.empty())     data.sci = data.sci.subString(0, -1);
+  if (!data.gos.empty())     data.gos = data.gos.subString(0, -1);
+
+  if (data.kur.empty())     data.kur     = isMale ? "не выполн€л" : "не выполн€ла";
+  if (data.practic.empty()) data.practic = isMale ? "не проходил" : "не проходила";
+  if (data.sci.empty())     data.sci     = isMale ? "не выполн€л" : "не выполн€ла";
+  if (data.gos.empty())     data.gos     = isMale ? "не сдавал"   : "не сдавала";
 }
 //-------------------------------------------------------------------------
 void ReportStudyingSpravka::GetDiscipData(std::vector<DiscipData>& data, int studentId)
@@ -285,7 +278,7 @@ void ReportStudyingSpravka::GetDiscipData(std::vector<DiscipData>& data, int stu
     disc.semestr = row["numplansemestr"].toInt();
 
     // проверим что может это слишком стара€ оценка
-    for (int i = 0; i < data.size(); ++i)
+    for (size_t i = 0; i < data.size(); ++i)
       if (data[i].discId == disc.discId && data[i].title == disc.title)
       {
         if (disc.semestr >= data[i].semestr)

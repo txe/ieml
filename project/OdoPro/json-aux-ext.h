@@ -227,7 +227,7 @@ namespace t
       headers.push_back(header);
     }
     table.clear();
-    for (int i = 0; i < headers.size(); ++i)
+    for (size_t i = 0; i < headers.size(); ++i)
       table.insert(headers[i], i);
   }
 
