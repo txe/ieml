@@ -345,9 +345,9 @@ void CManagDisciplinesDlg::SaveUpdateDiscip(void)
 	if (IsExistDiscip(false))
 	{
 		string_t msg = "Запись c такими параметрами для данной специальности уже существует в базе данных.\n"
-			"Сохранение не произошло!";
-		MessageBox(m_hWnd, msg, L"Сообщение", MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
-		return;
+      "Хотите продолжить?";
+    if (IDNO == MessageBox(m_hWnd, msg, L"Предупреждение", MB_YESNO | MB_ICONERROR | MB_APPLMODAL))
+      return;
 	}
 
 	string_t discip_id		= t::GetSelectedRow(discip_table_).get_attribute("discip_id");
