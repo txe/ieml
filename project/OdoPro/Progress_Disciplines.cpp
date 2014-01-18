@@ -182,39 +182,39 @@ void CManagDisciplinesDlg::UpdateViewDiscipTable(int showDisc)
       " idspec=" + row["idspec"] + 
       " idclass=" + row["idclass"] + " >";
     buf += string_t() +
-      "<td>" + aux::itow(pos++)	+ "</td>"
-      "<td>" + row["id"]	        + "</td>"
-      "<td>" + row["fulltitle"]	+ "</td>"
-      "<td>" + row["shorttitle"]	+ "</td>"
-      "<td>" + row["num_hours"]	+ "</td>"
+      "<td>" + aux::itow(pos++)	 + "</td>"
+      "<td>" + row["id"]	       + "</td>"
+      "<td>" + row["fulltitle"]	 + "</td>"
+      "<td>" + row["shorttitle"] + "</td>"
+      "<td>" + row["num_hours"]	 + "</td>"
       "<td>" + GetShortClassTitle(idclass) + "</td>"
       "<td>" + row["zachet_edinica"] + "</td>"      
-      "<td>" + row["scan_number"]	+ "</td>"
+      "<td>" + row["scan_number"]    + "</td>"
       "</tr>";
   }
   if (_mbslen(buf))
     discip_table_.set_html(buf, _mbslen(buf), SIH_APPEND_AFTER_LAST);
   discip_table_.update();
 
+  // выделим переданную дисцилину
   int findRow = -1;
-  if (showDisc == -2 && discip_table_.children_count() > 1)
-    findRow = discip_table_.children_count() - 2;
-  else if (showDisc != -1)
+  if (showDisc != -1)
     for (int i = 1, count = discip_table_.children_count(); i < count && findRow == -1; ++i)
     {
       string_t id = htmlayout::dom::element(discip_table_.child(i)).get_attribute("discip_id");
       if (id.toInt() == showDisc)
         findRow = i;
     }
-    if (findRow == -1 && discip_table_.children_count() > 1)
-      findRow = 1;
-    if (findRow != -1)
-    {
-      htmlayout::dom::element row = discip_table_.child(findRow);
-      row.set_state(STATE_CURRENT);		    
-      row.scroll_to_view();
-    }
-    discip_table_.update();
+  if (findRow == -1 && discip_table_.children_count() > 1)
+    findRow = 1;
+  if (findRow != -1)
+  {
+    htmlayout::dom::element row = discip_table_.child(findRow);
+    row.set_state(STATE_CURRENT);		    
+    row.scroll_to_view();
+  }
+
+  discip_table_.update();
 }
 
 // отображает данные на выбранную дисциплину
@@ -314,7 +314,9 @@ void CManagDisciplinesDlg::AddDiscip(void)
     discip_class + "', " + num_hours + ", " + scan_namber + ", '" + sem_hours+"', '" + zach_ed + "')";
   theApp.GetCon().Query(query);
 
-  UpdateView(-2);
+  mybase::MYFASTRESULT	res = theApp.GetCon().Query("SELECT LAST_INSERT_ID() as id");
+  if (mybase::MYFASTROW	row = res.fetch_row())
+    UpdateView(row["id"].toInt());
 }
 
 // переводит аудиторные часы в строку

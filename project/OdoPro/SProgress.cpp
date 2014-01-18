@@ -55,18 +55,25 @@ void SProgress::LoadListDiscip(void)
 		" AND deleted = 0 "
 		" ORDER BY fulltitle";
 
-	
-	mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
 
-	string_t			buf;
+  string_t buf;
+  string_t buf2;
+
+	mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
 	mybase::MYFASTROW	row;
 
+  // переведенные дисциплины отправим в самый низ таблицы
 	while ((row = res.fetch_row()))	
-		buf += "<tr value=" + row["id"] + ">" 
-			+  "<td>" + row["id"] + "</td>"
-			+  "<td>" + row["fulltitle"] + "[" + row["shorttitle"] + "]" + "</td>"
-			+  "</tr>";
+    if (row["idclass"] == string_t(L"0"))
+      buf2 += "<tr value=" + row["id"] + " style='color:red'><td>" + row["id"] + "</td>"
+              "<td>" + row["fulltitle"] + " (" + row["shorttitle"] + ")" + "</td>"
+              "</tr>";
+    else
+      buf += "<tr value=" + row["id"] + "><td>" + row["id"] + "</td>"
+			       "<td>" + row["fulltitle"] + " (" + row["shorttitle"] + ")" + "</td>"
+			       "</tr>";
 
+  buf += buf2;
 	assert(_mbslen(buf));
 	if (_mbslen(buf))
 		_discip.set_html(buf, _mbslen(buf), SIH_APPEND_AFTER_LAST);
