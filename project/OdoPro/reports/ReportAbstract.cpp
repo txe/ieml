@@ -2,8 +2,6 @@
 #include "ReportAbstract.h"
 #include "../SingeltonApp.h"
 
-using namespace r;
-
 //---------------------------------------------------------------------------
 string_t r::to_str_date(string_t sqlDate, bool isYear /*= false*/)
 {
@@ -58,9 +56,17 @@ string_t r::to_digital_date(string_t sqlDate)
   return res;
 }
 //---------------------------------------------------------------------------
+string_t r::GetCurrentDate()
+{
+  mybase::MYFASTRESULT res = theApp.GetCon().Query("SELECT CURDATE() as date");
+  if (mybase::MYFASTROW	row = res.fetch_row())
+    return r::to_str_date(row["date"], true);
+  return r::to_str_date("");
+}
+//---------------------------------------------------------------------------
 void r::GetPrivateData(PrivateData& data, int studentId)
 {
-  data.firstName = data.secondName = data.thirdName = data.bornDate = data.vkrTitle = data.prevDoc = data.prevDocYear = data.inYear = "???";
+  data.firstName = data.secondName = data.thirdName = data.bornDate = data.vkrTitle = data.prevEdu = data.prevDoc = data.prevDocYear = data.inYear = "???";
   data.inMonth = data.inMonth = "0";
   data.outYear = data.outMonth = data.outDay = data.exitDate = data.exitNum = "???";
   data.specOrProfil = data.direct = data.specializ = data.qualific = data.lang = "???";
@@ -71,8 +77,8 @@ void r::GetPrivateData(PrivateData& data, int studentId)
   string_t specOrProfilTag;
 
   string_t  query = string_t() +
-    "SELECT s.secondname,s.firstname,s.thirdname,s.bdate,s.vkr_title," \
-    "s.edudocid,s.eduenddate,s.specid,s.enterdate,s.exitdate, s.exitnum,s.sex,v.title as lang,s.edunumdiplom," \
+    "SELECT s.secondname,s.firstname,s.thirdname,s.grpid.s.bdate,s.vkr_title," \
+    "s.educationid,s.edudocid,s.eduenddate,s.eduplace, s.specid,s.enterdate,s.exitdate, s.exitnum,s.sex,v.title as lang,s.edunumdiplom," \
     "s.edunumreg,s.edudatediplom,s.edudatequalif,s.directid " \
     " FROM students as s, "\
     " voc as v where s.deleted=0 and v.deleted=0 and s.id=" + aux::itow(studentId) + 
@@ -87,10 +93,15 @@ void r::GetPrivateData(PrivateData& data, int studentId)
     data.secondName = row["secondname"];
     data.firstName  = row["firstname"];
     data.thirdName  = row["thirdname"];
+    data.grpName    = theApp.GetTitleForKeyFromVoc(VK_GRP, row["grpid"].toInt(), true);
     data.bornDate   = to_str_date(row["bdate"],true);
-    data.vkrTitle = row["vkr_title"];
+    data.vkrTitle   = row["vkr_title"];
+    
+    data.prevEdu       = theApp.GetTitleForKeyFromVoc(VK_EDUCATIONS, row["educationid"].toInt(), true);
     data.prevDoc       = theApp.GetTitleForKeyFromVoc(VK_EDUDOC, row["edudocid"].toInt(), true);
-    data.prevDocYear   = GetYear(row ["eduenddate"]);
+    data.prevDocYear   = GetYear(row["eduenddate"]);
+    data.prevPlace     = row["eduplace"];
+    
     data.specOrProfil  = theApp.GetTitleForKeyFromVoc(VK_SPECS, row["specid"].toInt(), true, &specOrProfilTag);
     data.specializ  = theApp.GetTitleForKeyFromVoc(VK_SPEZIALIZ, row["specid"].toInt(), true);
     data.qualific   = theApp.GetTitleForKeyFromVoc(VK_QUALIFIC, row["specid"].toInt(), true);

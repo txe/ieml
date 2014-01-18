@@ -3,7 +3,6 @@
 #include "ReportStudyingSpravka.h"
 #include "../SingeltonApp.h"
 
-
 //-------------------------------------------------------------------------
 void ReportStudyingSpravka::Run(int grpId, int studentId)
 {
@@ -67,7 +66,7 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   macros.Cell(1, 4, 2, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphCenter");
   macros.Cell(1, 4, 2, "VerticalAlignment=wdCellAlignVerticalTop");
-  macros.Cell(1, 4, 2, "Range.Text=" + toWrap(CurrentDate()));
+  macros.Cell(1, 4, 2, "Range.Text=" + toWrap(r::GetCurrentDate()));
 
   macros.Cell(1, 2, 1, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
@@ -286,12 +285,4 @@ void ReportStudyingSpravka::GetDiscipData(std::vector<DiscipData>& data, int stu
       if (disc.discId != -1)
         data.push_back(disc);
   }
-}
-//-------------------------------------------------------------------------
-string_t ReportStudyingSpravka::CurrentDate()
-{
-  mybase::MYFASTRESULT res = theApp.GetCon().Query("SELECT CURDATE() as date");
-  if (mybase::MYFASTROW	row = res.fetch_row())
-    return r::to_str_date(row["date"], true);
-  return r::to_str_date("");
 }

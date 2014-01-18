@@ -22,6 +22,8 @@ namespace r
   inline string_t GetYear(string_t sqlDate)  { return sqlDate.subString(0,4); }
   inline string_t GetMonth(string_t sqlDate) { return sqlDate.subString(5,2); }
   inline string_t GetDay(string_t sqlDate)   { return sqlDate.subString(8,2); }
+  
+  string_t GetCurrentDate();
 
   inline string_t toOcenka(int num)
   {
@@ -32,8 +34,8 @@ namespace r
 //---------------------------------------------------------------------------
   struct PrivateData
   {
-    string_t secondName, firstName, thirdName, bornDate;
-    string_t prevDoc, prevDocYear; 
+    string_t secondName, firstName, thirdName, grpName, bornDate;
+    string_t prevEdu, prevDoc, prevDocYear, prevPlace; 
     string_t inYear, inMonth, inDay, outYear, outMonth, outDay, exitDate, exitNum;
     string_t vkrTitle, specOrProfil, specializ, qualific, lang;
     string_t diplomNum, regNum, dataVidachi, dataQualific, direct;

@@ -1,134 +1,261 @@
 #include "StdAfx.h"
 #include "ReportCharacteristic.h"
+#include "../SingeltonApp.h"
+#include "../json-aux-ext.h"
 
 //---------------------------------------------------------------------------
 void ReportCharacteristic::Run(int grpId, int studentId)
 {
-//   WordMacros macros;
-// 
-//   macros.BeginMacros();
-// 
-//   macros.InsertLine("ActiveDocument.PageSetup.TopMargin=70");
-//   macros.InsertLine("ActiveDocument.PageSetup.BottomMargin=55");
-//   macros.InsertLine("ActiveDocument.PageSetup.LeftMargin=55");
-//   macros.InsertLine("ActiveDocument.PageSetup.RightMargin=55");
-// 
-//   macros.SelectionParagraphFormat("LineSpacingRule = wdLineSpace1pt5");
-// 
-//   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphCenter");
-//   macros.SelectionFont("Bold=false");
-//   macros.SelectionFont("Size=12");
-//   macros.SelectionText("Минобрнауки России\n");
-//   macros.SelectionText("Федеральное государственное бюджетное образовательное учреждение\n");
-//   macros.SelectionText("высшего профессионального образования\n");
-//   macros.SelectionText("\"\"Нижегородский государственный архитектурно-строительный университет\"\" (ННГАСУ)\n\n");
-//   macros.InsertLine("Selection.MoveUp Unit:=wdLine, Count:=2");
-//   macros.SelectionParagraphFormat("Borders.Item(wdBorderBottom).LineStyle = wdLineStyleSingle");
-//   macros.SelectionParagraphFormat("Borders.Item(wdBorderBottom).LineWidth = wdLineWidth050pt");
-//   macros.InsertLine("Selection.MoveDown Unit:=wdLine, Count:=2");
-//   macros.SelectionText("ИНСТИТУТ ЭКОНОМИКИ, УПРАВЛЕНИЯ И ПРАВА\n\n");
-//   macros.SelectionFont("Bold=true");
-//   macros.SelectionText("ХАРАКТЕРИСТИКА\n\n");
-//   macros.SelectionFont("Bold=false");
-//   macros.SelectionFont("Size=12");
-//   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
-// 
-//   ZMySqlQuery->RecNo=1;
-// 
-//   AnsiString Sex = ZMySqlQuery->Fields->FieldByNumber(11)->AsString;
-//   bool isMan = (Sex[1]=='М') ? true : false;
-//   AnsiString FIO = ZMySqlQuery->Fields->FieldByNumber(2)->AsString;
-//   AnsiString byear = GetYear_cur(ZMySqlQuery->Fields->FieldByNumber(6)->AsString);
-//   AnsiString educ = WCGetTitleForKeyNum(EDUCATIONS,ZMySqlQuery->Fields->FieldByNumber(7)->AsString.ToInt());
-//   AnsiString eduendyear = GetYear_cur(ZMySqlQuery->Fields->FieldByNumber(8)->AsString);
-//   AnsiString eduplace = ZMySqlQuery->Fields->FieldByNumber(9)->AsString;
-//   AnsiString enteryear = GetYear_cur(ZMySqlQuery->Fields->FieldByNumber(10)->AsString);
-//   AnsiString spec = WCGetTitleForKeyNum(SPECS, ZMySqlQuery->Fields->FieldByNumber(3)->AsString.ToInt());
-//   AnsiString grpName = WCGetTitleForKeyNum(GROUPS, ZMySqlQuery->Fields->FieldByNumber(12)->AsString.ToInt());
-//   AnsiString naprav = WCGetTitleForKeyNum(DIRECTS, ZMySqlQuery->Fields->FieldByNumber(13)->AsString.ToInt());
-// 
-//   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphJustify");
-//   macros.SelectionText("vbTab");
-//   macros.SelectionText(FIO+", "+byear+" года рождения, образование "+educ+".\n");
-//   macros.SelectionText("vbTab");
-//   macros.FilterText(eduplace);
-//   macros.SelectionText("Закончил"+AnsiString(isMan?"":"а")+" в "+eduendyear+" году "+ eduplace + ".\n");
-//   macros.SelectionText("vbTab");
-// 
-//   if (naprav != "")
-//     macros.SelectionText("В "+enteryear+" году поступил"+AnsiString(isMan?"":"а")+" в ННГАСУ на места, не финансируемые из федерального бюджета, для обучения по направлению \"\""+naprav+"\"\" по заочной форме с применением дистанционных технологий.\n");
-//   else
-//     macros.SelectionText("В "+enteryear+" году поступил"+AnsiString(isMan?"":"а")+" в ННГАСУ на места, не финансируемые из федерального бюджета, для обучения по специальности \"\""+spec+"\"\" по заочной форме с применением дистанционных технологий.\n");
-// 
-//   macros.SelectionText("vbTab");
-//   macros.SelectionText("За время обучения в университете показал"+AnsiString(isMan?"":"а")+" следующую успеваемость:\n");
-//   int countUDOVL,countHOR,countOTL;
-//   double percUDOVL,percHOR,percOTL;
-//   AnsiString AvrgBallStr;
-//   GetBallsCount(countUDOVL,percUDOVL,countHOR,percHOR,countOTL,percOTL,AvrgBallStr,AnsiString(idstudent));
-// 
-//   AnsiString percUDOVLStr=AnsiString(percUDOVL),
-//     percHORStr=AnsiString(percHOR),
-//     percOTLStr=AnsiString(percOTL);
-//   AnsiString Str;
-//   char str[10];
-//   sprintf(str,"%4.0lf",percUDOVLStr.ToDouble());
-//   percUDOVLStr = AnsiString(str);
-//   sprintf(str,"%4.0lf",percHORStr.ToDouble());
-//   percHORStr = AnsiString(str);
-//   sprintf(str,"%4.0lf",percOTLStr.ToDouble());
-//   percOTLStr = AnsiString(str);
-// 
-//   Str="- \"\"отлично\"\" - "+percOTLStr+" %;\n";
-//   macros.SelectionText(Str);
-//   Str="- \"\"хорошо\"\" - "+percHORStr+" %;\n";
-//   macros.SelectionText(Str);
-//   Str="- \"\"удовлетворительно\"\" - "+percUDOVLStr+" %.\n";
-//   macros.SelectionText(Str);
-// 
-//   AnsiString caf = "???";
-//   if (grpName.SubString(1,2) == "БУ" || grpName.SubString(1,3) == "ЭУН") caf = "экономического анализа и управления недвижимостью";
-//   if (grpName.SubString(1,2) == "МО") caf = "инвестиционного менеджмента";
-//   if (grpName.SubString(1,2) == "МР") caf = "стратегического маркетинга";
-//   if (grpName.SubString(1,3) == "ПГС") caf = "архитектуры/технологии строительного производства";
-//   if (grpName.SubString(1,3) == "ТГВ") caf = "теплогазоснабжения";
-//   if (grpName.SubString(1,1) == "Ю") caf = "предпринимательского права";
-// 
-//   float itog_oc;
-//   InitItog(itog_oc);
-//   //    MessageBox(0, AnsiString(itog_oc).c_str(),"",0);
-//   macros.SelectionText("vbTab");
-//   if (grpName.SubString(1,1) != "Ю")
-//     macros.SelectionText("Сдал"+AnsiString(isMan?"":"а")+" государственный экзамен по "+(naprav != "" ? "направлению" : "специальности") + " с итоговой оценкой \"\""+GetEst_cur(itog_oc)+"\"\".\n");
-//   else
-//     macros.SelectionText(ItogForUr(isMan));
-//   macros.SelectionText("vbTab");
-//   macros.SelectionText("Выполнил"+AnsiString(isMan?"":"а")+" выпускную квалификационную работу по кафедре " + caf + ".\n");
-//   macros.SelectionText("vbTab");
-//   macros.SelectionText(FIO+" административных взысканий за время обучения не имеет, пользуется уважением студентов и преподавателей.\n");
-//   macros.SelectionText("vbTab");
-// 
-//   if (naprav != "")
-//     macros.SelectionText("Характеристика дана для предоставления в Государственную аттестационную комиссию по защите выпускной квалификационной работы по направлению \"\""+naprav+"\"\".\n");
-//   else
-//     macros.SelectionText("Характеристика дана для предоставления в Государственную аттестационную комиссию по защите выпускной квалификационной работы по специальности \"\""+spec+"\"\".\n");
-// 
-//   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
-//   macros.SelectionText("\n");
-//   macros.SelectionText("vbTab");
-//   macros.SelectionText("Директор ИЭУП, профессор");
-//   macros.SelectionText("vbTab");
-//   macros.SelectionText("vbTab");
-//   macros.SelectionText("vbTab");
-//   macros.SelectionText("vbTab");
-//   macros.SelectionText("vbTab");
-//   macros.SelectionText("vbTab");
-//   macros.SelectionText("Д.В. Хавин\n");
-//   AnsiString curdate = TDateTime::CurrentDate().FormatString("dd.mm.yyyy");
-//   macros.SelectionText("\n");
-//   macros.SelectionText("vbTab");
-//   macros.SelectionText(curdate+"\n");
-// 
-//   macros.EndMacros();
-//   macros.RunMacros();
+  r::PrivateData privData;
+  GetPrivateData(privData, studentId);
+  string_t fio = privData.secondName + " " + privData.firstName + " " + privData.thirdName;
+
+  string_t otlPercent, horPercent, udlPercent;
+  GetBallPercent(studentId, otlPercent, horPercent, udlPercent);
+
+  string_t cafedra = "???";
+  if (privData.grpName.subString(0,2) == "БУ" || privData.grpName.subString(0,3) == "ЭУН") cafedra = "экономического анализа и управления недвижимостью";
+  if (privData.grpName.subString(0,2) == "МО")    cafedra = "инвестиционного менеджмента";
+  if (privData.grpName.subString(0,2) == "МР")    cafedra = "стратегического маркетинга";
+  if (privData.grpName.subString(0,3) == "ПГС")   cafedra = "архитектуры/технологии строительного производства";
+  if (privData.grpName.subString(0,3) == "ТГВ")   cafedra = "теплогазоснабжения";
+  if (privData.grpName.subString(0,1) == "Ю")     cafedra = "предпринимательского права";
+
+  string_t itog;
+  if (privData.grpName.subString(0,1) == "Ю")
+    itog = CommonItog(studentId, privData.isMale, privData.direct != "");
+  else
+    itog = UrItog(studentId, privData.isMale);
+
+  string_t _A = privData.isMale ? "" : "а";
+
+  WordMacros macros;
+  macros.BeginMacros();
+
+  macros.InsertLine("ActiveDocument.PageSetup.TopMargin=70");
+  macros.InsertLine("ActiveDocument.PageSetup.BottomMargin=55");
+  macros.InsertLine("ActiveDocument.PageSetup.LeftMargin=55");
+  macros.InsertLine("ActiveDocument.PageSetup.RightMargin=55");
+
+  macros.SelectionParagraphFormat("LineSpacingRule = wdLineSpace1pt5");
+
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphCenter");
+  macros.SelectionFont("Bold=false");
+  macros.SelectionFont("Size=12");
+  macros.SelectionText("Минобрнауки России\n");
+  macros.SelectionText("Федеральное государственное бюджетное образовательное учреждение\n");
+  macros.SelectionText("высшего профессионального образования\n");
+  macros.SelectionText("\"\"Нижегородский государственный архитектурно-строительный университет\"\" (ННГАСУ)\n\n");
+  macros.InsertLine("Selection.MoveUp Unit:=wdLine, Count:=2");
+  macros.SelectionParagraphFormat("Borders.Item(wdBorderBottom).LineStyle = wdLineStyleSingle");
+  macros.SelectionParagraphFormat("Borders.Item(wdBorderBottom).LineWidth = wdLineWidth050pt");
+  macros.InsertLine("Selection.MoveDown Unit:=wdLine, Count:=2");
+  macros.SelectionText("ИНСТИТУТ ЭКОНОМИКИ, УПРАВЛЕНИЯ И ПРАВА\n\n");
+  macros.SelectionFont("Bold=true");
+  macros.SelectionText("ХАРАКТЕРИСТИКА\n\n");
+  macros.SelectionFont("Bold=false");
+  macros.SelectionFont("Size=12");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
+
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphJustify");
+  macros.SelectionText("vbTab");
+  macros.SelectionText(fio + ", " + privData.bornDate + " года рождения, образование " + privData.prevEdu + ".\n");
+  macros.SelectionText("vbTab");
+  macros.FilterText(privData.prevPlace);
+  macros.SelectionText("Закончил" + _A + " в " + privData.prevDocYear + " году " + privData.prevPlace + ".\n");
+  macros.SelectionText("vbTab");
+
+  if (privData.direct != "")
+    macros.SelectionText("В " + privData.inYear + " году поступил" + _A + " в ННГАСУ на места, не финансируемые из федерального бюджета, для обучения по направлению \"\"" + privData.direct + "\"\" по заочной форме с применением дистанционных технологий.\n");
+  else
+    macros.SelectionText("В " + privData.inYear + " году поступил" + _A + " в ННГАСУ на места, не финансируемые из федерального бюджета, для обучения по специальности \"\"" + privData.specOrProfil + "\"\" по заочной форме с применением дистанционных технологий.\n");
+ 
+  macros.SelectionText("vbTab");
+  macros.SelectionText("За время обучения в университете показал" + _A + " следующую успеваемость:\n");
+ 
+  macros.SelectionText("- \"\"отлично\"\" - " + otlPercent + " %;\n");
+  macros.SelectionText("- \"\"хорошо\"\" - " + horPercent + " %;\n");
+  macros.SelectionText("- \"\"удовлетворительно\"\" - " + udlPercent + " %.\n");
+ 
+  macros.SelectionText("vbTab");
+  macros.SelectionText(itog);
+
+  macros.SelectionText("vbTab");
+  macros.SelectionText("Выполнил" + _A + " выпускную квалификационную работу по кафедре " + cafedra + ".\n");
+  macros.SelectionText("vbTab");
+  macros.SelectionText(fio + " административных взысканий за время обучения не имеет, пользуется уважением студентов и преподавателей.\n");
+  macros.SelectionText("vbTab");
+
+  if (privData.direct != "")
+    macros.SelectionText("Характеристика дана для предоставления в Государственную аттестационную комиссию по защите выпускной квалификационной работы по направлению \"\"" + privData.direct + "\"\".\n");
+  else
+    macros.SelectionText("Характеристика дана для предоставления в Государственную аттестационную комиссию по защите выпускной квалификационной работы по специальности \"\"" + privData.specOrProfil + "\"\".\n");
+ 
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
+  macros.SelectionText("\n");
+  macros.SelectionText("vbTab");
+  macros.SelectionText("Директор ИЭУП, профессор");
+  macros.SelectionText("vbTab");
+  macros.SelectionText("vbTab");
+  macros.SelectionText("vbTab");
+  macros.SelectionText("vbTab");
+  macros.SelectionText("vbTab");
+  macros.SelectionText("vbTab");
+  macros.SelectionText("Д.В. Хавин\n");
+  macros.SelectionText("\n");
+  macros.SelectionText("vbTab");
+  macros.SelectionText(r::GetCurrentDate() + "\n");
+ 
+  macros.EndMacros();
+  macros.RunMacros("");
 }
+//---------------------------------------------------------------------------
+double SimpleRoundTo(double x,int z=-2)
+{ 
+  int j,k=1;
+  if (0>x) 
+    x=-x,k=-1;
+  if (--z)
+    if (z>0)
+      for (j=0; j-z; j++)
+        x/=10;
+      else
+        for (j=0;j+z;j++) 
+          x*=10;
+  x += 5; 
+  x /= 10;
+  x = (unsigned long long)x;
+  if (++z > 0)
+    for (j=0; j-z; j++) 
+      x*=10;
+    else
+      for (j=0; j+z; j++) 
+        x/=10;
+  return x*k;
+} 
+//---------------------------------------------------------------------------
+void ReportCharacteristic::GetBallPercent(int studentId, string_t& otlPercent, string_t& horPercent, string_t udlPercent)
+{
+    string_t query = "set @id = " + toStr(studentId);
+    
+    theApp.GetCon().Query(query);
+    theApp.GetCon().Query("CREATE TEMPORARY TABLE temp_stud TYPE = HEAP "
+        "SELECT st.id, st.firstname, st.secondname, st.thirdname, st.znum "
+        "FROM students as st "
+        "WHERE  st.id = @id AND st.deleted = 0 ");
+
+    theApp.GetCon().Query("CREATE TEMPORARY TABLE temp_progress1 TYPE = HEAP "
+        "SELECT pr.*, st.firstname, st.secondname, st.thirdname, st.znum "
+        "FROM progress as pr, temp_stud  as st "
+        "WHERE  pr.idstud = st.id AND pr.deleted = 0 AND pr.estimation < 3 ");
+
+    theApp.GetCon().Query("CREATE TEMPORARY TABLE temp_progress2 TYPE = HEAP "
+        "SELECT idstud, iddiscip, MAX(numplansemestr) as numplansemestr "
+        "FROM temp_progress1 "
+        "GROUP BY idstud, iddiscip ");
+
+    theApp.GetCon().Query("CREATE TEMPORARY TABLE temp_progress3 TYPE = HEAP "
+        "SELECT pr1.* "
+        "FROM temp_progress1 as pr1, temp_progress2 as pr2 "
+        "WHERE pr1.idstud = pr2.idstud AND pr1.iddiscip = pr2.iddiscip "
+        "AND pr1.numplansemestr = pr2.numplansemestr ");
+
+    mybase::MYFASTRESULT res = theApp.GetCon().Query("select idstud,secondname,firstname, thirdname, znum, "
+        "sum(case  when estimation=0 then 1 else 0 end) as otl, "
+        "sum(case  when estimation=1 then 1 else 0 end) as hor, "
+        "sum(case  when estimation=2 then 1 else 0 end) as ud, "
+        "AVG(ball) as sr "
+        "from temp_progress3 "
+        "group by idstud "
+        "order by secondname ");
+
+    if (mybase::MYFASTROW	row = res.fetch_row())
+    {
+      int otlCount = row["otl"].toInt();
+      int horCount = row["hor"].toInt();
+      int udlCount = row["ud"].toInt();
+
+      int count = otlCount + horCount + udlCount;
+
+      double percHOR = SimpleRoundTo(100.0*(double)horCount/(double)count, 0);
+      double percOTL = SimpleRoundTo(100.0*(double)otlCount/(double)count, 0);
+      double percUDOVL = 100.0 - percHOR - percOTL;
+
+      char str[10];
+      sprintf(str, "%4.0lf", percUDOVL);
+      udlPercent = str;
+      sprintf(str, "%4.0lf", percHOR);
+      horPercent = str;
+      sprintf(str, "%4.0lf", percOTL);
+      otlPercent = str;
+    }
+}
+//---------------------------------------------------------------------------
+string_t ReportCharacteristic::CommonItog(int studentId, bool isMale, bool isDirect)
+{
+  double itog_oc = 0.0;
+  int num_itog = 0;
+
+  string_t query = 
+    "SELECT di.idclass,pr.ball "
+    "FROM disciplines as di, progress as pr "
+    "WHERE di.deleted=0 and pr.deleted=0 and pr.idstud=" + toStr(studentId) + " and pr.iddiscip=di.id";
+
+  mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
+  while (mybase::MYFASTROW	row = res.fetch_row())
+  {
+    int d_class = row["idclass"].toInt();
+    if (d_class == 5)   // Итоговая аттестация
+    {
+      num_itog++;
+      itog_oc += aux::strtod(row["ball"]);
+    }
+  }
+  if (num_itog > 0)
+  {
+    itog_oc = itog_oc / (float)num_itog;
+    itog_oc = (float(int(itog_oc*10)) + (((itog_oc*10 - float((int(itog_oc*10)))) >= 0.5f) ? 1.0 : 0.0)) / 10.0f;
+    itog_oc = float(itog_oc);
+  }
+
+  string_t _A = isMale ? "" :"а";
+  string_t ocenka = r::toOcenka(t::type2cod(0, itog_oc));
+  string_t result = "Сдал" + _A + " государственный экзамен по " +(isDirect ? "направлению" : "специальности") + " с итоговой оценкой \"\"" + ocenka + "\"\".\n";
+  return result;
+}
+//---------------------------------------------------------------------------
+string_t ReportCharacteristic::UrItog(int studentId, bool isMale)
+{
+  string_t query = 
+    "SELECT di.idclass,pr.ball,di.fulltitle "
+    "FROM disciplines as di, progress as pr "
+    "WHERE di.deleted=0 and pr.deleted=0 and pr.idstud=" + toStr(studentId) + " and pr.iddiscip=di.id order by di.fulltitle";
+  
+  bool  second = false;
+  string_t itog = "Сдал" + isMale ? "" : "а";
+  string_t prip = " государственный экзамен по ";
+
+  mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
+  while (mybase::MYFASTROW row = res.fetch_row())
+  {
+    int d_class = row["idclass"].toInt();
+    if (d_class == 5)  // Итоговая аттестация
+    {
+      float itog_oc = aux::strtod(row["ball"]);
+      itog +=  second ? ", " : "" + prip;
+      second = true;
+
+      string_t title = row["fulltitle"];
+      if (title == "Гражданское право и гражданский процесс")
+        itog += "гражданскому праву и гражданскому процессуальному праву";
+      else
+        itog += "теории государства и права";
+
+      string_t ocenka = r::toOcenka(t::type2cod(0, itog_oc));
+      itog += " с оценкой \"\"" + ocenka + "\"\"";
+    }
+  }
+  itog +=".\n";
+  return itog;
+}
+

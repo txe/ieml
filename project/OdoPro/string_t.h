@@ -59,10 +59,11 @@ public:
 	}
 	friend string_t operator+(const string_t& str1, const unsigned char* str2) { return string_t(str1._str + std::wstring(aux::utf2w(str2))); }
 
-	friend bool operator < (const string_t& str1, const string_t& str2) { return str1._str < str2._str; }
-	friend bool operator == (const string_t& str1, const string_t& str2) { return str1._str == str2._str; }
-	friend bool operator == (const string_t& str1, const char* str2) { return str1 == string_t(str2); }
-	friend bool operator != (const string_t& str1, const string_t& str2) { return str1._str != str2._str; }
+	friend bool operator < (const string_t& str1, const string_t& str2)    { return str1._str < str2._str; }
+	friend bool operator == (const string_t& str1, const string_t& str2)   { return str1._str == str2._str; }
+	friend bool operator == (const string_t& str1, const char* str2)       { return str1 == string_t(str2); }
+	friend bool operator != (const string_t& str1, const string_t& str2)   { return str1._str != str2._str; }
+  friend bool operator != (const string_t& str1, const char* str2)       { return str1 != string_t(str2); }
 	friend std::ostream& operator << (std::ostream& stream, const string_t& value) { return stream << (const char*)value; };
 	
 	operator const char*() const 

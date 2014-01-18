@@ -4,6 +4,7 @@
 #include "json-aux-ext.h"
 #include "logger.h"
 #include "reports/ReportStudyingSpravka.h"
+#include "reports/ReportCharacteristic.h"
 
 typedef int   (__cdecl *TGetCountOfReportsInDLL)(void);
 typedef char* (__cdecl *TGetTitleOfReportByIndex)(int);
@@ -57,6 +58,7 @@ void ManagerReports::LoadReports(void)
 	}
 	
 	_reports.push_back(new ReportStudyingSpravka("Обучающая справка (MS Word)"));
+  _reports.push_back(new ReportCharacteristic("Характеристика"));
 }
 
 // выгружает библиотеки отчетов

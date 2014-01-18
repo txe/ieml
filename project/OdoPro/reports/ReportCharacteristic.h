@@ -11,8 +11,7 @@ public:
   virtual void Run(int grpId, int studentId);
 
 private:
-
-private:
-  void GetPrivateData(r::PrivateData& data, int studentId);
-
+  void     GetBallPercent(int studentId, string_t& otlPercent, string_t& horPercent, string_t udlPercent);
+  string_t CommonItog(int studentId, bool isMale, bool isDirect);
+  string_t UrItog(int studentId, bool isMale);
 };

@@ -47,5 +47,4 @@ private:
   void GetDirectData(DirectData& data, const r::PrivateData& privData);
   void GetStudyData(StudyData& data, int studentId, bool isMale, string_t vkr_title);
   void GetDiscipData(std::vector<DiscipData>& data, int studentId);
-  string_t CurrentDate();
 };

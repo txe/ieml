@@ -79,6 +79,8 @@ namespace t
 		throw wss::exception(wss::reason_message(FULL_LOCATION(), msg.c_str()));
 	}
 	// переводит тип описания испытания + оценка в код
+  // type_est = 0 - экзамен
+  // type_est = 0 - зачет
 	inline int type2cod(const int type_est,const double ball)
 	{
 		if (type_est == 0)  // экзамен

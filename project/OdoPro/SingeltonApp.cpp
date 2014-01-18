@@ -178,11 +178,12 @@ string_t SingeltonApp::GetTitleForKeyFromVoc(VOK_KEY vkey, int num, bool no_thro
 	switch (vkey)
 	{
 	case VK_GRP:        key = "grp";        break;
+  case VK_EDUCATIONS: key = "education";  break;
 	case VK_EDUDOC:     key = "edudoc";     break;
 	case VK_SPECS:      key = "spec";       break;
 	case VK_SPEZIALIZ:  key = "specializ";  break;
 	case VK_QUALIFIC:   key = "qualific";   break;
-	case VK_DIRECT:     key = "direct";    break;
+	case VK_DIRECT:     key = "direct";     break;
 	case VK_DISCIPCLASSIFIC: key = "discipclassific"; break;
 	}
 
