@@ -73,7 +73,7 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   macros.Cell(1, 2, 1, "VerticalAlignment=wdCellAlignVerticalTop");
 
   // дата рождени€
-  macros.SelectionText("ƒата рождени€ " + privData.bornDate);
+  macros.SelectionText("ƒата рождени€ " + r::to_str_date(privData.bornDate, true));
   macros.SelectionTypeParagraph(2);
   macros.SelectionText("ƒокумент об уровне образовани€, на основании которого поступила на обучение:\n");
   macros.SelectionText(privData.prevDoc + " " + privData.prevDocYear + " год");

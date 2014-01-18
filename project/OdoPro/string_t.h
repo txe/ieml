@@ -122,6 +122,17 @@ public:
     _str += str;
     return *this;
   }
+  void replaceAll(const string_t& from, const string_t& to) 
+  {
+    if (from.empty())
+      return;
+    size_t start_pos = 0;
+    while ((start_pos = _str.find(from, start_pos)) != std::wstring::npos) 
+    {
+      _str.replace(start_pos, from.size(), to);
+      start_pos += to.size(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+    }
+  }
 };
 
 //-------------------------------------------------------------------------

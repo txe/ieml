@@ -28,7 +28,6 @@ public:
   void Cell(int tableNum, int x, int y, const string_t& param);
   void TableStyle(const EStyleBorder& style);
   //---------------------------------------------------------------------------
-  void FilterText(string_t& text);
   void Lock();    // реализуется для избежания некоторых глюков IsLarge
   void UnLock();  // 
 

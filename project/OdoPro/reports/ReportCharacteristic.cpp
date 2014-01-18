@@ -22,7 +22,7 @@ void ReportCharacteristic::Run(int grpId, int studentId)
   if (privData.grpName.subString(0,1) == "Ю")     cafedra = "предпринимательского права";
 
   string_t itog;
-  if (privData.grpName.subString(0,1) == "Ю")
+  if (privData.grpName.subString(0,1) != "Ю")
     itog = CommonItog(studentId, privData.isMale, privData.direct != "");
   else
     itog = UrItog(studentId, privData.isMale);
@@ -59,9 +59,9 @@ void ReportCharacteristic::Run(int grpId, int studentId)
 
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphJustify");
   macros.SelectionText("vbTab");
-  macros.SelectionText(fio + ", " + privData.bornDate + " года рождения, образование " + privData.prevEdu + ".\n");
+  macros.SelectionText(fio + ", " + r::GetYear(privData.bornDate) + " года рождения, образование " + privData.prevEdu + ".\n");
   macros.SelectionText("vbTab");
-  macros.FilterText(privData.prevPlace);
+  privData.prevPlace.replaceAll("\"", "\"\"");
   macros.SelectionText("Закончил" + _A + " в " + privData.prevDocYear + " году " + privData.prevPlace + ".\n");
   macros.SelectionText("vbTab");
 
@@ -134,33 +134,38 @@ double SimpleRoundTo(double x,int z=-2)
   return x*k;
 } 
 //---------------------------------------------------------------------------
-void ReportCharacteristic::GetBallPercent(int studentId, string_t& otlPercent, string_t& horPercent, string_t udlPercent)
+void ReportCharacteristic::GetBallPercent(int studentId, string_t& otlPercent, string_t& horPercent, string_t& udlPercent)
 {
-    string_t query = "set @id = " + toStr(studentId);
+  theApp.GetCon().Query("drop temporary table if exists temp_stud");
+  theApp.GetCon().Query("drop temporary table if exists temp_progress1");
+  theApp.GetCon().Query("drop temporary table if exists temp_progress2");
+  theApp.GetCon().Query("drop temporary table if exists temp_progress3");
+
+  string_t query = "set @id = " + toStr(studentId);
     
-    theApp.GetCon().Query(query);
-    theApp.GetCon().Query("CREATE TEMPORARY TABLE temp_stud TYPE = HEAP "
+  theApp.GetCon().Query(query);
+  theApp.GetCon().Query("CREATE TEMPORARY TABLE temp_stud TYPE = HEAP "
         "SELECT st.id, st.firstname, st.secondname, st.thirdname, st.znum "
         "FROM students as st "
         "WHERE  st.id = @id AND st.deleted = 0 ");
 
-    theApp.GetCon().Query("CREATE TEMPORARY TABLE temp_progress1 TYPE = HEAP "
+  theApp.GetCon().Query("CREATE TEMPORARY TABLE temp_progress1 TYPE = HEAP "
         "SELECT pr.*, st.firstname, st.secondname, st.thirdname, st.znum "
         "FROM progress as pr, temp_stud  as st "
         "WHERE  pr.idstud = st.id AND pr.deleted = 0 AND pr.estimation < 3 ");
 
-    theApp.GetCon().Query("CREATE TEMPORARY TABLE temp_progress2 TYPE = HEAP "
+  theApp.GetCon().Query("CREATE TEMPORARY TABLE temp_progress2 TYPE = HEAP "
         "SELECT idstud, iddiscip, MAX(numplansemestr) as numplansemestr "
         "FROM temp_progress1 "
         "GROUP BY idstud, iddiscip ");
 
-    theApp.GetCon().Query("CREATE TEMPORARY TABLE temp_progress3 TYPE = HEAP "
+  theApp.GetCon().Query("CREATE TEMPORARY TABLE temp_progress3 TYPE = HEAP "
         "SELECT pr1.* "
         "FROM temp_progress1 as pr1, temp_progress2 as pr2 "
         "WHERE pr1.idstud = pr2.idstud AND pr1.iddiscip = pr2.iddiscip "
         "AND pr1.numplansemestr = pr2.numplansemestr ");
 
-    mybase::MYFASTRESULT res = theApp.GetCon().Query("select idstud,secondname,firstname, thirdname, znum, "
+  mybase::MYFASTRESULT res = theApp.GetCon().Query("select idstud,secondname,firstname, thirdname, znum, "
         "sum(case  when estimation=0 then 1 else 0 end) as otl, "
         "sum(case  when estimation=1 then 1 else 0 end) as hor, "
         "sum(case  when estimation=2 then 1 else 0 end) as ud, "
@@ -169,26 +174,31 @@ void ReportCharacteristic::GetBallPercent(int studentId, string_t& otlPercent, s
         "group by idstud "
         "order by secondname ");
 
-    if (mybase::MYFASTROW	row = res.fetch_row())
-    {
-      int otlCount = row["otl"].toInt();
-      int horCount = row["hor"].toInt();
-      int udlCount = row["ud"].toInt();
+  if (mybase::MYFASTROW	row = res.fetch_row())
+  {
+    int otlCount = row["otl"].toInt();
+    int horCount = row["hor"].toInt();
+    int udlCount = row["ud"].toInt();
 
-      int count = otlCount + horCount + udlCount;
+    int count = otlCount + horCount + udlCount;
 
-      double percHOR = SimpleRoundTo(100.0*(double)horCount/(double)count, 0);
-      double percOTL = SimpleRoundTo(100.0*(double)otlCount/(double)count, 0);
-      double percUDOVL = 100.0 - percHOR - percOTL;
+    double percHOR = SimpleRoundTo(100.0*(double)horCount/(double)count, 0);
+    double percOTL = SimpleRoundTo(100.0*(double)otlCount/(double)count, 0);
+    double percUDOVL = 100.0 - percHOR - percOTL;
 
-      char str[10];
-      sprintf(str, "%4.0lf", percUDOVL);
-      udlPercent = str;
-      sprintf(str, "%4.0lf", percHOR);
-      horPercent = str;
-      sprintf(str, "%4.0lf", percOTL);
-      otlPercent = str;
-    }
+    char str[10];
+    sprintf(str, "%4.0lf", percUDOVL);
+    udlPercent = str;
+    sprintf(str, "%4.0lf", percHOR);
+    horPercent = str;
+    sprintf(str, "%4.0lf", percOTL);
+    otlPercent = str;
+  }
+
+  theApp.GetCon().Query("drop temporary table if exists temp_stud");
+  theApp.GetCon().Query("drop temporary table if exists temp_progress1");
+  theApp.GetCon().Query("drop temporary table if exists temp_progress2");
+  theApp.GetCon().Query("drop temporary table if exists temp_progress3");
 }
 //---------------------------------------------------------------------------
 string_t ReportCharacteristic::CommonItog(int studentId, bool isMale, bool isDirect)
@@ -232,7 +242,7 @@ string_t ReportCharacteristic::UrItog(int studentId, bool isMale)
     "WHERE di.deleted=0 and pr.deleted=0 and pr.idstud=" + toStr(studentId) + " and pr.iddiscip=di.id order by di.fulltitle";
   
   bool  second = false;
-  string_t itog = "Сдал" + isMale ? "" : "а";
+  string_t itog = "Сдал" + string_t(isMale ? "" : "а");
   string_t prip = " государственный экзамен по ";
 
   mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
@@ -241,8 +251,7 @@ string_t ReportCharacteristic::UrItog(int studentId, bool isMale)
     int d_class = row["idclass"].toInt();
     if (d_class == 5)  // Итоговая аттестация
     {
-      float itog_oc = aux::strtod(row["ball"]);
-      itog +=  second ? ", " : "" + prip;
+      itog += (second ? ", " : "") + prip;
       second = true;
 
       string_t title = row["fulltitle"];
@@ -251,6 +260,7 @@ string_t ReportCharacteristic::UrItog(int studentId, bool isMale)
       else
         itog += "теории государства и права";
 
+      float itog_oc = aux::strtod(row["ball"]);
       string_t ocenka = r::toOcenka(t::type2cod(0, itog_oc));
       itog += " с оценкой \"\"" + ocenka + "\"\"";
     }

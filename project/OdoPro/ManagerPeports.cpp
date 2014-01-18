@@ -139,7 +139,15 @@ void ManagerReports::CallNewReport(string_t title)
 			report = _reports[i];
 	if (!report)
 		return;
-	report->Run(theApp.GetCurrentGroupID(), theApp.GetCurrentStudentID());
+	try
+  {
+    report->Run(theApp.GetCurrentGroupID(), theApp.GetCurrentStudentID());
+  }
+  catch (...)
+  {
+    theApp.ExceptionManage();
+    MessageBox(::GetActiveWindow(), L"Произошло падение в процессе создания отчета", L"Ошибка", MB_OK | MB_ICONERROR | MB_APPLMODAL);
+  }
 }
 // вызывает отчет
 void ManagerReports::CallOldReport(string_t id)

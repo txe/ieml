@@ -77,7 +77,7 @@ void r::GetPrivateData(PrivateData& data, int studentId)
   string_t specOrProfilTag;
 
   string_t  query = string_t() +
-    "SELECT s.secondname,s.firstname,s.thirdname,s.grpid.s.bdate,s.vkr_title," \
+    "SELECT s.secondname,s.firstname,s.thirdname,s.grpid,s.bdate,s.vkr_title," \
     "s.educationid,s.edudocid,s.eduenddate,s.eduplace, s.specid,s.enterdate,s.exitdate, s.exitnum,s.sex,v.title as lang,s.edunumdiplom," \
     "s.edunumreg,s.edudatediplom,s.edudatequalif,s.directid " \
     " FROM students as s, "\
@@ -94,7 +94,7 @@ void r::GetPrivateData(PrivateData& data, int studentId)
     data.firstName  = row["firstname"];
     data.thirdName  = row["thirdname"];
     data.grpName    = theApp.GetTitleForKeyFromVoc(VK_GRP, row["grpid"].toInt(), true);
-    data.bornDate   = to_str_date(row["bdate"],true);
+    data.bornDate   = row["bdate"];
     data.vkrTitle   = row["vkr_title"];
     
     data.prevEdu       = theApp.GetTitleForKeyFromVoc(VK_EDUCATIONS, row["educationid"].toInt(), true);
