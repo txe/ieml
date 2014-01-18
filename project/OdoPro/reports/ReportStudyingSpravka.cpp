@@ -95,21 +95,23 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
     inInfo = "Поступил в " + privData.inYear + inInfo;
   else
     inInfo = "Поступила в " + privData.inYear + inInfo;
+  
   // выпустился
   string_t outInfo = " году в федеральном государственном бюджетном образовательном учреждении высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет» (заочная форма)";
   if (privData.isMale)
     outInfo = "Завершил обучение в " + privData.outYear + outInfo;
   else
     outInfo = "Завершила обучение в " + privData.outYear + outInfo;
+  
   //  или продолжает обучение
   if (stillStudying)
     if (privData.isMale)
       outInfo = "Завершил обучение в\nПродолжает обучение";
     else
       outInfo = "Завершила обучение в\nПродолжает обучение";
+  
   // дополнительниые сведения
   string_t bottomInfo;
-  // 1. о переименовании
   if (renameUniver)
     bottomInfo = "Вуз переименован в 2011 году;\nстарое полное именование вуза: Государственное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет»";
   if (stillStudying)
@@ -121,91 +123,94 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   WordMacros macros;
   macros.BeginMacros();
 
-  // заполнение первой таблицы
+  // ПЕРВАЯ СТОРОНА
+  
+  // ФИО
   macros.Cell(1, 1, 2, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.Cell(1, 1, 2, "VerticalAlignment=wdCellAlignVerticalTop");
   macros.SelectionText(privData.secondName + "\n" + privData.firstName + "\n" + privData.thirdName);
 
+  // текущая дата
+  macros.Cell(1, 4, 2, "Range.Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphCenter");
+  macros.Cell(1, 4, 2, "VerticalAlignment=wdCellAlignVerticalTop");
+  macros.Cell(1, 4, 2, "Range.Text=" + toWrap(CurrentDate()));
+
   macros.Cell(1, 2, 1, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.Cell(1, 2, 1, "VerticalAlignment=wdCellAlignVerticalTop");
-  macros.Cell(1, 2, 1, "Range.Text=" + toWrap("Дата рождения " + privData.bornDate)); // TODO просклонять
 
-  macros.Cell(1, 4, 1, "Range.Select");
-  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
-  macros.Cell(1, 4, 1, "VerticalAlignment=wdCellAlignVerticalTop");
-  macros.Cell(1, 4, 1, "Range.Text=" + toWrap(privData.prevDoc + " " + privData.prevDocYear + " год"));
-
-  macros.Cell(1, 5, 1, "Range.Select");
-  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
-  macros.Cell(1, 5, 1, "VerticalAlignment=wdCellAlignVerticalTop");
+  // дата рождения
+  macros.SelectionText("Дата рождения " + privData.bornDate);
+  macros.SelectionTypeParagraph(2);
+  macros.SelectionText("Документ об уровне образования, на основании которого поступила на обучение:\n");
+  macros.SelectionText(privData.prevDoc + " " + privData.prevDocYear + " год");
+  macros.SelectionTypeParagraph(2);
+  
+  // поступила
   macros.SelectionText(inInfo);
+  macros.SelectionTypeParagraph(2);
 
-  macros.Cell(1, 6, 1, "Range.Select");
-  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
-  macros.Cell(1, 6, 1, "VerticalAlignment=wdCellAlignVerticalTop");
+  // выпустилась
   macros.SelectionText(outInfo);
-
-  macros.Cell(1, 11, 2, "Range.Select");
-  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphCenter");
-  macros.Cell(1, 11, 2, "VerticalAlignment=wdCellAlignVerticalTop");
-  macros.Cell(1, 11, 2, "Range.Text=" + toWrap(CurrentDate()));
+  macros.SelectionTypeParagraph(2);
+  
+  macros.SelectionText("Нормативный срок обучения по очной форме 4 года");
+  macros.SelectionTypeParagraph(2);
 
   // Направление подготовки/специальность:
-  // если заполнено направление - использовать направление иначе специальности
-  macros.Cell(1, 8, 1, "Range.Select");
-  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
-  macros.Cell(1, 8, 1, "VerticalAlignment=wdCellAlignVerticalTop");
   macros.SelectionUnderlineText("Направление подготовки", privData.stroka1 == PrivateData::S1_DIRECT);
   macros.SelectionText("/");
   macros.SelectionUnderlineText("специальность", privData.stroka1 == PrivateData::S1_SPEC);
   macros.SelectionText(":");
+  macros.SelectionTypeParagraph();
 
   // значение предыдущей строки
-  macros.Cell(1, 9, 1, "Range.Select");
-  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
-  macros.Cell(1, 9, 1, "VerticalAlignment=wdCellAlignVerticalTop");
   macros.SelectionText(privData.stroka1Value);
+  macros.SelectionTypeParagraph(2);
 
   // Специализация/профиль/профильная направленность (программа):
-  macros.Cell(1, 10, 1, "Range.Select");
-  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
-  macros.Cell(1, 10, 1, "VerticalAlignment=wdCellAlignVerticalTop");
   macros.SelectionUnderlineText("Специализация", privData.stroka2 == PrivateData::S2_SPECIAL);
   macros.SelectionText("/");
   macros.SelectionUnderlineText("профиль", privData.stroka2 == PrivateData::S2_PROFIL);
   macros.SelectionText("/");
   macros.SelectionUnderlineText("профильная направленность (программа)", privData.stroka2 == PrivateData::S2_MAGISTR);
   macros.SelectionText(":");
+  macros.SelectionTypeParagraph();
 
   // значение предыдущей строки
-  macros.SelectionTypeParagraph();
   macros.SelectionText(privData.stroka2Value);
+  macros.SelectionTypeParagraph(2);
 
   // курсовые
-  macros.Cell(1, 13, 1, "Range.Select");
-  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
-  macros.Cell(1, 13, 1, "VerticalAlignment=wdCellAlignVerticalTop");
+  macros.SelectionText("Курсовые работы (проекты):\n");
+  macros.SelectionFont("Size=9");
   macros.SelectionText(studyData.kur);
+  macros.SelectionFont("Size=11");
+  macros.SelectionTypeParagraph(2);
 
-  // практика 
-  macros.Cell(1, 15, 1, "Range.Select");
-  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
-  macros.Cell(1, 15, 1, "VerticalAlignment=wdCellAlignVerticalTop");
+  // практика
+  macros.SelectionText("Практика:\n");
+  macros.SelectionFont("Size=9");
   macros.SelectionText(studyData.practic);
+  macros.SelectionFont("Size=11");
+  macros.SelectionTypeParagraph(2);
 
   // научные работы
-  macros.Cell(1, 17, 1, "Range.Select");
-  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
-  macros.Cell(1, 17, 1, "VerticalAlignment=wdCellAlignVerticalTop");
+  macros.SelectionText("Научно-исследовательская работа:\n");
+  macros.SelectionFont("Size=9");
   macros.SelectionText(studyData.sci);
+  macros.SelectionFont("Size=11");
+  macros.SelectionTypeParagraph(2);
 
   // госы
-  macros.Cell(1, 19, 1, "Range.Select");
-  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
-  macros.Cell(1, 19, 1, "VerticalAlignment=wdCellAlignVerticalTop");
+  macros.SelectionText("Государственная итоговая аттестация:\n");
+  macros.SelectionFont("Size=9");
   macros.SelectionText(studyData.gos);
+  macros.SelectionFont("Size=11");
+
+  // ВТОРАЯ СТОРОНА
 
   // заполним таблицу дисциплин
   macros.InsertLine("ActiveDocument.Tables.Item(4).Rows.Item(3).Range.Select");
@@ -224,10 +229,12 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   macros.Cell(5, 1, 1, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.Cell(5, 1, 1, "VerticalAlignment=wdCellAlignVerticalTop");
+  macros.SelectionFont("Size=9");
   macros.SelectionText(bottomInfo);
+  macros.SelectionFont("Size=11");
   
   macros.EndMacros();
-  macros.RunMacros("spravka.dot");//"spravka.doc");
+  macros.RunMacros("spravka.dot");
 }
 //-------------------------------------------------------------------------
 void ReportStudyingSpravka::GetPrivateData(PrivateData& data, int studentId)

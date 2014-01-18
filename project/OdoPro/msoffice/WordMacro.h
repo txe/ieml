@@ -20,7 +20,7 @@ public:
 	void SelectionFont(const string_t& param);
 	void SelectionText(const string_t& text);
   void SelectionUnderlineText(const string_t& text, bool underline); 
-	void SelectionTypeParagraph();
+	void SelectionTypeParagraph(int count  = 1);
 	void InsertLine(const string_t& line);
 	//---------------------------------------------------------------------------
 	void TablesAdd(int rowCount, int colCount);
