@@ -84,20 +84,38 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   std::vector<DiscipData> discData;
   GetDiscipData(discData, studentId);
 
+  bool renameUniver = privData.inYear.toInt() < 2011 || (privData.inYear.toInt() == 2011 && (privData.inMonth.toInt() < 7 || (privData.inMonth.toInt() == 7 && privData.inDay.toInt() < 8)));
+  bool stillStudying = privData.exitNum.empty();
+
   // поступил
-  string_t inS = " году в федеральное государственное бюджетное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет» (заочная форма)";
-  if (privData.inYear.toInt() < 2011 || (privData.inYear.toInt() == 2011 && (privData.inMonth.toInt() < 7 || (privData.inMonth.toInt() == 7 && privData.inDay.toInt() < 8))))
-    inS = " году в государственное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет» (заочная форма)";
+  string_t inInfo = " году в федеральное государственное бюджетное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет» (заочная форма)";
+  if (renameUniver)
+    inInfo = " году в государственное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет» (заочная форма)";
   if (privData.isMale)
-    inS = "Поступил в " + privData.inYear + inS;
+    inInfo = "Поступил в " + privData.inYear + inInfo;
   else
-    inS = "Поступила в " + privData.inYear + inS;
+    inInfo = "Поступила в " + privData.inYear + inInfo;
   // выпустился
-  string_t outS = " году в федеральном государственном бюджетном образовательном учреждении высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет» (заочная форма)";
+  string_t outInfo = " году в федеральном государственном бюджетном образовательном учреждении высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет» (заочная форма)";
   if (privData.isMale)
-    outS = "Завершил обучение в " + privData.outYear + outS;
+    outInfo = "Завершил обучение в " + privData.outYear + outInfo;
   else
-    outS = "Завершила обучение в " + privData.outYear + outS;
+    outInfo = "Завершила обучение в " + privData.outYear + outInfo;
+  //  или продолжает обучение
+  if (stillStudying)
+    if (privData.isMale)
+      outInfo = "Завершил обучение в\nПродолжает обучение";
+    else
+      outInfo = "Завершила обучение в\nПродолжает обучение";
+  // дополнительниые сведения
+  string_t bottomInfo;
+  // 1. о переименовании
+  if (renameUniver)
+    bottomInfo = "Вуз переименован в 2011 году;\nстарое полное именование вуза: Государственное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет»";
+  if (stillStudying)
+    bottomInfo.addAsParagraph("Справка выдана по требованию");
+  else
+    bottomInfo.addAsParagraph("Приказ об отчислении от " + privData.exitDate + " г. № " + privData.exitNum);
 
 
   WordMacros macros;
@@ -122,12 +140,12 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   macros.Cell(1, 5, 1, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.Cell(1, 5, 1, "VerticalAlignment=wdCellAlignVerticalTop");
-  macros.Cell(1, 5, 1, "Range.Text=" + toWrap(inS));
+  macros.SelectionText(inInfo);
 
   macros.Cell(1, 6, 1, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.Cell(1, 6, 1, "VerticalAlignment=wdCellAlignVerticalTop");
-  macros.Cell(1, 6, 1, "Range.Text=" + toWrap(outS));
+  macros.SelectionText(outInfo);
 
   macros.Cell(1, 11, 2, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphCenter");
@@ -206,7 +224,7 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   macros.Cell(5, 1, 1, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.Cell(5, 1, 1, "VerticalAlignment=wdCellAlignVerticalTop");
-  macros.SelectionText("Приказ об отчислении от " + privData.exitDate + " г. № " + privData.exitNum);
+  macros.SelectionText(bottomInfo);
   
   macros.EndMacros();
   macros.RunMacros("spravka.dot");//"spravka.doc");
@@ -326,23 +344,18 @@ void ReportStudyingSpravka::GetStudyData(StudyData& data, int studentId, bool is
     string_t ocenka  = toOcenka(row["estimation"].toInt());
 
     if (idclass == 2 || idclass == 3) // курсовые работы и проекты
-      data.kur += title + ", " + ocenka + "\n";
+      data.kur.addAsParagraph(title + ", " + ocenka);
     else if (idclass == 4) // практика
-      data.practic += title + " " + local::hours_to_str(hours) + ", " + ocenka + "\n";
+      data.practic.addAsParagraph(title + " " + local::hours_to_str(hours) + ", " + ocenka);
     else if (idclass == 8) // научно исследовательская работа
-      data.sci += title + "\n";
+      data.sci.addAsParagraph(title);
     else if (idclass == 5) // итоговая аттестация
-      data.gos += title + ", " + ocenka + "\n";
+      data.gos.addAsParagraph(title + ", " + ocenka);
     else if (idclass == 6) // выпускная квалиф. работа
       vkrGos = "Выпускная квалификационная работа на тему «" + vkr_title + "», " + ocenka + "\n";
   }
   data.gos += vkrGos; // так сделал что бы вкр был ниже всех
   
-  if (!data.kur.empty())     data.kur = data.kur.subString(0, -1);
-  if (!data.practic.empty()) data.practic = data.practic.subString(0, -1);
-  if (!data.sci.empty())     data.sci = data.sci.subString(0, -1);
-  if (!data.gos.empty())     data.gos = data.gos.subString(0, -1);
-
   if (data.kur.empty())     data.kur     = isMale ? "не выполнял" : "не выполняла";
   if (data.practic.empty()) data.practic = isMale ? "не проходил" : "не проходила";
   if (data.sci.empty())     data.sci     = isMale ? "не выполнял" : "не выполняла";

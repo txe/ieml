@@ -114,6 +114,13 @@ public:
   {
     return rtrim().ltrim();
   }
+  string_t& addAsParagraph(string_t str)
+  {
+    if (!empty())
+      _str += L"\n";
+    _str += str;
+    return *this;
+  }
 };
 
 //-------------------------------------------------------------------------
