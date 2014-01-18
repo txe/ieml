@@ -162,7 +162,8 @@ void SProgress::UpdateViewEstimForDiscip()
 	htmlayout::dom::element ball_table	= LiteWnd::link_element(_root, "prog-estim"); 
 
   // удаляем все строки
-  while (ball_table.children_count() > 2)    HTMLayoutDetachElement(ball_table.child(2));
+  while (ball_table.children_count() > 2)
+    HTMLayoutDetachElement(ball_table.child(2));
   //t::ClearTable(ball_table, 2);
 
 	long discip_id = GetIDSelectedDiscip();

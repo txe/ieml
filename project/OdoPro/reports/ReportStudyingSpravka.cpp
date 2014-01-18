@@ -293,6 +293,7 @@ void ReportStudyingSpravka::GetStudyData(StudyData& data, int studentId, bool is
   data.practic = "";
   data.gos     = "";
   data.practic = "";
+  string_t vkrGos;
 
   struct local
   {
@@ -333,10 +334,9 @@ void ReportStudyingSpravka::GetStudyData(StudyData& data, int studentId, bool is
     else if (idclass == 5) // итоговая аттестация
       data.gos += title + ", " + ocenka + "\n";
     else if (idclass == 6) // выпускная квалиф. работа
-    {
-      data.gos += "Выпускная квалификационная работа на тему «" + vkr_title + "», " + ocenka + "\n";
-    }
+      vkrGos = "Выпускная квалификационная работа на тему «" + vkr_title + "», " + ocenka + "\n";
   }
+  data.gos += vkrGos; // так сделал что бы вкр был ниже всех
   
   if (!data.kur.empty())     data.kur = data.kur.subString(0, -1);
   if (!data.practic.empty()) data.practic = data.practic.subString(0, -1);
