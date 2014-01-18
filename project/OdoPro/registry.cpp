@@ -314,7 +314,7 @@ BOOL Reg::WriteString(std::string strKeyName, std::string strValue)
 
 	if (strValue.length() > 254) return FALSE;
 
-	strcpy(sz, strValue.c_str());
+	strcpy_s(sz, strValue.c_str());
 
 	if ((m_nLastError = ::RegOpenKeyExA(m_hRootKey, m_strCurrentPath.c_str(), 0,
 		KEY_WRITE, (PHKEY)&hKey)) != ERROR_SUCCESS) 
