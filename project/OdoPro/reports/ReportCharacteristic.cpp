@@ -15,7 +15,7 @@ void ReportCharacteristic::Run(int grpId, int studentId)
 
   string_t cafedra = "???";
   if (privData.grpName.subString(0,2) == "БУ" || privData.grpName.subString(0,3) == "ЭУН") cafedra = "экономического анализа и управления недвижимостью";
-  if (privData.grpName.subString(0,2) == "МО")    cafedra = "инвестиционного менеджмента";
+  if (privData.grpName.subString(0,2) == "МО")    cafedra = "инновационного менеджмента";
   if (privData.grpName.subString(0,2) == "МР")    cafedra = "стратегического маркетинга";
   if (privData.grpName.subString(0,3) == "ПГС")   cafedra = "архитектуры/технологии строительного производства";
   if (privData.grpName.subString(0,3) == "ТГВ")   cafedra = "теплогазоснабжения";
