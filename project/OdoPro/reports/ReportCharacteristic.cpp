@@ -87,9 +87,9 @@ void ReportCharacteristic::Run(int grpId, int studentId)
   macros.SelectionText("vbTab");
 
   if (privData.direct != "")
-    macros.SelectionText("’арактеристика дана дл€ предоставлени€ в √осударственную аттестационную комиссию по защите выпускной квалификационной работы по направлению \"\"" + privData.direct + "\"\".\n");
+    macros.SelectionText("’арактеристика дана дл€ предоставлени€ в √осударственную аттестационную комиссию по направлению \"\"" + privData.direct + "\"\".\n");
   else
-    macros.SelectionText("’арактеристика дана дл€ предоставлени€ в √осударственную аттестационную комиссию по защите выпускной квалификационной работы по специальности \"\"" + privData.specOrProfil + "\"\".\n");
+    macros.SelectionText("’арактеристика дана дл€ предоставлени€ в √осударственную аттестационную комиссию по специальности \"\"" + privData.specOrProfil + "\"\".\n");
  
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.SelectionText("\n");
