@@ -21,11 +21,21 @@ void ReportCharacteristic::Run(int grpId, int studentId)
   if (privData.grpName.subString(0,3) == "ТГВ")   cafedra = "теплогазоснабжения";
   if (privData.grpName.subString(0,1) == "Ю")     cafedra = "предпринимательского права";
 
+  // хотя для некоторых групп не включено направление, но оно будет
+  bool hackGroup = 
+    privData.grpName == "ЮБ400/1" || privData.grpName == "ЮБ401/1" || privData.grpName == "ЮБ430/1" || 
+    privData.grpName == "ЮБ431/1" || privData.grpName == "ЮБ500/1" || privData.grpName == "ЮБ501/1" || privData.grpName == "ЮБ530/1";
+  if (hackGroup && privData.direct.empty())
+    privData.direct = privData.specOrProfil;
+  
+    
   string_t itog;
-  if (privData.grpName.subString(0,1) != "Ю")
-    itog = CommonItog(studentId, privData.isMale, privData.direct != "");
-  else
+  if (privData.direct != "")
+    itog = DirectItog(studentId, privData.isMale);
+  else if (privData.grpName.subString(0,1) == "Ю")
     itog = UrItog(studentId, privData.isMale);
+  else
+    itog = CommonItog(studentId, privData.isMale, privData.direct != "");
 
   string_t _A = privData.isMale ? "" : "а";
 
@@ -268,4 +278,36 @@ string_t ReportCharacteristic::UrItog(int studentId, bool isMale)
   itog +=".\n";
   return itog;
 }
+//---------------------------------------------------------------------------
+string_t ReportCharacteristic::DirectItog(int studentId, bool isMale)
+{
+  string_t query = 
+    "SELECT di.idclass,pr.ball,di.fulltitle "
+    "FROM disciplines as di, progress as pr "
+    "WHERE di.deleted=0 and pr.deleted=0 and pr.idstud=" + toStr(studentId) + " and pr.iddiscip=di.id order by di.fulltitle";
 
+  bool  second = false;
+  string_t itog = "Сдал" + string_t(isMale ? "" : "а");
+  string_t prip = " государственный экзамен по ";
+
+  mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
+  while (mybase::MYFASTROW row = res.fetch_row())
+  {
+    int d_class = row["idclass"].toInt();
+    if (d_class == 5)  // Итоговая аттестация
+    {
+      itog += (second ? ", " : "") + prip;
+      second = true;
+
+      string_t title = row["fulltitle"];
+      itog += title;
+
+      float itog_oc = aux::strtod(row["ball"]);
+      string_t ocenka = r::toOcenka(t::type2cod(0, itog_oc));
+      itog += " с оценкой \"\"" + ocenka + "\"\"";
+    }
+  }
+  itog +=".\n";
+  return itog;
+
+}
