@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="OdoPro"
 	ProjectGUID="{CC4275A9-09EF-4454-902A-C0EE1B075180}"
 	RootNamespace="OdoPro"
@@ -227,10 +227,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ManagerPeports.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\MYBASE.cpp"
 				>
 			</File>
@@ -389,10 +385,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ManagerPeports.h"
-				>
-			</File>
-			<File
 				RelativePath=".\ManagerSetting.h"
 				>
 			</File>
@@ -490,6 +482,14 @@
 		<Filter
 			Name="reports"
 			>
+			<File
+				RelativePath=".\ManagerPeports.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ManagerPeports.h"
+				>
+			</File>
 			<File
 				RelativePath=".\reports\ReportAbstract.cpp"
 				>

@@ -58,7 +58,7 @@ void ManagerReports::LoadReports(void)
 	}
 	
 	_reports.push_back(new ReportStudyingSpravka("Обучающая справка (MS Word)"));
-  _reports.push_back(new ReportCharacteristic("Характеристика"));
+  _reports.push_back(new ReportCharacteristic("Характеристика студента (MS Word)"));
 }
 
 // выгружает библиотеки отчетов
@@ -82,18 +82,26 @@ void ManagerReports::CreateMenu(void)
 	// делаем структуру меню
 	string_t buf	= "<li reports>Отчет<menu class=\"cool\">";
 	int		 count	= GetCount();
+  // старые отчеты
 	for (int i = 0; i < count; ++i)
 	{
 		string_t title	= GetTitle(i);
 		string_t id		= aux::itow(i);
 
+    if (title == "Характеристика студента (MS Word)")
+      id = "-1";
+
 		buf += string_t() +
 			"<li report id=" + id + " title=\"" + title + "\">" + title + "</li>"; 
 
 	}
+  // новые отчеты
 	for (size_t i = 0; i < _reports.size(); ++i)
 	{
 		string_t title	= _reports[i]->GetName();
+    if (title == "Характеристика студента (MS Word)")
+      continue;
+
 		buf += string_t() +
 			"<li report id=-1 title=\"" + title + "\">" + title + "</li>"; 
 	}

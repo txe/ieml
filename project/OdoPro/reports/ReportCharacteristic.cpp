@@ -288,7 +288,7 @@ string_t ReportCharacteristic::DirectItog(int studentId, bool isMale)
 
   bool  second = false;
   string_t itog = "Сдал" + string_t(isMale ? "" : "а");
-  string_t prip = " государственный экзамен по ";
+ // string_t prip = " государственный экзамен по ";
 
   mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
   while (mybase::MYFASTROW row = res.fetch_row())
@@ -296,7 +296,7 @@ string_t ReportCharacteristic::DirectItog(int studentId, bool isMale)
     int d_class = row["idclass"].toInt();
     if (d_class == 5)  // Итоговая аттестация
     {
-      itog += (second ? ", " : "") + prip;
+      itog += (second ? ", " : "");//+ prip;
       second = true;
 
       string_t title = row["fulltitle"];
