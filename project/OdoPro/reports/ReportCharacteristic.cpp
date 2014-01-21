@@ -71,8 +71,7 @@ void ReportCharacteristic::Run(int grpId, int studentId)
   macros.SelectionText("vbTab");
   macros.SelectionText(fio + ", " + r::GetYear(privData.bornDate) + " года рождения, образование " + privData.prevEdu + ".\n");
   macros.SelectionText("vbTab");
-  privData.prevPlace.replaceAll("\"", "\"\"");
-  macros.SelectionText("Закончил" + _A + " в " + privData.prevDocYear + " году " + privData.prevPlace + ".\n");
+  macros.SelectionText("Закончил" + _A + " в " + privData.prevDocYear + " году " + toQuate(privData.prevPlace) + ".\n");
   macros.SelectionText("vbTab");
 
   if (privData.direct != "")

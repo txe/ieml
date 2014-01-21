@@ -57,7 +57,7 @@ void ManagerReports::LoadReports(void)
 		throw wss::exception(wss::reason_message(FULL_LOCATION(), "неверная структура библиотеки"));
 	}
 	
-	_reports.push_back(new ReportStudyingSpravka("Обучающая справка (MS Word)"));
+	_reports.push_back(new ReportStudyingSpravka("Справка об обучении (MS Word)"));
   _reports.push_back(new ReportCharacteristic("Характеристика студента (MS Word)"));
 }
 
