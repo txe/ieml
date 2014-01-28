@@ -135,6 +135,8 @@ namespace t
 	inline string_t get_year(const string_t& date)
 	{
 		std::vector<std::wstring> result = aux::split(std::wstring(date), L'-');
+    if (result.empty())
+      return L"";
 		return result[0];
 	}
 	// переводит балл в формат из x,yz  в x.y0 для совместимости с SQL
