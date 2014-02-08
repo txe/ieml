@@ -231,10 +231,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ManagerPeports.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\MYBASE.cpp"
 				>
 			</File>
@@ -394,10 +390,6 @@
 			</File>
 			<File
 				RelativePath=".\ManagerOfActions.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ManagerPeports.h"
 				>
 			</File>
 			<File
@@ -664,6 +656,14 @@
 		<Filter
 			Name="reports"
 			>
+			<File
+				RelativePath=".\ManagerPeports.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ManagerPeports.h"
+				>
+			</File>
 			<File
 				RelativePath=".\reports\ReportAbstract.cpp"
 				>

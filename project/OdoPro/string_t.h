@@ -145,3 +145,10 @@ inline string_t toWrap(string_t str)
 {
   return "\"" + str + "\"";
 }
+//-------------------------------------------------------------------------
+inline string_t toQuate(string_t str)
+{
+  string_t str1 = str;
+  str1.replaceAll("\"", "\"\"");
+  return str1;
+}

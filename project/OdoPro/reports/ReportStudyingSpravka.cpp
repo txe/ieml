@@ -117,28 +117,28 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   // курсовые
   macros.SelectionText("Курсовые работы (проекты):\n");
   macros.SelectionFont("Size=9");
-  macros.SelectionText(studyData.kur);
+  macros.SelectionText(toQuate(studyData.kur));
   macros.SelectionFont("Size=11");
   macros.SelectionTypeParagraph(2);
 
   // практика
   macros.SelectionText("Практика:\n");
   macros.SelectionFont("Size=9");
-  macros.SelectionText(studyData.practic);
+  macros.SelectionText(toQuate(studyData.practic));
   macros.SelectionFont("Size=11");
   macros.SelectionTypeParagraph(2);
 
   // научные работы
   macros.SelectionText("Научно-исследовательская работа:\n");
   macros.SelectionFont("Size=9");
-  macros.SelectionText(studyData.sci);
+  macros.SelectionText(toQuate(studyData.sci));
   macros.SelectionFont("Size=11");
   macros.SelectionTypeParagraph(2);
 
   // госы
   macros.SelectionText("Государственная итоговая аттестация:\n");
   macros.SelectionFont("Size=9");
-  macros.SelectionText(studyData.gos);
+  macros.SelectionText(toQuate(studyData.gos));
   macros.SelectionFont("Size=11");
 
   // ВТОРАЯ СТОРОНА
@@ -237,9 +237,10 @@ void ReportStudyingSpravka::GetStudyData(StudyData& data, int studentId, bool is
     else if (idclass == 5) // итоговая аттестация
       data.gos.addAsParagraph(title + ", " + ocenka);
     else if (idclass == 6) // выпускная квалиф. работа
-      vkrGos = "Выпускная квалификационная работа на тему «" + vkr_title + "», " + ocenka + "\n";
+      vkrGos = "Выпускная квалификационная работа на тему «" + vkr_title + "», " + ocenka;
   }
-  data.gos += vkrGos; // так сделал что бы вкр был ниже всех
+  if (vkrGos != "")
+    data.gos.addAsParagraph(vkrGos); // так сделал что бы вкр был ниже всех
 
   if (data.kur.empty())     data.kur     = isMale ? "не выполнял" : "не выполняла";
   if (data.practic.empty()) data.practic = isMale ? "не проходил" : "не проходила";
