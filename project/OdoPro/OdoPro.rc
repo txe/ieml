@@ -139,11 +139,12 @@ IDR_HTML_FAST_INPUT     HTML                    "res\\fast-input.htm"
 IDR_HTML_PROGRESS_FOR_SEM HTML                  "res\\progress-for-sem.htm"
 IDR_HTML_DISCIPLINES    HTML                    "res\\discip.htm"
 TREEVIEW.CSS            HTML                    "res\\treeview.css"
-LIST-ITEM-ICON-MINUS.PNG HTML                    "res\\list-item-icon-minus.png"
+LIST-ITEM-ICON-MINUS.PNG HTML                   "res\\list-item-icon-minus.png"
 LIST-ITEM-ICON-PLUS.PNG HTML                    "res\\list-item-icon-plus.png"
 SYMBOL-HELP.PNG         HTML                    "res\\symbol-help.png"
 ARROW-RIGHT.PNG         HTML                    "res\\arrow-right.png"
 ARROW-LEFT.PNG          HTML                    "res\\arrow-left.png"
+IDR_HTML_FAST_INPUT_GAK HTML                    "res\\fast-input-gak.htm"
 #endif    // Russian resources
 /////////////////////////////////////////////////////////////////////////////
 

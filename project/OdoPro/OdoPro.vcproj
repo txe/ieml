@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="OdoPro"
 	ProjectGUID="{CC4275A9-09EF-4454-902A-C0EE1B075180}"
 	RootNamespace="OdoPro"
@@ -199,6 +199,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ActionFastInputGak.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ChangeDisc.cpp"
 				>
 			</File>
@@ -353,6 +357,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ActionFastInputGak.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ChangeDisc.h"
 				>
 			</File>
@@ -474,18 +482,184 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
-			<File
-				RelativePath=".\OdoPro.ico"
+			<Filter
+				Name="html"
+				Filter="html;htm"
 				>
-			</File>
-			<File
-				RelativePath=".\OdoPro.rc"
+				<File
+					RelativePath=".\res\buh-report.htm"
+					DeploymentContent="true"
+					>
+				</File>
+				<File
+					RelativePath=".\res\buh-report2.htm"
+					DeploymentContent="true"
+					>
+				</File>
+				<File
+					RelativePath=".\res\change-disc.htm"
+					DeploymentContent="true"
+					>
+				</File>
+				<File
+					RelativePath=".\res\change-estimation.htm"
+					DeploymentContent="true"
+					>
+				</File>
+				<File
+					RelativePath=".\res\change-sem.htm"
+					DeploymentContent="true"
+					>
+				</File>
+				<File
+					RelativePath=".\res\dictionary.htm"
+					DeploymentContent="true"
+					>
+				</File>
+				<File
+					RelativePath=".\res\discip.htm"
+					DeploymentContent="true"
+					>
+				</File>
+				<File
+					RelativePath=".\res\fast-input-gak.htm"
+					DeploymentContent="true"
+					>
+				</File>
+				<File
+					RelativePath=".\res\fast-input.htm"
+					DeploymentContent="true"
+					>
+				</File>
+				<File
+					RelativePath=".\res\main.htm"
+					DeploymentContent="true"
+					>
+				</File>
+				<File
+					RelativePath=".\res\progress-for-sem.htm"
+					DeploymentContent="true"
+					>
+				</File>
+				<File
+					RelativePath=".\res\property.htm"
+					DeploymentContent="true"
+					>
+				</File>
+				<File
+					RelativePath=".\res\statistic.htm"
+					DeploymentContent="true"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="stuff"
 				>
-			</File>
-			<File
-				RelativePath=".\small.ico"
-				>
-			</File>
+				<File
+					RelativePath=".\res\arrow-left.png"
+					>
+				</File>
+				<File
+					RelativePath=".\res\arrow-right.png"
+					>
+				</File>
+				<File
+					RelativePath=".\res\focusled.png"
+					>
+				</File>
+				<File
+					RelativePath=".\res\folder.gif"
+					>
+				</File>
+				<File
+					RelativePath=".\res\fon.jpg"
+					>
+				</File>
+				<File
+					RelativePath=".\res\group-panel.css"
+					>
+				</File>
+				<File
+					RelativePath=".\res\header-hover.png"
+					>
+				</File>
+				<File
+					RelativePath=".\res\header.png"
+					>
+				</File>
+				<File
+					RelativePath=".\res\list-item-icon-minus.png"
+					>
+				</File>
+				<File
+					RelativePath=".\res\list-item-icon-plus.png"
+					>
+				</File>
+				<File
+					RelativePath=".\res\logo.png"
+					>
+				</File>
+				<File
+					RelativePath=".\res\main-table.css"
+					>
+				</File>
+				<File
+					RelativePath=".\res\menu-bar.css"
+					>
+				</File>
+				<File
+					RelativePath=".\OdoPro.ico"
+					>
+				</File>
+				<File
+					RelativePath=".\res\ODOPro.ico"
+					>
+				</File>
+				<File
+					RelativePath=".\OdoPro.rc"
+					>
+				</File>
+				<File
+					RelativePath=".\res\progress.gif"
+					>
+				</File>
+				<File
+					RelativePath=".\small.ico"
+					>
+				</File>
+				<File
+					RelativePath=".\res\std-menu.css"
+					>
+				</File>
+				<File
+					RelativePath=".\res\stripback.png"
+					>
+				</File>
+				<File
+					RelativePath=".\res\symbol-help.png"
+					>
+				</File>
+				<File
+					RelativePath=".\res\tab-hover.png"
+					>
+				</File>
+				<File
+					RelativePath=".\res\tab.png"
+					>
+				</File>
+				<File
+					RelativePath=".\res\tabback.png"
+					>
+				</File>
+				<File
+					RelativePath=".\res\toolbarback.png"
+					>
+				</File>
+				<File
+					RelativePath=".\res\treeview.css"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="reports"

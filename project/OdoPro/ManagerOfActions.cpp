@@ -5,6 +5,7 @@
 #include "ActionChangeTypeEstimation.h"
 #include "ActionBuhReport.h"
 #include "ActionBuhReport2.h"
+#include "ActionFastInputGak.h"
 #include "StatisticDlg.h"
 #include "json-aux-ext.h"
 #include "LiteWnd.h"
@@ -59,6 +60,12 @@ BOOL CALLBACK ManagerOfActions::ElementEventProcMenu( LPVOID tag, HELEMENT he, U
 	if (aux::wcseq(id, L"load-fio"))
 	{
 		main->FioToClipBoard();
+		return TRUE;
+	}
+	if (aux::wcseq(id, L"input-gak"))
+	{
+		CActionFastInputGakDlg dlg(main->_parent);
+		dlg.DoModal();
 		return TRUE;
 	}
 	if (aux::wcseq(id, L"buh-report"))

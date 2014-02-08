@@ -1,0 +1,137 @@
+<html>
+<head>
+    <style>        
+        table
+        {
+            border: 1px solid #bdbccc;
+            overflow: auto ;
+            overflow-y:scroll;
+            overflow-x:hidden;
+            width: 100%%;
+            height: 100%%;
+            behavior: grid;
+            background-color: white;
+        }
+        table th
+        {
+            color: white;
+            font-family: "Century Gothic" , "Verdana";
+            font-size: 9pt;
+            border: none;
+            padding: 4px;
+            background-color: #DDD;
+            background-image: url(header.png);
+            background-repeat: expand stretch-left stretch-right stretch-middle;
+            background-position: 3px 3px 3px 3px;
+            
+           // overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
+            
+        }
+        table th:hover
+        {
+            color: #ffe598;
+            transition: blend;
+            background-image: url(header-hover.png);
+        }
+        table tr:nth-child(odd)
+        {
+            background-color: white;
+        }
+        table tr:nth-child(even)
+        {
+            background-color: #F4F3F9;
+        }
+       
+        table td 
+        { 
+            padding:2px; 
+            padding-left:6px;
+            font-family:"Verdana"; 
+	        font-size:8pt;  
+	        border:1pt;
+	        text-align:center;
+        }
+        table tr:current /* current row */ 
+        { 
+            background-color:#bdbccc;
+            color:black;
+        } 
+        
+        table td:nth-child(1) { font-weight:bold; text-align:center; width:10px;} /* first column */
+        /* second column */
+        table td:nth-child(2) 
+        { 
+            text-align:left;
+            overflow:hidden;        /* three line below - ellipsis */
+            text-overflow:ellipsis;
+            white-space:nowrap;
+        }
+        table td:nth-child(3)  
+        {
+        	overflow:hidden;
+        	width:100px; 
+            behavior:decimal check-ball;
+        	-format:"fdigits:2; leading-zero:false; decimal-sep:','; negative-sign:false";
+        }
+        table td:nth-child(4)  
+        {
+        	overflow:hidden;
+        	width:100px; 
+            behavior:decimal check-ball;
+        	-format:"fdigits:2; leading-zero:false; decimal-sep:','; negative-sign:false";
+        }
+        table td:nth-child(3):not(state)
+        {
+        	color:Black;
+        }
+        table td:nth-child(3)[state = "bad"]
+        {
+        	color:Red;
+        }
+        table td:nth-child(3)[state = "good"]
+        {
+        	color:Green;
+        }
+         
+        div
+        { 
+       // 	border:1px solid red;
+        }
+        
+        input:empty
+        {
+            color: #333365;
+        }
+        input[negative]
+        {
+            color: blue;
+        }
+        input[invalid]
+        {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div style="width:*;height:*">
+         <div style="padding-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">группа: <span id = "header"></span></div>
+         
+         <table id="gak-table" fixedrows="1" cellspacing="0">
+            <tr><th>№</th><th>ФИО студента</th><th>Номер протокола</th><th>Дата</th></tr>
+         </table>
+         <div style="flow:horizontal">
+            <div style="flow:grid;width:100px;white-space: nowrap;padding-top:13px">
+                <div style="left:1#;top:2#;padding:2px;vertical-align: center">Номер протокола</div>
+                <div style="left:2#;top:2#;padding:2px;"><input type="text" id="gak-value" size="20" maxlength="10" novalue="<нет значения!>" /></div>
+                <div style="left:3#;top:2#;padding:2px"><button id="bt-set" style="padding-top:2px">задать всем</button></div>  
+            </div>
+            <div align="right" style="vertical-align: bottom">
+                <div><button id="bt-save" style="padding:4px">Сохранить</button></div>
+                <div><button id="bt-close" style="padding:4px">Выход</button></div>            
+            </div>
+         </div>
+    </div>
+</body>
+</html>
