@@ -28,8 +28,4 @@ private:
 	void Save(void);
 	// задать все гак
 	void SetGak();
-	// копирует оценки в буфер
-	void CopyToBuf();
-	// втавляет оценки из буфера
-	void InsertFromBuf();
 };

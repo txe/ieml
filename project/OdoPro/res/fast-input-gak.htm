@@ -53,6 +53,14 @@
 	        border:1pt;
 	        text-align:center;
         }
+        table tr[state = "bad"]
+        {
+        	color:Red;
+        }
+        table tr:current[state = "bad"]
+        {
+        	color:Red;
+        }
         table tr:current /* current row */ 
         { 
             background-color:#bdbccc;
@@ -72,46 +80,24 @@
         {
         	overflow:hidden;
         	width:100px; 
-            behavior:decimal check-ball;
-        	-format:"fdigits:2; leading-zero:false; decimal-sep:','; negative-sign:false";
+            behavior:edit;
+        	<!-- -format:"fdigits:2; leading-zero:false; decimal-sep:','; negative-sign:false"; -->
         }
         table td:nth-child(4)  
         {
         	overflow:hidden;
-        	width:100px; 
-            behavior:decimal check-ball;
-        	-format:"fdigits:2; leading-zero:false; decimal-sep:','; negative-sign:false";
+        	width:100px;        
         }
-        table td:nth-child(3):not(state)
-        {
-        	color:Black;
-        }
-        table td:nth-child(3)[state = "bad"]
-        {
-        	color:Red;
-        }
-        table td:nth-child(3)[state = "good"]
-        {
-        	color:Green;
-        }
-         
-        div
-        { 
-       // 	border:1px solid red;
-        }
+        @set my-masked-edit < std-masked-edit  { }
+        td[type="masked"]   { style-set: my-masked-edit; }
         
-        input:empty
+        widget[type="date"]
         {
-            color: #333365;
+            min-width:min-intrinsic;
+            max-width:none;
+            width:*;
         }
-        input[negative]
-        {
-            color: blue;
-        }
-        input[invalid]
-        {
-            color: red;
-        }
+    
     </style>
 </head>
 <body>
@@ -119,7 +105,7 @@
          <div style="padding-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">группа: <span id = "header"></span></div>
          
          <table id="gak-table" fixedrows="1" cellspacing="0">
-            <tr><th>№</th><th>ФИО студента</th><th>Номер протокола</th><th>Дата</th></tr>
+            <tr><th>№</th><th>ФИО студента</th><th>Номер протокола</th><th>Дата (ГГГГ-ММ-ДД)</th></tr>
          </table>
          <div style="flow:horizontal">
             <div style="flow:grid;width:100px;white-space: nowrap;padding-top:13px">
