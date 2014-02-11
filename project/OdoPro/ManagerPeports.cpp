@@ -3,8 +3,9 @@
 #include "SingeltonApp.h"
 #include "json-aux-ext.h"
 #include "logger.h"
-#include "reports/ReportStudyingSpravka.h"
-#include "reports/ReportCharacteristic.h"
+#include "reports/Report_StudyingSpravka.h"
+#include "reports/Report_Characteristic.h"
+#include "reports/Report_Diplom.h"
 
 typedef int   (__cdecl *TGetCountOfReportsInDLL)(void);
 typedef char* (__cdecl *TGetTitleOfReportByIndex)(int);
@@ -59,6 +60,7 @@ void ManagerReports::LoadReports(void)
 	
 	_reports.push_back(new ReportStudyingSpravka("Справка об обучении (MS Word)"));
   _reports.push_back(new ReportCharacteristic("Характеристика студента (MS Word)"));
+  _reports.push_back(new ReportCharacteristic("Приложение к диплому 2014 (MS Word)"));
 }
 
 // выгружает библиотеки отчетов

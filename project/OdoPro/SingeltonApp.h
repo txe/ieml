@@ -10,7 +10,7 @@
 #include "wss_exeption.h"
 #include "ManagerSetting.h"
 #include "ManadUpdate.h"
-#include "reports/ReportAbstract.h"
+#include "reports/Report_Abstract.h"
 
 enum VOK_KEY {VK_GRP, VK_EDUCATIONS, VK_EDUDOC, VK_SPECS, VK_SPEZIALIZ, VK_QUALIFIC, VK_DIRECT, VK_DISCIPCLASSIFIC};
 

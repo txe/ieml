@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "ReportAbstract.h"
+#include "Report_Abstract.h"
 #include "../SingeltonApp.h"
 
 //---------------------------------------------------------------------------

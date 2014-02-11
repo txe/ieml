@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include <vector>
-#include "ReportStudyingSpravka.h"
+#include "Report_StudyingSpravka.h"
 #include "../SingeltonApp.h"
 
 //-------------------------------------------------------------------------

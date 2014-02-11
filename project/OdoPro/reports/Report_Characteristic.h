@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ReportAbstract.h"
+#include "Report_Abstract.h"
 #include "../msoffice/WordMacro.h"
 
 

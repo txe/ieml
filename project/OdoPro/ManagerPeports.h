@@ -2,7 +2,7 @@
 
 #include <htmlayout.h>
 #include "string_t.h"
-#include "reports/ReportAbstract.h"
+#include "reports/Report_Abstract.h"
 
 using namespace htmlayout::dom;
 

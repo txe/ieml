@@ -665,27 +665,35 @@
 				>
 			</File>
 			<File
-				RelativePath=".\reports\ReportAbstract.cpp"
+				RelativePath=".\reports\Report_Abstract.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\reports\ReportAbstract.h"
+				RelativePath=".\reports\Report_Abstract.h"
 				>
 			</File>
 			<File
-				RelativePath=".\reports\ReportCharacteristic.cpp"
+				RelativePath=".\reports\Report_Characteristic.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\reports\ReportCharacteristic.h"
+				RelativePath=".\reports\Report_Characteristic.h"
 				>
 			</File>
 			<File
-				RelativePath=".\reports\ReportStudyingSpravka.cpp"
+				RelativePath=".\reports\Report_Diplom.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\reports\ReportStudyingSpravka.h"
+				RelativePath=".\reports\Report_Diplom.h"
+				>
+			</File>
+			<File
+				RelativePath=".\reports\Report_StudyingSpravka.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\reports\Report_StudyingSpravka.h"
 				>
 			</File>
 		</Filter>
