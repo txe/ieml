@@ -60,7 +60,7 @@ void ManagerReports::LoadReports(void)
 	
 	_reports.push_back(new ReportStudyingSpravka("Справка об обучении (MS Word)"));
   _reports.push_back(new ReportCharacteristic("Характеристика студента (MS Word)"));
-  _reports.push_back(new ReportCharacteristic("Приложение к диплому 2014 (MS Word)"));
+  _reports.push_back(new ReportDiplom("Приложение к диплому 2014 (MS Word)"));
 }
 
 // выгружает библиотеки отчетов
