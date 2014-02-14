@@ -92,7 +92,7 @@ public:
 	{
     return _str.substr(begin, count < 0 ? _str.size() + count : count);
 	}
-	int toInt()
+	int toInt() const
 	{
 		return aux::wtoi(_str.c_str());
 	}

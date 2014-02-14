@@ -13,6 +13,7 @@ private:
     string_t title1;
     string_t title2;
     string_t title3;
+    string_t bottomInfo;
   };
   struct Discip
   {

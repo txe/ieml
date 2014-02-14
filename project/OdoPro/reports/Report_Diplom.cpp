@@ -50,6 +50,10 @@ void ReportDiplom::Run(int grpId, int studentId)
   macros.Cell(1, 15, 9, "Range.Select");
   macros.SelectionText(dirData.title3);
 
+  // дополнительная информация
+  macros.Cell(1, 11, 3, "Range.Select");
+  macros.SelectionText(dirData.bottomInfo);
+
   // курсовые работы
   for (int i = 0; i < (int)cursDiscip.size(); ++i)
   {
@@ -60,7 +64,7 @@ void ReportDiplom::Run(int grpId, int studentId)
   }
 
   // обычные дисциплины на первой таблице
-  int rowCount = 53;  // всего строк в первой таблице
+  int rowCount = 54;  // всего строк в первой таблице
   int usedDiscip = 0; // сколько на самом деле добавили дисциплин в первую таблицу
   for (int i = 0; i < (int)commonDiscip.size() && rowCount > 0; ++i)
   {
@@ -144,6 +148,16 @@ void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& priv
   else if (tag == "бак1" || tag == "бак") dirData.title3 = "4 года";
   else if (tag == "маг")                  dirData.title3 = "2 года";
   else                                    dirData.title3 = "xxxx лет";
+
+  // дополнительная информация
+  bool renameUniver = privData.inYear.toInt() < 2011 || (privData.inYear.toInt() == 2011 && (privData.inMonth.toInt() < 7 || (privData.inMonth.toInt() == 7 && privData.inDay.toInt() < 8)));
+  if (renameUniver)
+  {
+    dirData.bottomInfo = L"Образовательная организация переименована в 2011 году.";
+    dirData.bottomInfo += L"\nСтарое полное официальное наименование образовательной организации – Государственное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет».";
+    dirData.bottomInfo += L"\nФорма обучения: заочная.\n";
+  }
+  dirData.bottomInfo += L"Часть образовательной программы в объеме ? недель освоена в ?.";
 }
 //-------------------------------------------------------------------------
 void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip, std::vector<Discip>& commonDiscip, std::vector<Discip>& specDiscip, string_t lang, string_t vkrTitle)
@@ -151,6 +165,7 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
   std::vector<Discip> practice; // практики
   std::vector<Discip> itog;     // гос. аттестации
   Discip              vkrWork("", "", "");  // ВКР
+  int                 practiceWeeks = 0;
 
   string_t query = string_t() +
     "SELECT di.fulltitle, di.num_hours, di.idclass, pr.estimation, pr.ball "
@@ -165,7 +180,7 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
     string_t       hours   = row["num_hours"];
     string_t       ocenka  = r::toOcenka(row["estimation"].toInt());
 
-    if (idclass == r::DT_CURSE_WORK)
+    if (idclass == r::DT_CURSE_WORK || idclass == r::DT_CURSE_PRACTICE)
       cursDiscip.push_back(Discip(title, "", ocenka));
     if (idclass == r::DT_COMMON)
     {
@@ -174,21 +189,24 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
       commonDiscip.push_back(Discip(title, hours + " час.", ocenka));
     }
     if (idclass == r::DT_PRACTICE)
+    {
       practice.push_back(Discip(title, r::weeks_to_str(hours), ocenka));
+      practiceWeeks += hours.toInt();
+    }
     if (idclass == r::DT_ITOG_ATESTACIA)
-      itog.push_back(Discip(title, L"x", ocenka));
+      itog.push_back(Discip(title, "х", ocenka));
     if (idclass == r::DT_KVALIFIC_WORK)
-      vkrWork = Discip("выпускная квалификационная работа – дипломная работа на тему «" + vkrTitle + "»", "x", ocenka);
+      vkrWork = Discip("выпускная квалификационная работа – дипломная работа на тему «" + vkrTitle + "»", "х", ocenka);
   }
 
   // сформируем specDiscip
   // практики
-  specDiscip.push_back(Discip("Практики", "?", "x"));
+  specDiscip.push_back(Discip("Практики", r::weeks_to_str(toStr(practiceWeeks)), "x"));
   specDiscip.push_back(Discip("в том числе:", "", ""));
   for (size_t i = 0; i < practice.size(); ++i)
     specDiscip.push_back(practice[i]);
   // гос. аттестация
-  specDiscip.push_back(Discip("Государственная итоговая аттестация", "?", "x"));
+  specDiscip.push_back(Discip("Государственная итоговая аттестация", "??", "x"));
   specDiscip.push_back(Discip("в том числе:", "", ""));
   for (size_t i = 0; i < itog.size(); ++i)
     specDiscip.push_back(itog[i]);
