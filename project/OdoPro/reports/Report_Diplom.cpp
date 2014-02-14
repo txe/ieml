@@ -169,7 +169,7 @@ int ReportDiplom::PrepareDiscipTitle(string_t& title, int symbolMax)
       if (title[i] == L' ' || title[i] == L'(')
       {
         lines.push_back(title.subString(0, i));
-        title = title.subString(i+1, -1);
+        title = title.subString(i, -1);
         break;
       }
   }
