@@ -28,5 +28,5 @@ public:
 
 private:
   void GetDirectData(DirectData& dirData, const r::PrivateData& privData);
-  void GetCursDicip(std::vector<Discip>& cursDiscip, int studentId);
+  void GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip, std::vector<Discip>& commonDiscip, std::vector<Discip>& specDiscip);
 };

@@ -55,6 +55,34 @@ string_t r::to_digital_date(string_t sqlDate)
   }
   return res;
 }
+//-------------------------------------------------------------------------
+string_t r::hours_to_str(string_t hours)
+{
+  int num = hours.toInt();
+  if (num >= 5 && num <= 20)       hours += " часов"; // исключение из правил
+  else
+  {
+    num %= 10;
+    if (num == 1)                  hours += " час";
+    else if (num >= 2 && num <= 4) hours += " часа";
+    else                           hours += " часов";
+  }
+  return hours;
+}
+//-------------------------------------------------------------------------
+string_t r::weeks_to_str(string_t weeks)
+{
+  int num = weeks.toInt();
+  if (num >= 5 && num <= 20)       weeks += " недель"; // исключение из правил
+  else
+  {
+    num %= 10;
+    if (num == 1)                  weeks += " неделя";
+    else if (num >= 2 && num <= 4) weeks += " недели";
+    else                           weeks += " недель";
+  }
+  return weeks;
+}
 //---------------------------------------------------------------------------
 string_t r::GetCurrentDate()
 {

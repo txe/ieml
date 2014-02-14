@@ -15,9 +15,20 @@ private:
 
 namespace r
 {
+  enum DISCIP_TYPE { DT_COMMON = 1,         // общие дисциплины
+                     DT_CURSE_WORK = 2,     //  курсовые работы
+                     DT_CURSE_PRACTICE = 3, // курсовая практика
+                     DT_PRACTICE = 4,       // практика
+                     DT_ITOG_ATESTACIA = 5, // итоговая атестация
+                     DT_KVALIFIC_WORK = 6,  // выпускная квалификационная работа
+                     DT_DOPOLNIT = 7,       // дополнительно
+                     DT_SCI_WORK = 8        // научно-исследовательская рабоа
+  };
 //-------------------------------------------------------------------------
   string_t to_str_date(string_t sqlDate, bool isYear = false);
   string_t to_digital_date(string_t sqlDate);
+  string_t hours_to_str(string_t hours);
+  string_t weeks_to_str(string_t weeks);
   
   inline string_t GetYear(string_t sqlDate)  { return sqlDate.subString(0,4); }
   inline string_t GetMonth(string_t sqlDate) { return sqlDate.subString(5,2); }

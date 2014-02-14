@@ -11,7 +11,9 @@ void ReportDiplom::Run(int grpId, int studentId)
   DirectData dirData;
   GetDirectData(dirData, privData);
   std::vector<Discip> cursDiscip;
-  GetCursDicip(cursDiscip, studentId);
+  std::vector<Discip> commonDiscip;
+  std::vector<Discip> specDiscip;
+  GetDiscipInfo(studentId, cursDiscip, commonDiscip, specDiscip);
 
   WordMacros macros;
   macros.BeginMacros();
@@ -49,12 +51,22 @@ void ReportDiplom::Run(int grpId, int studentId)
   macros.SelectionText(dirData.title3);
 
   // курсовые работы
-  for (int i = 0; i < cursDiscip.size(); ++i)
+  for (int i = 0; i < (int)cursDiscip.size(); ++i)
   {
-    macros.CellCell(1, 3, 2, i + 1, 1,  "Select");
-    macros.SelectionText(toQuate(cursDiscip[i].title));
-    macros.CellCell(1, 3, 2, i + 1, 2,  "Select");
-    macros.SelectionText(cursDiscip[i].ocenka);
+     macros.CellCell(1, 3, 2, i + 1, 1, "Select");
+     macros.SelectionText(toQuate(cursDiscip[i].title));
+     macros.CellCell(1, 3, 2, i + 1, 2, "Select");
+     macros.SelectionText(cursDiscip[i].ocenka);
+  }
+  // обычные дисциплины
+  for (int i = 0; i < (int)commonDiscip.size(); ++i)
+  {
+    macros.CellCell(2, 3, 2, i + 1, 1, "Select");
+    macros.SelectionText(toQuate(commonDiscip[i].title));
+    macros.CellCell(2, 3, 2, i + 1, 2, "Select");
+    macros.SelectionText(commonDiscip[i].period);
+    macros.CellCell(2, 3, 2, i + 1, 3, "Select");
+    macros.SelectionText(commonDiscip[i].ocenka);
   }
 
   macros.EndMacros();
@@ -105,7 +117,7 @@ void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& priv
   else                                    dirData.title3 = "xxxx лет";
 }
 //-------------------------------------------------------------------------
-void ReportDiplom::GetCursDicip(std::vector<Discip>& cursDiscip, int studentId)
+void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip, std::vector<Discip>& commonDiscip, std::vector<Discip>& specDiscip)
 {
   string_t query = string_t() +
     "SELECT di.fulltitle, di.num_hours, di.idclass, pr.estimation, pr.ball "
@@ -115,12 +127,14 @@ void ReportDiplom::GetCursDicip(std::vector<Discip>& cursDiscip, int studentId)
   mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
   while (mybase::MYFASTROW	row = res.fetch_row())
   {
-    int      idclass = row["idclass"].toInt();
-    string_t title   = row["fulltitle"];
-    string_t hours   = row["num_hours"];
-    string_t ocenka  = r::toOcenka(row["estimation"].toInt());
+    r::DISCIP_TYPE idclass = (r::DISCIP_TYPE)row["idclass"].toInt();
+    string_t       title   = row["fulltitle"];
+    string_t       hours   = row["num_hours"];
+    string_t       ocenka  = r::toOcenka(row["estimation"].toInt());
 
-    if (idclass == 2) // курсовые работы
+    if (idclass == r::DT_CURSE_WORK)
       cursDiscip.push_back(Discip(title, "", ocenka));
+    if (idclass == r::DT_COMMON)
+      commonDiscip.push_back(Discip(title, hours + " час.", ocenka));
   }
 }

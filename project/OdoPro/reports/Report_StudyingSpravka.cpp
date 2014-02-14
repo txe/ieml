@@ -198,23 +198,6 @@ void ReportStudyingSpravka::GetStudyData(StudyData& data, int studentId, bool is
   data.practic = "";
   string_t vkrGos;
 
-  struct local
-  {
-    static string_t hours_to_str(string_t hours)
-    {
-      int num = hours.toInt();
-      if (num >= 5 && num <= 20) hours += " часов"; // исключение из правил
-      else
-      {
-        num %= 10;
-        if (num == 1) hours += " час";
-        else if (num >= 2 && num <= 4) hours += " часа";
-        else hours += " часов";
-      }
-      return hours;
-    }
-  };
-
   string_t query = string_t() +
     "SELECT di.fulltitle, di.num_hours, di.idclass, pr.estimation, pr.ball "
     "FROM disciplines as di, progress as pr "
@@ -231,7 +214,7 @@ void ReportStudyingSpravka::GetStudyData(StudyData& data, int studentId, bool is
     if (idclass == 2 || idclass == 3) // курсовые работы и проекты
       data.kur.addAsParagraph(title + ", " + ocenka);
     else if (idclass == 4) // практика
-      data.practic.addAsParagraph(title + " " + local::hours_to_str(hours) + ", " + ocenka);
+      data.practic.addAsParagraph(title + " " + r::hours_to_str(hours) + ", " + ocenka);
     else if (idclass == 8) // научно исследовательская работа
       data.sci.addAsParagraph(title);
     else if (idclass == 5) // итоговая аттестация
