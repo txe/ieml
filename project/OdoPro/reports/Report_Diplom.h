@@ -28,6 +28,6 @@ public:
 
 private:
   void GetDirectData(DirectData& dirData, const r::PrivateData& privData);
-  void GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip, std::vector<Discip>& commonDiscip, std::vector<Discip>& specDiscip);
+  void GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip, std::vector<Discip>& commonDiscip, std::vector<Discip>& specDiscip, string_t lang, string_t vkrTitle);
   int  PrepareDiscipTitle(string_t& title, int symbolMax);
 };

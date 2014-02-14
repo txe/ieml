@@ -13,7 +13,7 @@ void ReportDiplom::Run(int grpId, int studentId)
   std::vector<Discip> cursDiscip;
   std::vector<Discip> commonDiscip;
   std::vector<Discip> specDiscip;
-  GetDiscipInfo(studentId, cursDiscip, commonDiscip, specDiscip);
+  GetDiscipInfo(studentId, cursDiscip, commonDiscip, specDiscip, privData.lang, privData.vkrTitle);
 
   WordMacros macros;
   macros.BeginMacros();
@@ -86,6 +86,17 @@ void ReportDiplom::Run(int grpId, int studentId)
     macros.SelectionText(commonDiscip[i].ocenka);
     ++curRow;
   }
+  // остальные данные
+  for (int i = 0; i < (int)specDiscip.size(); ++i)
+  {
+    macros.CellCell(2, 2, 7, curRow, 1, "Select");
+    macros.SelectionText(toQuate(specDiscip[i].title));
+    macros.CellCell(2, 2, 7, curRow, 2, "Select");
+    macros.SelectionText(specDiscip[i].period);
+    macros.CellCell(2, 2, 7, curRow, 3, "Select");
+    macros.SelectionText(specDiscip[i].ocenka);
+    ++curRow;
+  }
 
   macros.EndMacros();
   macros.RunMacros("diplom-2014.dot");
@@ -135,8 +146,12 @@ void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& priv
   else                                    dirData.title3 = "xxxx лет";
 }
 //-------------------------------------------------------------------------
-void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip, std::vector<Discip>& commonDiscip, std::vector<Discip>& specDiscip)
+void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip, std::vector<Discip>& commonDiscip, std::vector<Discip>& specDiscip, string_t lang, string_t vkrTitle)
 {
+  std::vector<Discip> practice; // практики
+  std::vector<Discip> itog;     // гос. аттестации
+  Discip              vkrWork("", "", "");  // ВКР
+
   string_t query = string_t() +
     "SELECT di.fulltitle, di.num_hours, di.idclass, pr.estimation, pr.ball "
     "FROM disciplines as di, progress as pr "
@@ -153,8 +168,35 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
     if (idclass == r::DT_CURSE_WORK)
       cursDiscip.push_back(Discip(title, "", ocenka));
     if (idclass == r::DT_COMMON)
+    {
+      if (title.toUpper().trim() == string_t(L"ИНОСТРАННЫЙ ЯЗЫК"))
+        title += " (" + lang + ")";
       commonDiscip.push_back(Discip(title, hours + " час.", ocenka));
+    }
+    if (idclass == r::DT_PRACTICE)
+      practice.push_back(Discip(title, r::weeks_to_str(hours), ocenka));
+    if (idclass == r::DT_ITOG_ATESTACIA)
+      itog.push_back(Discip(title, L"x", ocenka));
+    if (idclass == r::DT_KVALIFIC_WORK)
+      vkrWork = Discip("выпускная квалификационная работа – дипломная работа на тему «" + vkrTitle + "»", "x", ocenka);
   }
+
+  // сформируем specDiscip
+  // практики
+  specDiscip.push_back(Discip("Практики", "?", "x"));
+  specDiscip.push_back(Discip("в том числе:", "", ""));
+  for (size_t i = 0; i < practice.size(); ++i)
+    specDiscip.push_back(practice[i]);
+  // гос. аттестация
+  specDiscip.push_back(Discip("Государственная итоговая аттестация", "?", "x"));
+  specDiscip.push_back(Discip("в том числе:", "", ""));
+  for (size_t i = 0; i < itog.size(); ++i)
+    specDiscip.push_back(itog[i]);
+  if (!vkrWork.title.empty())
+    specDiscip.push_back(vkrWork);
+
+  specDiscip.push_back(Discip("Общая трудоемкость образовательной программы", "260 недель", "x"));
+  specDiscip.push_back(Discip("в том числе объем работы обучающихся во взаимодействии с преподавателем:", "800 час.", "x"));
 }
 //-------------------------------------------------------------------------
 // разобьет на строки и вернет сколько строк займет
