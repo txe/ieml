@@ -37,9 +37,11 @@ namespace r
     string_t secondName, firstName, thirdName, grpName, bornDate;
     string_t prevEdu, prevDoc, prevDocYear, prevPlace; 
     string_t inYear, inMonth, inDay, outYear, outMonth, outDay, exitDate, exitNum;
-    string_t vkrTitle, specOrProfil, specializ, qualific, lang;
+    string_t vkrTitle, specOrProfil, specializ, qualific, lang, shifrspec;
     string_t diplomNum, regNum, dataVidachi, dataQualific, direct;
     bool     isMale, isMagister;
+    bool     isOtlDiplom;
+    string_t specOrProfilTag;
   };
   void GetPrivateData(PrivateData& data, int studentId);
 

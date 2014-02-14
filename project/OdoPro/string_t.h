@@ -92,11 +92,22 @@ public:
 	{
 		return aux::wtoi(_str.c_str());
 	}
-  string_t toUpper()
+  string_t toUpper() const
   {
     std::wstring str = _str;
     for (std::wstring::iterator it = str.begin(); it != str.end(); ++it)
       *it = towupper(*it);
+    return str;
+  }
+  string_t toUpperFirst() const
+  {
+    return subString(0, 1).toUpper() + subString(1, -1);
+  }
+  string_t toLower() const
+  {
+    std::wstring str = _str;
+    for (std::wstring::iterator it = str.begin(); it != str.end(); ++it)
+      *it = towlower(*it);
     return str;
   }
   string_t rtrim()

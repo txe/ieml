@@ -74,12 +74,10 @@ void r::GetPrivateData(PrivateData& data, int studentId)
   data.regNum = data.dataVidachi = data.dataQualific = "00.00.0000";
   data.isMagister = false;
 
-  string_t specOrProfilTag;
-
   string_t  query = string_t() +
     "SELECT s.secondname,s.firstname,s.thirdname,s.grpid,s.bdate,s.vkr_title," \
-    "s.educationid,s.edudocid,s.eduenddate,s.eduplace, s.specid,s.enterdate,s.exitdate, s.exitnum,s.sex,v.title as lang,s.edunumdiplom," \
-    "s.edunumreg,s.edudatediplom,s.edudatequalif,s.directid " \
+    "s.educationid,s.edudocid,s.eduenddate,s.eduplace, s.specid,s.enterdate,s.exitdate, s.exitnum,s.sex,v.title as lang, s.edunumdiplom, " \
+    "s.edunumreg,s.edudatediplom,s.edudatequalif,s.directid,s.edudiplomotl " \
     " FROM students as s, "\
     " voc as v where s.deleted=0 and v.deleted=0 and s.id=" + aux::itow(studentId) + 
     " and s.languageid=v.num and v.vkey=\"language\"";
@@ -102,7 +100,7 @@ void r::GetPrivateData(PrivateData& data, int studentId)
     data.prevDocYear   = GetYear(row["eduenddate"]);
     data.prevPlace     = row["eduplace"];
     
-    data.specOrProfil  = theApp.GetTitleForKeyFromVoc(VK_SPECS, row["specid"].toInt(), true, &specOrProfilTag);
+    data.specOrProfil  = theApp.GetTitleForKeyFromVoc(VK_SPECS, row["specid"].toInt(), true, &data.specOrProfilTag);
     data.specializ  = theApp.GetTitleForKeyFromVoc(VK_SPEZIALIZ, row["specid"].toInt(), true);
     data.qualific   = theApp.GetTitleForKeyFromVoc(VK_QUALIFIC, row["specid"].toInt(), true);
     data.direct     = theApp.GetTitleForKeyFromVoc(VK_DIRECT, row["directid"].toInt(), true);
@@ -116,12 +114,14 @@ void r::GetPrivateData(PrivateData& data, int studentId)
     data.exitNum    = row["exitnum"];
     data.isMale     = row["sex"] != string_t("Ж") && row["sex"] != string_t("ж");
     data.lang       = row["lang"];
+    data.isOtlDiplom = row["edudiplomotl"] == "1";
 
-    data.diplomNum = row["edunumdiplom"];
-    data.regNum    = row["edunumreg"];
-    data.dataVidachi = to_str_date(row["edudatediplom"]);
+    data.diplomNum    = row["edunumdiplom"];
+    data.regNum       = row["edunumreg"];
+    data.dataVidachi  = to_str_date(row["edudatediplom"]);
     data.dataQualific = to_str_date(row["edudatequalif"]);
+    data.shifrspec    = theApp.GetTitleForKeyFromVoc(VK_SHIFRSPEC, row["specid"].toInt(), true);
 
-    data.isMagister = specOrProfilTag.toUpper().trim() == "маг";
+    data.isMagister = data.specOrProfilTag.toLower().trim() == "маг";
   }
 }

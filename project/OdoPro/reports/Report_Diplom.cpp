@@ -8,6 +8,10 @@ void ReportDiplom::Run(int grpId, int studentId)
 {
   r::PrivateData privData;
   r::GetPrivateData(privData, studentId);
+  DirectData dirData;
+  GetDirectData(dirData, privData);
+  std::vector<Discip> cursDiscip;
+  GetCursDicip(cursDiscip, studentId);
 
   WordMacros macros;
   macros.BeginMacros();
@@ -23,7 +27,100 @@ void ReportDiplom::Run(int grpId, int studentId)
   // дата рождения
   macros.Cell(1, 6, 8, "Range.Select");
   macros.SelectionText(r::to_str_date(privData.bornDate, true));
-  
+
+  // аттестат
+  macros.Cell(1, 8, 6, "Range.Select");
+  macros.SelectionText(privData.prevDoc.toUpperFirst() + " " + privData.prevDocYear + " год");
+
+  // текущая дата
+  macros.Cell(1, 15, 7, "Range.Select");
+  macros.SelectionText(r::GetCurrentDate());
+
+  // специалиста (специалиста с отличием, бакалавра, бакалавра с отличием)
+  macros.Cell(1, 9, 4, "Range.Select");
+  macros.SelectionText(dirData.title1);
+
+  // по специальности, по направлению
+  macros.Cell(1, 11, 7, "Range.Select");
+  macros.SelectionText(dirData.title2);
+
+  // сколько обучался
+  macros.Cell(1, 15, 9, "Range.Select");
+  macros.SelectionText(dirData.title3);
+
+  // курсовые работы
+  for (int i = 0; i < cursDiscip.size(); ++i)
+  {
+    macros.CellCell(1, 3, 2, i + 1, 1,  "Select");
+    macros.SelectionText(toQuate(cursDiscip[i].title));
+    macros.CellCell(1, 3, 2, i + 1, 2,  "Select");
+    macros.SelectionText(cursDiscip[i].ocenka);
+  }
+
   macros.EndMacros();
   macros.RunMacros("diplom-2014.dot");
+}
+//-------------------------------------------------------------------------
+void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& privData)
+{
+  bool isBachelor = privData.specOrProfilTag != "";
+  
+  // специалиста, специалиста с отличием, бакалавра, бакалавра с отличием
+  if (isBachelor && privData.isOtlDiplom)   dirData.title1 = L"бакалавра с отличием";
+  if (isBachelor && !privData.isOtlDiplom)  dirData.title1 = L"бакалавра";
+  if (!isBachelor && privData.isOtlDiplom)  dirData.title1 = L"специалиста с отличием";
+  if (!isBachelor && !privData.isOtlDiplom) dirData.title1 = L"специалиста";
+
+  /*
+  ВАРИАНТ 1
+  юрист (qualific)
+  по специальности (если в разделе spec отсутствуют какие-либо теги) 
+  030501.65 (shifrspec) Юриспруденция (spec) 
+  ВАРИАНТ 2
+  бакалавр юриспруденции (qualific)
+  по направлению подготовки (если в таблице spec есть тег «бак», «бак1», «маг») 
+  030500.62 (shifrspec) Юриспруденция (из таблицы spec – для тега «бак1»; из таблицы direct – для тегов «бак» и «маг»)
+  Всё заполняется строчными (маленькими) буквами, кроме первой буквы в наименовании специальности/направления подготовки, на отдельных строках
+  */
+  if (!isBachelor)
+  {
+    dirData.title2 = privData.qualific.toLower();
+    dirData.title2 += "\nпо специальности\n";
+    dirData.title2 += privData.shifrspec + " " + privData.specOrProfil.toUpperFirst();
+  }
+  else
+  {
+    string_t spec = privData.specOrProfil;
+    if (privData.specOrProfilTag.toLower().trim() != "бак1")
+      spec = privData.direct;
+    dirData.title2 = privData.qualific.toLower();
+    dirData.title2 += "\nпо направлению подготовки\n";
+    dirData.title2 += privData.shifrspec + " " + spec.toUpperFirst();
+  }
+
+  string_t tag = privData.specOrProfilTag.toLower();
+  if (tag.empty())                        dirData.title3 = "5 лет";
+  else if (tag == "бак1" || tag == "бак") dirData.title3 = "4 года";
+  else if (tag == "маг")                  dirData.title3 = "2 года";
+  else                                    dirData.title3 = "xxxx лет";
+}
+//-------------------------------------------------------------------------
+void ReportDiplom::GetCursDicip(std::vector<Discip>& cursDiscip, int studentId)
+{
+  string_t query = string_t() +
+    "SELECT di.fulltitle, di.num_hours, di.idclass, pr.estimation, pr.ball "
+    "FROM disciplines as di, progress as pr "
+    "WHERE di.deleted=0 and pr.deleted=0 and pr.idstud=" + aux::itow(studentId) + " and pr.iddiscip=di.id "
+    "ORDER BY di.scan_number";
+  mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
+  while (mybase::MYFASTROW	row = res.fetch_row())
+  {
+    int      idclass = row["idclass"].toInt();
+    string_t title   = row["fulltitle"];
+    string_t hours   = row["num_hours"];
+    string_t ocenka  = r::toOcenka(row["estimation"].toInt());
+
+    if (idclass == 2) // курсовые работы
+      cursDiscip.push_back(Discip(title, "", ocenka));
+  }
 }
