@@ -58,15 +58,33 @@ void ReportDiplom::Run(int grpId, int studentId)
      macros.CellCell(1, 3, 2, i + 1, 2, "Select");
      macros.SelectionText(cursDiscip[i].ocenka);
   }
-  // обычные дисциплины
-  for (int i = 0; i < (int)commonDiscip.size(); ++i)
+
+  // обычные дисциплины на первой таблице
+  int rowCount = 53;  // всего строк в первой таблице
+  int usedDiscip = 0; // сколько на самом деле добавили дисциплин в первую таблицу
+  for (int i = 0; i < (int)commonDiscip.size() && rowCount > 0; ++i)
   {
+    usedDiscip++;
+    rowCount -= PrepareDiscipTitle(commonDiscip[i].title, 63);
+
     macros.CellCell(2, 3, 2, i + 1, 1, "Select");
     macros.SelectionText(toQuate(commonDiscip[i].title));
     macros.CellCell(2, 3, 2, i + 1, 2, "Select");
     macros.SelectionText(commonDiscip[i].period);
     macros.CellCell(2, 3, 2, i + 1, 3, "Select");
     macros.SelectionText(commonDiscip[i].ocenka);
+  }
+  // обычные дисциплины во второй таблице
+  int curRow = 1;
+  for (int i = usedDiscip; i < (int)commonDiscip.size(); ++i)
+  {
+    macros.CellCell(2, 2, 7, curRow, 1, "Select");
+    macros.SelectionText(toQuate(commonDiscip[i].title));
+    macros.CellCell(2, 2, 7, curRow, 2, "Select");
+    macros.SelectionText(commonDiscip[i].period);
+    macros.CellCell(2, 2, 7, curRow, 3, "Select");
+    macros.SelectionText(commonDiscip[i].ocenka);
+    ++curRow;
   }
 
   macros.EndMacros();
@@ -137,4 +155,29 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
     if (idclass == r::DT_COMMON)
       commonDiscip.push_back(Discip(title, hours + " час.", ocenka));
   }
+}
+//-------------------------------------------------------------------------
+// разобьет на строки и вернет сколько строк займет
+int ReportDiplom::PrepareDiscipTitle(string_t& title, int symbolMax)
+{
+  if ((int)title.size() <= symbolMax)
+    return 1;
+  std::vector<string_t> lines;
+  while ((int)title.size() > symbolMax)
+  {
+    for (int i = symbolMax - 1; i >= 0; --i)
+      if (title[i] == L' ' || title[i] == L'(')
+      {
+        lines.push_back(title.subString(0, i));
+        title = title.subString(i+1, -1);
+        break;
+      }
+  }
+  if (!title.empty())
+    lines.push_back(title);
+
+  title = lines[0];
+  for (size_t i = 1; i < lines.size(); ++i)
+    title += L"\n" + lines[i];
+  return lines.size();
 }

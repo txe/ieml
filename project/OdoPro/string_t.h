@@ -66,6 +66,10 @@ public:
   friend bool operator != (const string_t& str1, const char* str2)       { return str1 != string_t(str2); }
 	friend std::ostream& operator << (std::ostream& stream, const string_t& value) { return stream << (const char*)value; };
 	
+  const wchar_t& operator [](int index) const
+  {
+    return _str[index];
+  }
 	operator const char*() const 
 	{
 		_buf = aux::w2a(_str.c_str());
