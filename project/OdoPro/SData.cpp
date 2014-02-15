@@ -45,6 +45,18 @@ void SData::Init(htmlayout::dom::element root)
 	table_ege_discip_	= LiteWnd::link_element(root_, "table-ege-discip");
 	ege_ball_			= LiteWnd::link_element(root_, "ege-ball");
 
+    perevod_nums_.push_back(LiteWnd::link_element(root_, "perevod-num-2"));
+	perevod_nums_.push_back(LiteWnd::link_element(root_, "perevod-num-3"));
+	perevod_nums_.push_back(LiteWnd::link_element(root_, "perevod-num-4"));
+	perevod_nums_.push_back(LiteWnd::link_element(root_, "perevod-num-5"));
+	perevod_nums_.push_back(LiteWnd::link_element(root_, "perevod-num-6"));
+
+	perevod_dates_.push_back(LiteWnd::link_element(root_, "perevod-date-2"));
+	perevod_dates_.push_back(LiteWnd::link_element(root_, "perevod-date-3"));
+	perevod_dates_.push_back(LiteWnd::link_element(root_, "perevod-date-4"));
+	perevod_dates_.push_back(LiteWnd::link_element(root_, "perevod-date-5"));
+	perevod_dates_.push_back(LiteWnd::link_element(root_, "perevod-date-6"));
+
 	// ищет все элементы на вкладке и добавл€ет их в список
 	map_elements_.clear();
 	HTMLayoutSelectElements(root_, "*[class=my]", CallbackAtachElement, this);
@@ -74,10 +86,12 @@ void SData::Init(htmlayout::dom::element root)
 	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(root_, "bt-change-ege-disp"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(root_, "bt-delete-ege-disp"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 
-	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(root_, "bt-fast-znum"),  ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
-	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(root_, "bt-fast-enter"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
-	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(root_, "bt-fast-exist"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
-	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(root_, "bt-fast-gak"),   ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(root_, "bt-fast-znum"),    ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(root_, "bt-fast-enter"),   ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(root_, "bt-fast-exist"),   ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(root_, "bt-fast-gak"),     ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(root_, "bt-fast-perevod"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+
 }
 
 // обновл€ет  дом элементы дл€ текущего студента (отображает на экране)
@@ -112,6 +126,7 @@ void SData::UpdateView(void)
 	map_elements_["grpid"].send_event(SELECT_SELECTION_CHANGED);
 
 	UpdateEgeTable();
+	ShowPerevodInfo(row["perevod_na_kurs"]);
 	
 	root_.update();
 }
@@ -129,6 +144,10 @@ bool SData::SaveData(void)
 	{
 		query += "`" + it->first + "`='" + it->second + "', ";
 	}
+	string_t perevodInfo = GetPerevodInfo();
+	if (!perevodInfo.empty())
+		query += "`perevod_na_kurs`='" + perevodInfo + "', ";
+
 	if (query.empty())
 		return false;
 
@@ -557,6 +576,11 @@ BOOL CALLBACK SData::ElementEventProcBt(LPVOID tag, HELEMENT he, UINT evtg, LPVO
 	{
 		return TRUE;
 	}
+	if (aux::wcseq(id, L"bt-fast-perevod"))
+	{
+		data->FastSetPerevod();
+		return TRUE;
+	}
 
 	return FALSE;
 }
@@ -592,7 +616,7 @@ void SData::UpdateEgeTable()
 	int cur_discip = GetCurEgeDiscip().get_attribute_int("iddiscip", -1);
 
 	// удал€ем все строки
-  t::ClearTable(list, 1);
+    t::ClearTable(list, 1);
 
 	string_t query = string_t() +
 		"  SELECT pr.id, gr.iddiscip, v.title, pr.ball FROM ege_for_group AS gr " 
@@ -833,4 +857,117 @@ void SData::FastSetExit()
 		" SET exitnum = '" + exitnum + "', exitdate = '" + exitdate + "' "
 		" WHERE deleted = 0 AND grpid = " + aux::itow(theApp.GetCurrentGroupID());
 	theApp.GetCon().Query(query, false);
+}
+// показывает данные о переводе на другой курс
+void SData::ShowPerevodInfo(string_t perevodInfo)
+{
+	perevod_nums_[0].set_attribute("old-value", perevodInfo);
+	std::vector<std::wstring> info = aux::split(std::wstring(perevodInfo), L'&');
+	if (info.size() != 10)
+	{
+		info.clear();
+		for (int i = 0; i < 10; ++i)
+			info.push_back(L"");
+	}
+	for (int i = 0; i < 5; ++i)
+	{
+		json::t2v(perevod_nums_[i],  info[i*2 + 0]);
+		json::t2v(perevod_dates_[i], info[i*2 + 1]);
+	}
+}
+// возвращает готовую строку переводов
+string_t SData::GetPerevodInfo()
+{
+	string_t prevInfo = perevod_nums_[0].get_attribute("old-value");
+	string_t info;
+	for (int i = 0; i < 5; ++i)
+	{
+		info += json::v2t(perevod_nums_[i]) + L"&";
+		info += json::v2t(perevod_dates_[i]) + L"&";
+	}
+	if (info == prevInfo)
+		return "";
+	return info;
+}
+// устанавливает дл€ всей группы приказ о переводе на другой курс
+void SData::FastSetPerevod()
+{
+	string_t check_query = string_t() +  
+		" SELECT count(*) as count FROM students WHERE deleted = 0 AND grpid = " + aux::itow(theApp.GetCurrentGroupID());
+	mybase::MYFASTRESULT check_res = theApp.GetCon().Query(check_query);
+	mybase::MYFASTROW	 check_row = check_res.fetch_row();
+	if (check_row["count"].toInt() > 100)
+	{
+		MessageBox(::GetActiveWindow(), L"¬ группе больше 100 студентов, данные не будут изменены.",
+			L"ќшибка", MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
+		return;
+	}
+
+	struct stData {string_t id; string_t data; };
+	std::vector<stData> students;
+
+	string_t query = string_t() +  
+		" SELECT id, perevod_na_kurs FROM students WHERE deleted = 0 AND grpid = " + aux::itow(theApp.GetCurrentGroupID());
+	mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
+	while (mybase::MYFASTROW row = res.fetch_row())
+	{
+		stData d;
+		d.id = row["id"];
+		d.data = row["perevod_na_kurs"];
+		students.push_back(d);
+	}
+
+	// переводы, которые надо передать
+	std::vector<std::wstring> info;
+	string_t strInfo;
+	for (int i = 0; i < 5; ++i)
+	{
+		info.push_back(std::wstring(json::v2t(perevod_nums_[i])));
+		info.push_back(std::wstring(json::v2t(perevod_dates_[i])));
+		strInfo += json::v2t(perevod_nums_[i]) + L"&";
+		strInfo += json::v2t(perevod_dates_[i]) + L"&";
+	}
+	// сперва обработаем данные
+	for (size_t i = 0; i < students.size(); ++i)
+	{
+		std::vector<std::wstring> stInfo = aux::split(std::wstring(students[i].data), L'&');
+		if (stInfo.size() != 10)
+			students[i].data = strInfo;
+		else
+		{
+			bool needUpdate = false;
+			for (int k = 0; k < 10; ++k)
+				if (stInfo[k].empty() && !info[k].empty() && stInfo[k] != info[k])
+				{
+					needUpdate = true;
+					stInfo[k] = info[k];
+				}
+			students[i].data = "";
+			if (needUpdate)
+				for (int k = 0; k < 10; ++k)
+					students[i].data += stInfo[k] + L"&";
+
+		}
+	}
+
+	// теперь запишем
+	mysql_autocommit(theApp.GetCon().GetCon(), false);
+	theApp.GetCon().Query("START TRANSACTION;");
+	for (size_t i = 0; i < students.size(); ++i)
+		try
+		{
+			if (students[i].data.empty())
+				continue;
+			string_t setQuery = string_t() + 
+				" UPDATE students "
+				" SET perevod_na_kurs = '" + students[i].data + "' WHERE id = " + students[i].id;
+			theApp.GetCon().Query(setQuery);
+		}
+		catch (...)
+		{
+			theApp.ExceptionManage();
+		}
+	theApp.GetCon().Query("COMMIT;");
+	mysql_autocommit(theApp.GetCon().GetCon(), true);
+	MessageBox(::GetActiveWindow(), L"—делано", L"", MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
 }

@@ -6,13 +6,15 @@
 
 
 //***  для служебных целей  ***//
+1. ALTER TABLE students ADD COLUMN perevod_na_kurs text DEFAULT NULL
 
+
+// устарело
 1. не забыть изменить odoportal.cfg на config.ini и добавить секцию [link]
 
 2. зачетные единицы
 ALTER TABLE disciplines ADD COLUMN zachet_edinica INT(11) NOT NULL DEFAULT '1'
 
-// устарело
 гражданство
 ALTER TABLE students ADD COLUMN citizenryid INT(11) NOT NULL DEFAULT '1'
 добавить в словарь русский с номером 1

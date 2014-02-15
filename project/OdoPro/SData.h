@@ -14,6 +14,9 @@ private:
 	htmlayout::dom::element	sel_egediscip_;
 	htmlayout::dom::element	table_ege_discip_;
 	htmlayout::dom::element	ege_ball_;
+	std::vector<htmlayout::dom::element> perevod_nums_;
+	std::vector<htmlayout::dom::element> perevod_dates_;
+
 public:
 	SData(void);
 	~SData(void);
@@ -32,6 +35,10 @@ private:
 	// обрабатывает выбор предмета ≈√Ё
 	static BOOL CALLBACK ElementEventProcEgeDiscip(LPVOID tag, HELEMENT he, UINT evtg, LPVOID prms);
 private:
+	// показывает данные о переводе на другой курс
+	void ShowPerevodInfo(string_t perevodInfo);
+	// возвращает готовую строку переводов
+	string_t GetPerevodInfo();
 	// обновл€ет таблицу предметов по ≈√Ё
 	void UpdateEgeTable();
 	// добавл€ет\измен€ет оценку предмета по ≈√Ё
@@ -58,6 +65,8 @@ private:
 	void FastSetEnter();
 	// устанавливает дл€ всей группы номер и дату приказа об отчислении
 	void FastSetExit();
+	// устанавливает дл€ всей группы приказ о переводе на другой курс
+	void FastSetPerevod();
 public:
 	// создает в  базе информацию о новом студенте
 	bool CreateData(void);
