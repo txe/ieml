@@ -13,7 +13,8 @@ void ReportDiplom::Run(int grpId, int studentId)
   std::vector<Discip> cursDiscip;
   std::vector<Discip> commonDiscip;
   std::vector<Discip> specDiscip;
-  GetDiscipInfo(studentId, cursDiscip, commonDiscip, specDiscip, privData.lang, privData.vkrTitle);
+  bool useZe = privData.specOrProfilTag == "бак";
+  GetDiscipInfo(studentId, cursDiscip, commonDiscip, specDiscip, privData.lang, privData.vkrTitle, useZe);
 
   WordMacros macros;
   macros.BeginMacros();
@@ -68,9 +69,11 @@ void ReportDiplom::Run(int grpId, int studentId)
   int usedDiscip = 0; // сколько на самом деле добавили дисциплин в первую таблицу
   for (int i = 0; i < (int)commonDiscip.size() && rowCount > 0; ++i)
   {
-    usedDiscip++;
     rowCount -= PrepareDiscipTitle(commonDiscip[i].title, 63);
+    if (rowCount < 0) // если строка не уберетс€ в конце таблицы, то сразу нечего продолжать
+      break;
 
+    usedDiscip++;
     macros.CellCell(2, 3, 2, i + 1, 1, "Select");
     macros.SelectionText(toQuate(commonDiscip[i].title));
     macros.CellCell(2, 3, 2, i + 1, 2, "Select");
@@ -160,7 +163,7 @@ void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& priv
   dirData.bottomInfo += L"„асть образовательной программы в объеме ? недель освоена в ?.";
 }
 //-------------------------------------------------------------------------
-void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip, std::vector<Discip>& commonDiscip, std::vector<Discip>& specDiscip, string_t lang, string_t vkrTitle)
+void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip, std::vector<Discip>& commonDiscip, std::vector<Discip>& specDiscip, string_t lang, string_t vkrTitle, bool useZe)
 {
   std::vector<Discip> practice; // практики
   std::vector<Discip> itog;     // гос. аттестации
@@ -168,7 +171,7 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
   int                 practiceWeeks = 0;
 
   string_t query = string_t() +
-    "SELECT di.fulltitle, di.num_hours, di.idclass, pr.estimation, pr.ball "
+    "SELECT di.fulltitle, di.num_hours, di.idclass, pr.estimation, pr.ball,di.zachet_edinica,pr.numplansemestr "
     "FROM disciplines as di, progress as pr "
     "WHERE di.deleted=0 and pr.deleted=0 and pr.idstud=" + aux::itow(studentId) + " and pr.iddiscip=di.id "
     "ORDER BY di.scan_number";
@@ -179,6 +182,8 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
     string_t       title   = row["fulltitle"];
     string_t       hours   = row["num_hours"];
     string_t       ocenka  = r::toOcenka(row["estimation"].toInt());
+    string_t       ze      = row["zachet_edinica"];
+    int            numPlan = row["numplansemestr"].toInt();
 
     if (idclass == r::DT_CURSE_WORK || idclass == r::DT_CURSE_PRACTICE)
       cursDiscip.push_back(Discip(title, "", ocenka));
@@ -186,11 +191,17 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
     {
       if (title.toUpper().trim() == string_t(L"»Ќќ—“–јЌЌџ… я«џ "))
         title += " (" + lang + ")";
-      commonDiscip.push_back(Discip(title, hours + " час.", ocenka));
+      if (useZe)
+        AddDiscip(commonDiscip, Discip(title, ze + " з.е.", ocenka, numPlan));
+      else
+        AddDiscip(commonDiscip, Discip(title, hours + " час.", ocenka, numPlan));
     }
     if (idclass == r::DT_PRACTICE)
     {
-      practice.push_back(Discip(title, r::weeks_to_str(hours), ocenka));
+      if (useZe)
+        practice.push_back(Discip(title, ze + " з.е.", ocenka));
+      else
+        practice.push_back(Discip(title, r::weeks_to_str(hours), ocenka));
       practiceWeeks += hours.toInt();
     }
     if (idclass == r::DT_ITOG_ATESTACIA)
@@ -240,4 +251,17 @@ int ReportDiplom::PrepareDiscipTitle(string_t& title, int symbolMax)
   for (size_t i = 1; i < lines.size(); ++i)
     title += L"\n" + lines[i];
   return lines.size();
+}
+//-------------------------------------------------------------------------
+void ReportDiplom::AddDiscip(std::vector<Discip>& disList, const Discip& discip)
+{
+  // проверим что может это слишком стара€ оценка
+  for (size_t i = 0; i < disList.size(); ++i)
+    if (disList[i].title == discip.title)
+    {
+      if (discip.numPlan >= disList[i].numPlan)
+        disList[i] = discip;
+      return;
+    }
+  disList.push_back(discip);
 }
