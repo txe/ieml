@@ -13,7 +13,8 @@ void ReportDiplom::Run(int grpId, int studentId)
   std::vector<Discip> cursDiscip;
   std::vector<Discip> commonDiscip;
   std::vector<Discip> specDiscip;
-  GetDiscipInfo(studentId, cursDiscip, commonDiscip, specDiscip, privData.lang, privData.vkrTitle);
+  bool useZe = privData.specOrProfilTag == "бак";
+  GetDiscipInfo(studentId, cursDiscip, commonDiscip, specDiscip, privData.lang, privData.vkrTitle, useZe);
 
   WordMacros macros;
   macros.BeginMacros();
@@ -43,7 +44,7 @@ void ReportDiplom::Run(int grpId, int studentId)
   macros.SelectionText(dirData.title1);
 
   // по специальности, по направлению
-  macros.Cell(1, 11, 7, "Range.Select");
+  macros.Cell(1, 11, 9, "Range.Select");
   macros.SelectionText(dirData.title2);
 
   // сколько обучался
@@ -51,7 +52,7 @@ void ReportDiplom::Run(int grpId, int studentId)
   macros.SelectionText(dirData.title3);
 
   // дополнительная информация
-  macros.Cell(1, 11, 3, "Range.Select");
+  macros.Cell(1, 12, 3, "Range.Select");
   macros.SelectionText(dirData.bottomInfo);
 
   // курсовые работы
@@ -64,13 +65,15 @@ void ReportDiplom::Run(int grpId, int studentId)
   }
 
   // обычные дисциплины на первой таблице
-  int rowCount = 54;  // всего строк в первой таблице
+  int rowCount = 56;  // всего строк в первой таблице
   int usedDiscip = 0; // сколько на самом деле добавили дисциплин в первую таблицу
   for (int i = 0; i < (int)commonDiscip.size() && rowCount > 0; ++i)
   {
-    usedDiscip++;
     rowCount -= PrepareDiscipTitle(commonDiscip[i].title, 63);
+    if (rowCount < 0) // если строка не уберется в конце таблицы, то сразу нечего продолжать
+      break;
 
+    usedDiscip++;
     macros.CellCell(2, 3, 2, i + 1, 1, "Select");
     macros.SelectionText(toQuate(commonDiscip[i].title));
     macros.CellCell(2, 3, 2, i + 1, 2, "Select");
@@ -127,11 +130,18 @@ void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& priv
   030500.62 (shifrspec) Юриспруденция (из таблицы spec – для тега «бак1»; из таблицы direct – для тегов «бак» и «маг»)
   Всё заполняется строчными (маленькими) буквами, кроме первой буквы в наименовании специальности/направления подготовки, на отдельных строках
   */
+  string_t shifr = privData.shifrspec;
+  if (shifr.empty())
+    shifr = "xxxx";
+  int dotPos = shifr.indexOf(L".");
+  if (dotPos != -1)
+    shifr = shifr.subString(0, dotPos);
+
   if (!isBachelor)
   {
     dirData.title2 = privData.qualific.toLower();
     dirData.title2 += "\nпо специальности\n";
-    dirData.title2 += privData.shifrspec + " " + privData.specOrProfil.toUpperFirst();
+    dirData.title2 += shifr + " " + privData.specOrProfil.toUpperFirst();
   }
   else
   {
@@ -140,7 +150,7 @@ void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& priv
       spec = privData.direct;
     dirData.title2 = privData.qualific.toLower();
     dirData.title2 += "\nпо направлению подготовки\n";
-    dirData.title2 += privData.shifrspec + " " + spec.toUpperFirst();
+    dirData.title2 += shifr + " " + spec.toUpperFirst();
   }
 
   string_t tag = privData.specOrProfilTag.toLower();
@@ -157,18 +167,19 @@ void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& priv
     dirData.bottomInfo += L"\nСтарое полное официальное наименование образовательной организации – Государственное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет».";
     dirData.bottomInfo += L"\nФорма обучения: заочная.\n";
   }
-  dirData.bottomInfo += L"Часть образовательной программы в объеме ? недель освоена в ?.";
+  //dirData.bottomInfo += L"Часть образовательной программы в объеме ? недель освоена в ?.";
 }
 //-------------------------------------------------------------------------
-void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip, std::vector<Discip>& commonDiscip, std::vector<Discip>& specDiscip, string_t lang, string_t vkrTitle)
+void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip, std::vector<Discip>& commonDiscip, std::vector<Discip>& specDiscip, string_t lang, string_t vkrTitle, bool useZe)
 {
   std::vector<Discip> practice; // практики
   std::vector<Discip> itog;     // гос. аттестации
   Discip              vkrWork("", "", "");  // ВКР
   int                 practiceWeeks = 0;
+  string_t            itogWeeks = "0";
 
   string_t query = string_t() +
-    "SELECT di.fulltitle, di.num_hours, di.idclass, pr.estimation, pr.ball "
+    "SELECT di.fulltitle, di.num_hours, di.idclass, pr.estimation, pr.ball,di.zachet_edinica,pr.numplansemestr "
     "FROM disciplines as di, progress as pr "
     "WHERE di.deleted=0 and pr.deleted=0 and pr.idstud=" + aux::itow(studentId) + " and pr.iddiscip=di.id "
     "ORDER BY di.scan_number";
@@ -179,6 +190,8 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
     string_t       title   = row["fulltitle"];
     string_t       hours   = row["num_hours"];
     string_t       ocenka  = r::toOcenka(row["estimation"].toInt());
+    string_t       ze      = row["zachet_edinica"];
+    int            numPlan = row["numplansemestr"].toInt();
 
     if (idclass == r::DT_CURSE_WORK || idclass == r::DT_CURSE_PRACTICE)
       cursDiscip.push_back(Discip(title, "", ocenka));
@@ -186,27 +199,42 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
     {
       if (title.toUpper().trim() == string_t(L"ИНОСТРАННЫЙ ЯЗЫК"))
         title += " (" + lang + ")";
-      commonDiscip.push_back(Discip(title, hours + " час.", ocenka));
+      if (useZe)
+        AddDiscip(commonDiscip, Discip(title, ze + " з.е.", ocenka, numPlan));
+      else
+        AddDiscip(commonDiscip, Discip(title, hours + " час.", ocenka, numPlan));
     }
     if (idclass == r::DT_PRACTICE)
     {
-      practice.push_back(Discip(title, r::weeks_to_str(hours), ocenka));
+      if (useZe)
+        practice.push_back(Discip(title, ze + " з.е.", ocenka));
+      else
+        practice.push_back(Discip(title, r::weeks_to_str(hours), ocenka));
       practiceWeeks += hours.toInt();
     }
     if (idclass == r::DT_ITOG_ATESTACIA)
       itog.push_back(Discip(title, "х", ocenka));
     if (idclass == r::DT_KVALIFIC_WORK)
+    {
+      itogWeeks = hours;
       vkrWork = Discip("выпускная квалификационная работа – дипломная работа на тему «" + vkrTitle + "»", "х", ocenka);
+    }
   }
 
   // сформируем specDiscip
   // практики
-  specDiscip.push_back(Discip("Практики", r::weeks_to_str(toStr(practiceWeeks)), "x"));
+  if (useZe)
+    specDiscip.push_back(Discip("Практики", toStr(practiceWeeks) + " з.е.", "x"));
+  else
+    specDiscip.push_back(Discip("Практики", r::weeks_to_str(toStr(practiceWeeks)), "x"));
   specDiscip.push_back(Discip("в том числе:", "", ""));
   for (size_t i = 0; i < practice.size(); ++i)
     specDiscip.push_back(practice[i]);
   // гос. аттестация
-  specDiscip.push_back(Discip("Государственная итоговая аттестация", "??", "x"));
+  if (useZe)
+    specDiscip.push_back(Discip("Государственная итоговая аттестация", itogWeeks + " з.е.", "x"));
+  else
+    specDiscip.push_back(Discip("Государственная итоговая аттестация", r::weeks_to_str(itogWeeks), "x"));
   specDiscip.push_back(Discip("в том числе:", "", ""));
   for (size_t i = 0; i < itog.size(); ++i)
     specDiscip.push_back(itog[i]);
@@ -240,4 +268,17 @@ int ReportDiplom::PrepareDiscipTitle(string_t& title, int symbolMax)
   for (size_t i = 1; i < lines.size(); ++i)
     title += L"\n" + lines[i];
   return lines.size();
+}
+//-------------------------------------------------------------------------
+void ReportDiplom::AddDiscip(std::vector<Discip>& disList, const Discip& discip)
+{
+  // проверим что может это слишком старая оценка
+  for (size_t i = 0; i < disList.size(); ++i)
+    if (disList[i].title == discip.title)
+    {
+      if (discip.numPlan >= disList[i].numPlan)
+        disList[i] = discip;
+      return;
+    }
+  disList.push_back(discip);
 }

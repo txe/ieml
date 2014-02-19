@@ -20,7 +20,8 @@ private:
     string_t title;
     string_t period;
     string_t ocenka;
-    Discip(string_t _title, string_t _period, string_t _ocenka) : title(_title), period(_period), ocenka(_ocenka) {}
+    int      numPlan;
+    Discip(string_t _title, string_t _period, string_t _ocenka, int _numPlan = 0) : title(_title), period(_period), ocenka(_ocenka), numPlan(_numPlan) {}
   };
 
 public:
@@ -29,6 +30,7 @@ public:
 
 private:
   void GetDirectData(DirectData& dirData, const r::PrivateData& privData);
-  void GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip, std::vector<Discip>& commonDiscip, std::vector<Discip>& specDiscip, string_t lang, string_t vkrTitle);
+  void GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip, std::vector<Discip>& commonDiscip, std::vector<Discip>& specDiscip, string_t lang, string_t vkrTitle, bool useZe);
   int  PrepareDiscipTitle(string_t& title, int symbolMax);
+  void AddDiscip(std::vector<Discip>& disList, const Discip& discip);
 };
