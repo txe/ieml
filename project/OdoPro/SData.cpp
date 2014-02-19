@@ -43,9 +43,9 @@ void SData::Init(htmlayout::dom::element root)
 	root_ = root;
 	sel_egediscip_		= LiteWnd::link_element(root_, "sel-egediscip");
 	table_ege_discip_	= LiteWnd::link_element(root_, "table-ege-discip");
-	ege_ball_			= LiteWnd::link_element(root_, "ege-ball");
+	ege_ball_			    = LiteWnd::link_element(root_, "ege-ball");
 
-    perevod_nums_.push_back(LiteWnd::link_element(root_, "perevod-num-2"));
+  perevod_nums_.push_back(LiteWnd::link_element(root_, "perevod-num-2"));
 	perevod_nums_.push_back(LiteWnd::link_element(root_, "perevod-num-3"));
 	perevod_nums_.push_back(LiteWnd::link_element(root_, "perevod-num-4"));
 	perevod_nums_.push_back(LiteWnd::link_element(root_, "perevod-num-5"));
@@ -65,16 +65,18 @@ void SData::Init(htmlayout::dom::element root)
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "educationid"),	"education");
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "edudocid"),		"edudoc");
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "languageid"),	"language");
-	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "grpid"),			"grp");
-	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "specid"),		"spec", true);
+	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "grpid"),			  "grp");
+	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "specid"),		  "spec", true);
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "eduformid"),		"eduform");
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "dogshifrid"),	"dogshifr");
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "dogfastid"),		"dogfast");
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "dogyearid"),		"dogyear");
-	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "cityid"),		"city");
+	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "cityid"),		    "city");
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "sel-egediscip"),	"egediscip");
-	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "citizenryid"),	"citizenry");
+	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "citizenryid"),	  "citizenry");
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "directid"),	    "direct");
+
+  AdjustDirectList(); // добавим в скобках номера шифров
 
 	// подключим изменение города относительно группы
 	HTMLayoutAttachEventHandlerEx(map_elements_["grpid"], ElementEventProcChangedGroup, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
@@ -91,7 +93,6 @@ void SData::Init(htmlayout::dom::element root)
 	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(root_, "bt-fast-exist"),   ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(root_, "bt-fast-gak"),     ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(root_, "bt-fast-perevod"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
-
 }
 
 // обновляет  дом элементы для текущего студента (отображает на экране)
@@ -970,4 +971,30 @@ void SData::FastSetPerevod()
 	theApp.GetCon().Query("COMMIT;");
 	mysql_autocommit(theApp.GetCon().GetCon(), true);
 	MessageBox(::GetActiveWindow(), L"Сделано", L"", MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
+}
+
+// добавим в скобках номера шифров
+void SData::AdjustDirectList()
+{
+  std::map<int, string_t> shifrNum;
+  string_t query = string_t() +
+    " SELECT v1.num, v1.title FROM voc as v1, voc as v2 "
+    " WHERE v1.vkey = 'shifrspec' AND v1.deleted = 0 AND v2.vkey = 'direct' AND v2.deleted = 0 AND v1.num = v2.num";
+  mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
+  mybase::MYFASTROW	row;
+  while ((row = res.fetch_row()))
+    shifrNum[row["num"].toInt()] = row["title"];
+
+  using namespace htmlayout::dom;
+  element el = LiteWnd::link_element(root_, "directid");
+  element option = el.find_first("popup");
+  assert(option.is_valid());
+
+  for (int i = 0; i < option.children_count(); ++i)
+  {
+    element child = option.child(i);
+    std::map<int, string_t>::iterator it = shifrNum.find(child.get_attribute_int("value", -1));
+    if (it != shifrNum.end())
+      child.set_text(string_t(child.text()) + L" (" + it->second + ")");
+  }
 }

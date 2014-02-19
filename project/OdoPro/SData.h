@@ -67,6 +67,8 @@ private:
 	void FastSetExit();
 	// устанавливает для всей группы приказ о переводе на другой курс
 	void FastSetPerevod();
+  // добавим в скобках номера шифров
+  void AdjustDirectList();
 public:
 	// создает в  базе информацию о новом студенте
 	bool CreateData(void);
