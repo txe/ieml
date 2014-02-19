@@ -13,7 +13,7 @@ void ReportDiplom::Run(int grpId, int studentId)
   std::vector<Discip> cursDiscip;
   std::vector<Discip> commonDiscip;
   std::vector<Discip> specDiscip;
-  bool useZe = privData.specOrProfilTag == "бак";
+  bool useZe = privData.specOrProfilTag == "бак" || privData.specOrProfilTag == "бакус";
   GetDiscipInfo(studentId, cursDiscip, commonDiscip, specDiscip, privData.lang, privData.vkrTitle, useZe);
 
   WordMacros macros;
@@ -133,9 +133,11 @@ void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& priv
   string_t shifr = privData.shifrspec;
   if (shifr.empty())
     shifr = "xxxx";
+  // уберем часть шифра, если там только одна точка
   int dotPos = shifr.indexOf(L".");
   if (dotPos != -1)
-    shifr = shifr.subString(0, dotPos);
+    if (-1 == shifr.subString(dotPos + 1, -1).indexOf(L"."))  
+      shifr = shifr.subString(0, dotPos);
 
   if (!isBachelor)
   {
@@ -154,10 +156,12 @@ void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& priv
   }
 
   string_t tag = privData.specOrProfilTag.toLower();
-  if (tag.empty())                        dirData.title3 = "5 лет";
-  else if (tag == "бак1" || tag == "бак") dirData.title3 = "4 года";
-  else if (tag == "маг")                  dirData.title3 = "2 года";
-  else                                    dirData.title3 = "xxxx лет";
+  if (tag.empty())       dirData.title3 = "5 лет";
+  else if (tag == "бак1" 
+    || tag == "бак" 
+    || tag == "бакус")   dirData.title3 = "4 года";
+  else if (tag == "маг") dirData.title3 = "2 года";
+  else                   dirData.title3 = "xxxx лет";
 
   // дополнительная информация
   bool renameUniver = privData.inYear.toInt() < 2011 || (privData.inYear.toInt() == 2011 && (privData.inMonth.toInt() < 7 || (privData.inMonth.toInt() == 7 && privData.inDay.toInt() < 8)));
@@ -167,7 +171,7 @@ void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& priv
     dirData.bottomInfo += L"\nСтарое полное официальное наименование образовательной организации – Государственное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет».";
     dirData.bottomInfo += L"\nФорма обучения: заочная.\n";
   }
-  //dirData.bottomInfo += L"Часть образовательной программы в объеме ? недель освоена в ?.";
+  dirData.bottomInfo += L"Часть образовательной программы в объеме ? недель освоена в ?.";
 }
 //-------------------------------------------------------------------------
 void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip, std::vector<Discip>& commonDiscip, std::vector<Discip>& specDiscip, string_t lang, string_t vkrTitle, bool useZe)

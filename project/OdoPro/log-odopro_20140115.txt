@@ -1,0 +1,955 @@
+17:46:34_055_00002008: Debug: Запуск программы
+17:46:34_061_00002008: Debug: Подключение к базе данных
+17:46:34_061_00002008: Debug: Чтение параметров из конфиг. файла
+17:46:34_108_00002008: Debug: Проверка валидности базы
+17:46:34_109_00002008: WARNING: SELECT * FROM `students` LIMIT 1
+17:46:34_109_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:34_124_00002008: WARNING: SELECT variable FROM setting WHERE name = 'path_temp_update_dir' AND tag = 'guryanov' LIMIT 1
+17:46:34_124_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:34_125_00002008: WARNING: SELECT variable FROM setting WHERE name = 'path_app_dir' AND tag = 'guryanov' LIMIT 1
+17:46:34_126_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:34_127_00002008: WARNING: SELECT variable FROM setting WHERE name = 'path_update_dir' AND tag = 'global' LIMIT 1
+17:46:34_127_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:34_128_00002008: WARNING: SELECT variable FROM setting WHERE name = 'app_before_restart' AND tag = 'global' LIMIT 1
+17:46:34_128_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:34_130_00002008: WARNING: SELECT variable FROM setting WHERE name = 'command_wait' AND tag = 'global' LIMIT 1
+17:46:34_130_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:34_131_00002008: WARNING: SELECT variable FROM setting WHERE name = 'exclude_silent_update' AND tag = 'global' LIMIT 1
+17:46:34_131_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:34_132_00002008: Debug: Отображение окна приложения ...
+17:46:34_195_00002008: WARNING:  SELECT num , title FROM voc  WHERE vkey='grp' AND deleted = 0 AND  title like 'БУ%'  ORDER BY title, id
+17:46:34_195_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:34_226_00002008: WARNING:  SELECT num , title FROM voc  WHERE vkey='grp' AND deleted = 0 AND  title like 'МО%'  ORDER BY title, id
+17:46:34_227_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:34_244_00002008: WARNING:  SELECT num , title FROM voc  WHERE vkey='grp' AND deleted = 0 AND  title like 'МР%'  ORDER BY title, id
+17:46:34_244_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:34_251_00002008: WARNING:  SELECT num , title FROM voc  WHERE vkey='grp' AND deleted = 0 AND  title like 'Ю%'  ORDER BY title, id
+17:46:34_252_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:34_263_00002008: WARNING:  SELECT num , title FROM voc  WHERE vkey='grp' AND deleted = 0 AND  title like 'ЭП%'  ORDER BY title, id
+17:46:34_263_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:34_268_00002008: WARNING:  SELECT num , title FROM voc  WHERE vkey='grp' AND deleted = 0 AND  title like 'ЭУН%'  ORDER BY title, id
+17:46:34_269_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:34_278_00002008: WARNING:  SELECT num , title FROM voc  WHERE vkey='grp' AND deleted = 0 AND  title like 'ПМ%'  ORDER BY title, id
+17:46:34_278_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:34_283_00002008: WARNING:  SELECT num , title FROM voc  WHERE vkey='grp' AND deleted = 0 AND  title like 'ПГС%'  ORDER BY title, id
+17:46:34_284_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:34_289_00002008: WARNING:  SELECT num , title FROM voc  WHERE vkey='grp' AND deleted = 0 AND  title like 'ТГВ%'  ORDER BY title, id
+17:46:34_290_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:34_296_00002008: WARNING:  SELECT num , title FROM voc  WHERE vkey='grp' AND deleted = 0 AND  title like '%' AND title NOT like 'БУ%' AND title NOT like 'МО%' AND title NOT like 'МР%' AND title NOT like 'Ю%' AND title NOT like 'ЭП%' AND title NOT like 'ЭУН%' AND title NOT like 'ПМ%' AND title NOT like 'ПГС%' AND title NOT like 'ТГВ%'  ORDER BY title, id
+17:46:34_296_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:34_356_00002008: WARNING:  SELECT students.id, secondname, firstname, thirdname, znum, grpid,  voc.title AS city, voc1.title AS `group`  FROM students, voc, voc AS voc1  WHERE grpid = 1538 AND students.deleted = 0 AND voc.vkey = 'city' AND voc.num =  students.cityid AND voc.deleted = 0 AND voc1.vkey = 'grp' AND voc1.num = grpid AND voc1.deleted = 0  ORDER BY secondname, firstname, thirdname, id;
+17:46:34_356_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_423_00002008: WARNING:  SELECT num , title, tag FROM voc  WHERE vkey= 'education' AND deleted = 0  ORDER BY title, tag, id
+17:46:35_423_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_426_00002008: WARNING:  SELECT num , title, tag FROM voc  WHERE vkey= 'edudoc' AND deleted = 0  ORDER BY title, tag, id
+17:46:35_426_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_429_00002008: WARNING:  SELECT num , title, tag FROM voc  WHERE vkey= 'language' AND deleted = 0  ORDER BY title, tag, id
+17:46:35_429_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_431_00002008: WARNING:  SELECT num , title, tag FROM voc  WHERE vkey= 'grp' AND deleted = 0  ORDER BY title, tag, id
+17:46:35_431_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_511_00002008: WARNING:  SELECT num , title, tag FROM voc  WHERE vkey= 'spec' AND deleted = 0  ORDER BY title, tag, id
+17:46:35_512_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_519_00002008: WARNING:  SELECT num , title, tag FROM voc  WHERE vkey= 'eduform' AND deleted = 0  ORDER BY title, tag, id
+17:46:35_519_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_525_00002008: WARNING:  SELECT num , title, tag FROM voc  WHERE vkey= 'dogshifr' AND deleted = 0  ORDER BY title, tag, id
+17:46:35_525_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_532_00002008: WARNING:  SELECT num , title, tag FROM voc  WHERE vkey= 'dogfast' AND deleted = 0  ORDER BY title, tag, id
+17:46:35_533_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_535_00002008: WARNING:  SELECT num , title, tag FROM voc  WHERE vkey= 'dogyear' AND deleted = 0  ORDER BY title, tag, id
+17:46:35_536_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_539_00002008: WARNING:  SELECT num , title, tag FROM voc  WHERE vkey= 'city' AND deleted = 0  ORDER BY title, tag, id
+17:46:35_539_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_546_00002008: WARNING:  SELECT num , title, tag FROM voc  WHERE vkey= 'egediscip' AND deleted = 0  ORDER BY title, tag, id
+17:46:35_546_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_549_00002008: WARNING:  SELECT num , title, tag FROM voc  WHERE vkey= 'citizenry' AND deleted = 0  ORDER BY title, tag, id
+17:46:35_549_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_553_00002008: WARNING:  SELECT num , title, tag FROM voc  WHERE vkey= 'direct' AND deleted = 0  ORDER BY title, tag, id
+17:46:35_553_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_558_00002008: WARNING:  SELECT specid  FROM students  WHERE `deleted` = 0 AND  `id` = 31445
+17:46:35_558_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_559_00002008: WARNING: SELECT id, fulltitle, shorttitle, idclass  FROM disciplines  WHERE idspec = 103 AND deleted = 0  ORDER BY fulltitle
+17:46:35_560_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_646_00002008: WARNING:  SELECT id  FROM students  WHERE grpid = 1538 AND students.deleted = 0  ORDER BY secondname, firstname, thirdname, id;
+17:46:35_646_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_670_00002008: WARNING:  SELECT * FROM students  WHERE `deleted` = 0 AND  `id` = 31445 LIMIT 1
+17:46:35_670_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_702_00002008: WARNING:   SELECT pr.id, gr.iddiscip, v.title, pr.ball FROM ege_for_group AS gr   LEFT JOIN ege_progress AS pr ON gr.iddiscip = pr.iddiscip AND pr.idstud = 31445  AND pr.deleted = 0   LEFT JOIN voc AS v ON gr.iddiscip = v.num AND v.deleted = 0 AND v.vkey = 'egediscip'   WHERE gr.deleted = 0 AND gr.grpid = 1538  ORDER BY v.title 
+17:46:35_702_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_716_00002008: WARNING: SELECT id, numplansemestr, numgraphsemestr, estimation, ball, from_disc  FROM progress  WHERE idstud = 31445 AND iddiscip = 5967 AND deleted=0 ORDER BY numplansemestr
+17:46:35_716_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_719_00002008: WARNING:  SELECT id, idstud, datepay, moneypay, idopts, deleted  FROM payfactstest  WHERE deleted = 0 AND idstud = 31445 ORDER BY idopts, datepay
+17:46:35_719_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_726_00002008: WARNING:  SELECT po.datestart, po.dateend, po.commoncountmoney, po.half_year, po.id, COUNT(ct.idstud) AS cnt  FROM (SELECT o.id, f.idstud FROM payoptstest as o left  join payfactstest as f  ON f.idopts = o.id  WHERE o.deleted = 0 AND o.idgroup = 1538 GROUP BY o.id, f.idstud) AS ct, payoptstest AS po  WHERE po.id = ct.id GROUP BY ct.id ORDER BY po.datestart, po.commoncountmoney, po.id
+17:46:35_727_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_730_00002008: WARNING: SELECT id,commoncountmoney  FROM paypersonaltest  WHERE idstud = 31445 AND idopts = 7602 AND deleted = 0
+17:46:35_730_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_735_00002008: WARNING: SELECT id,commoncountmoney  FROM paypersonaltest  WHERE idstud = 31445 AND idopts = 7603 AND deleted = 0
+17:46:35_735_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_739_00002008: WARNING: SELECT id,commoncountmoney  FROM paypersonaltest  WHERE idstud = 31445 AND idopts = 7604 AND deleted = 0
+17:46:35_739_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_742_00002008: WARNING: SELECT id,commoncountmoney  FROM paypersonaltest  WHERE idstud = 31445 AND idopts = 6700 AND deleted = 0
+17:46:35_743_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_747_00002008: WARNING: SELECT id,commoncountmoney  FROM paypersonaltest  WHERE idstud = 31445 AND idopts = 7244 AND deleted = 0
+17:46:35_747_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_749_00002008: WARNING: SELECT id,commoncountmoney  FROM paypersonaltest  WHERE idstud = 31445 AND idopts = 8057 AND deleted = 0
+17:46:35_749_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:35_758_00002008: WARNING:  SELECT secondname, firstname, thirdname FROM students  WHERE `deleted` = 0 AND  `id` = 31445 AND  `grpid` = 1538
+17:46:35_759_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_655_00002008: WARNING:  SELECT num , title, tag FROM voc  WHERE vkey= 'discipclassific' AND deleted = 0  ORDER BY title, tag, id
+17:46:37_655_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_660_00002008: WARNING:  SELECT num , title, tag FROM voc  WHERE vkey= 'spec' AND deleted = 0  ORDER BY title, tag, id
+17:46:37_660_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_668_00002008: WARNING:  SELECT specid  FROM students  WHERE `deleted` = 0 AND  `id` = 31445
+17:46:37_669_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_670_00002008: WARNING:  SELECT specid  FROM students  WHERE `deleted` = 0 AND  `id` = 31445
+17:46:37_671_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_672_00002008: WARNING:  SELECT id, fulltitle, shorttitle, idspec, idclass, num_hours, scan_number, sem_hours, zachet_edinica  FROM disciplines  WHERE deleted = 0 AND  idspec = 103 ORDER BY idclass, fulltitle
+17:46:37_672_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_677_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_678_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_681_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_682_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_684_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_684_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_687_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_688_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_690_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_690_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_692_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_693_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_694_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_695_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_696_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_696_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_698_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_698_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_700_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_700_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_702_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_702_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_704_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_704_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_706_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_706_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_708_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_708_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_710_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_710_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_712_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_712_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_714_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_714_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_716_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_716_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_718_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_718_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_720_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_721_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_723_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_723_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_725_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_725_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_727_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_727_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_729_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_729_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_731_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_732_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_733_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_734_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_736_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_736_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_738_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_739_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_741_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_741_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_744_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_744_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_747_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_747_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_750_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_750_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_753_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_753_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_756_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_756_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_759_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_759_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_762_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_762_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_765_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_765_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_768_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_768_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_771_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_771_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_774_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_774_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_776_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_776_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_778_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_779_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_781_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_781_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_783_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_783_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_785_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_785_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_787_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_787_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_789_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_789_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_791_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_792_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_794_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_794_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_796_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_796_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_798_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_798_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_800_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_800_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_802_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_803_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_805_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_805_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_807_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_807_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_809_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_809_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_811_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_811_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_813_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_813_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_815_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_815_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_817_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_818_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_819_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_820_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_822_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_822_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_825_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_825_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_827_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_828_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_830_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_830_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_833_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_833_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_836_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_836_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_839_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_839_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_842_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_842_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_844_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_845_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_847_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_848_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_850_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_850_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_853_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_853_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_856_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_856_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_858_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_859_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_861_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_861_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_864_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_864_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_867_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_867_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_869_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_869_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_872_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_872_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_875_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_875_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_878_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_878_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_880_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_881_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_883_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_883_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_886_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_886_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_889_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_889_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_892_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_892_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_895_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_895_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_898_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_898_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_900_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_900_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_903_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_903_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_905_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_905_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_907_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_908_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_910_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_910_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_912_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_912_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_914_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_914_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_916_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_916_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_918_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_918_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_920_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_920_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_922_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_923_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_925_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_925_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_927_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_927_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_929_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_929_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_931_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_931_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_933_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_934_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_936_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_936_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_938_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_938_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_940_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_940_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_942_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_942_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_944_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_944_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_946_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_947_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_949_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_949_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_951_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_951_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_953_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_953_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_956_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_956_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_958_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_958_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_960_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_960_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_962_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_963_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_965_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_965_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_967_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_967_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_969_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_969_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_971_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_972_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:37_974_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:37_974_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_026_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_026_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_028_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_029_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_030_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_031_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_033_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_033_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_035_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_035_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_037_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_037_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_089_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_089_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_091_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_091_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_093_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_093_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_095_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_096_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_098_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_098_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_100_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_100_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_102_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_102_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_104_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_104_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_106_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_107_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_108_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_109_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_111_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_111_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_113_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_113_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_115_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_115_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_117_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_117_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_119_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_119_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_121_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_121_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_123_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_123_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_125_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_125_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_127_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_127_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_129_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_130_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_131_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_132_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_133_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_134_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_135_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_136_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_137_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_138_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_190_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_190_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_242_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_242_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_244_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_244_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_246_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_246_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_248_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_249_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_250_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_251_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_252_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_253_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_255_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_255_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_257_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_257_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_259_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_259_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_261_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_261_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_263_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_263_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_265_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_265_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_267_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_267_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_269_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_269_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_271_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_272_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_273_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_273_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_275_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_276_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_277_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_277_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_279_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_280_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_281_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_282_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_283_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_284_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_285_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_286_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_287_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_288_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_289_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '2' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_290_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_291_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '2' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_292_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_293_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '2' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_294_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_295_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '2' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_296_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_297_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '2' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_298_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_299_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '2' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_300_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_302_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '4' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_302_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:46:38_304_00002008: WARNING:  SELECT title FROM voc  WHERE `deleted` = 0 AND  `num` = '4' AND  `vkey` = 'discipclassific' LIMIT 1
+17:46:38_304_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:47:16_940_00002008: WARNING:  SELECT students.id, secondname, firstname, thirdname, znum, grpid,  voc.title AS city, voc1.title AS `group`  FROM students, voc, voc AS voc1  WHERE grpid = 1538 AND students.deleted = 0 AND voc.vkey = 'city' AND voc.num =  students.cityid AND voc.deleted = 0 AND voc1.vkey = 'grp' AND voc1.num = grpid AND voc1.deleted = 0  ORDER BY secondname, firstname, thirdname, id;
+17:47:16_941_00002008: WARNING: 
+ ---------------------------------------- 
+
+17:47:48_100_00001ef0: Debug: sending incremental file list
+

@@ -1,0 +1,137 @@
+14:37:46_379_00000c54: Debug: Запуск программы
+14:37:46_385_00000c54: Debug: Подключение к базе данных
+14:37:46_385_00000c54: Debug: Чтение параметров из конфиг. файла
+14:37:46_426_00000c54: Debug: Проверка валидности базы
+14:37:46_426_00000c54: WARNING: SELECT * FROM `students` LIMIT 1
+14:37:46_426_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:46_438_00000c54: WARNING: SELECT variable FROM setting WHERE name = 'path_temp_update_dir' AND tag = 'guryanov' LIMIT 1
+14:37:46_439_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:46_440_00000c54: WARNING: SELECT variable FROM setting WHERE name = 'path_app_dir' AND tag = 'guryanov' LIMIT 1
+14:37:46_440_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:46_442_00000c54: WARNING: SELECT variable FROM setting WHERE name = 'path_update_dir' AND tag = 'global' LIMIT 1
+14:37:46_442_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:46_443_00000c54: WARNING: SELECT variable FROM setting WHERE name = 'app_before_restart' AND tag = 'global' LIMIT 1
+14:37:46_443_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:46_444_00000c54: WARNING: SELECT variable FROM setting WHERE name = 'command_wait' AND tag = 'global' LIMIT 1
+14:37:46_444_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:46_446_00000c54: WARNING: SELECT variable FROM setting WHERE name = 'exclude_silent_update' AND tag = 'global' LIMIT 1
+14:37:46_446_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:46_447_00000c54: Debug: Отображение окна приложения ...
+14:37:46_510_00000c54: WARNING:  SELECT num , title FROM voc  WHERE vkey='grp' AND deleted = 0 AND  title like 'БУ%'  ORDER BY title, id
+14:37:46_510_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:46_542_00000c54: WARNING:  SELECT num , title FROM voc  WHERE vkey='grp' AND deleted = 0 AND  title like 'МО%'  ORDER BY title, id
+14:37:46_592_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:46_610_00000c54: WARNING:  SELECT num , title FROM voc  WHERE vkey='grp' AND deleted = 0 AND  title like 'МР%'  ORDER BY title, id
+14:37:46_610_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:46_618_00000c54: WARNING:  SELECT num , title FROM voc  WHERE vkey='grp' AND deleted = 0 AND  title like 'Ю%'  ORDER BY title, id
+14:37:46_619_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:46_630_00000c54: WARNING:  SELECT num , title FROM voc  WHERE vkey='grp' AND deleted = 0 AND  title like 'ЭП%'  ORDER BY title, id
+14:37:46_631_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:46_636_00000c54: WARNING:  SELECT num , title FROM voc  WHERE vkey='grp' AND deleted = 0 AND  title like 'ЭУН%'  ORDER BY title, id
+14:37:46_636_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:46_645_00000c54: WARNING:  SELECT num , title FROM voc  WHERE vkey='grp' AND deleted = 0 AND  title like 'ПМ%'  ORDER BY title, id
+14:37:46_645_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:46_651_00000c54: WARNING:  SELECT num , title FROM voc  WHERE vkey='grp' AND deleted = 0 AND  title like 'ПГС%'  ORDER BY title, id
+14:37:46_651_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:46_657_00000c54: WARNING:  SELECT num , title FROM voc  WHERE vkey='grp' AND deleted = 0 AND  title like 'ТГВ%'  ORDER BY title, id
+14:37:46_657_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:46_663_00000c54: WARNING:  SELECT num , title FROM voc  WHERE vkey='grp' AND deleted = 0 AND  title like '%' AND title NOT like 'БУ%' AND title NOT like 'МО%' AND title NOT like 'МР%' AND title NOT like 'Ю%' AND title NOT like 'ЭП%' AND title NOT like 'ЭУН%' AND title NOT like 'ПМ%' AND title NOT like 'ПГС%' AND title NOT like 'ТГВ%'  ORDER BY title, id
+14:37:46_664_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:46_722_00000c54: WARNING:  SELECT students.id, secondname, firstname, thirdname, znum, grpid,  voc.title AS city, voc1.title AS `group`  FROM students, voc, voc AS voc1  WHERE grpid = 1538 AND students.deleted = 0 AND voc.vkey = 'city' AND voc.num =  students.cityid AND voc.deleted = 0 AND voc1.vkey = 'grp' AND voc1.num = grpid AND voc1.deleted = 0  ORDER BY secondname, firstname, thirdname, id;
+14:37:46_722_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:54_909_00000c54: WARNING:  SELECT students.id, secondname, firstname, thirdname, znum, grpid,  voc.title AS city, voc1.title AS `group`  FROM students, voc, voc AS voc1  WHERE grpid = 522 AND students.deleted = 0 AND voc.vkey = 'city' AND voc.num =  students.cityid AND voc.deleted = 0 AND voc1.vkey = 'grp' AND voc1.num = grpid AND voc1.deleted = 0  ORDER BY secondname, firstname, thirdname, id;
+14:37:54_910_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:57_490_00000c54: WARNING: SELECT s.secondname,s.firstname,s.thirdname,s.bdate,s.vkr_title,s.edudocid,s.eduenddate,s.specid,s.enterdate,s.exitdate, s.exitnum,s.sex,v.title as lang,s.edunumdiplom,s.edunumreg,s.edudatediplom,s.edudatequalif,s.directid  FROM students as s,  voc as v where s.deleted=0 and v.deleted=0 and s.id=17035 and s.languageid=v.num and v.vkey="language"
+14:37:57_490_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:57_493_00000c54: WARNING:  SELECT title, tag FROM voc  WHERE `deleted` = 0 AND  `num` = '4' AND  `vkey` = 'edudoc' LIMIT 1
+14:37:57_493_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:57_494_00000c54: WARNING:  SELECT title, tag FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'spec' LIMIT 1
+14:37:57_495_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:57_496_00000c54: WARNING:  SELECT title, tag FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'specializ' LIMIT 1
+14:37:57_496_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:57_497_00000c54: WARNING:  SELECT title, tag FROM voc  WHERE `deleted` = 0 AND  `num` = '1' AND  `vkey` = 'qualific' LIMIT 1
+14:37:57_498_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:57_499_00000c54: WARNING:  SELECT title, tag FROM voc  WHERE `deleted` = 0 AND  `num` = '0' AND  `vkey` = 'direct' LIMIT 1
+14:37:57_499_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:57_501_00000c54: WARNING: SELECT di.fulltitle, di.num_hours, di.idclass, pr.estimation, pr.ball FROM disciplines as di, progress as pr WHERE di.deleted=0 and pr.deleted=0 and pr.idstud=17035 and pr.iddiscip=di.id ORDER BY di.scan_number
+14:37:57_501_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:57_511_00000c54: WARNING: SELECT di.fulltitle,di.num_hours,di.idclass,di.zachet_edinica,pr.estimation,pr.iddiscip,pr.numplansemestr FROM disciplines as di, progress as pr WHERE di.deleted=0 and pr.deleted=0 and pr.idstud=17035 and pr.iddiscip=di.id ORDER BY di.scan_number, pr.numplansemestr
+14:37:57_511_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:37:57_525_00000c54: WARNING: SELECT CURDATE() as date
+14:37:57_526_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:39:15_764_00002160: Debug: sending incremental file list
+
+14:40:11_816_00000c54: WARNING: SELECT variable FROM setting WHERE name = 'path_temp_update_dir' AND tag = 'guryanov' LIMIT 1
+14:40:11_817_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:40:11_818_00000c54: WARNING: UPDATE setting SET variable = 'c:\\Users\\Guryanov\\Desktop\\ieml3\\project\\OdoPro\\Debug\\{A65DEBAD-22C9-4b32-BEEE-BDBD8CF07BC9}\\' WHERE name = 'path_temp_update_dir' AND tag = 'guryanov' LIMIT 1
+14:40:11_818_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:40:11_824_00000c54: WARNING: SELECT variable FROM setting WHERE name = 'path_app_dir' AND tag = 'guryanov' LIMIT 1
+14:40:11_825_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:40:11_826_00000c54: WARNING: UPDATE setting SET variable = 'c:\\Users\\Guryanov\\Desktop\\ieml3\\project\\OdoPro\\Debug\\' WHERE name = 'path_app_dir' AND tag = 'guryanov' LIMIT 1
+14:40:11_827_00000c54: WARNING: 
+ ---------------------------------------- 
+
+14:40:11_830_00000c54: Debug: Закрытие подключения к базе
+14:40:11_831_00000c54: Debug: Завершение программы
