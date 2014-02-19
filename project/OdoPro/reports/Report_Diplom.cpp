@@ -114,8 +114,8 @@ void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& priv
   bool isBachelor = privData.specOrProfilTag != "";
   
   // специалиста, специалиста с отличием, бакалавра, бакалавра с отличием
-  if (isBachelor && privData.isOtlDiplom)   dirData.title1 = L"бакалавра с отличием";
-  if (isBachelor && !privData.isOtlDiplom)  dirData.title1 = L"бакалавра";
+  if (isBachelor  && privData.isOtlDiplom)   dirData.title1 = L"бакалавра с отличием";
+  if (isBachelor  && !privData.isOtlDiplom)  dirData.title1 = L"бакалавра";
   if (!isBachelor && privData.isOtlDiplom)  dirData.title1 = L"специалиста с отличием";
   if (!isBachelor && !privData.isOtlDiplom) dirData.title1 = L"специалиста";
 
@@ -176,11 +176,16 @@ void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& priv
 //-------------------------------------------------------------------------
 void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip, std::vector<Discip>& commonDiscip, std::vector<Discip>& specDiscip, string_t lang, string_t vkrTitle, bool useZe)
 {
+  struct fun
+  {
+    static string_t suffix(bool useZe, string_t val) { return useZe ? (val + "  з.е.") : r::weeks_to_str(val); }
+  };
+
   std::vector<Discip> practice; // практики
   std::vector<Discip> itog;     // гос. аттестации
   Discip              vkrWork("", "", "");  // ВКР
-  int                 practiceWeeks = 0;
-  string_t            itogWeeks = "0";
+  int                 practicTime = 0;
+  string_t            itogTime = "0";
 
   string_t query = string_t() +
     "SELECT di.fulltitle, di.num_hours, di.idclass, pr.estimation, pr.ball,di.zachet_edinica,pr.numplansemestr "
@@ -192,10 +197,9 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
   {
     r::DISCIP_TYPE idclass = (r::DISCIP_TYPE)row["idclass"].toInt();
     string_t       title   = row["fulltitle"];
-    string_t       hours   = row["num_hours"];
     string_t       ocenka  = r::toOcenka(row["estimation"].toInt());
-    string_t       ze      = row["zachet_edinica"];
     int            numPlan = row["numplansemestr"].toInt();
+    string_t       times   = useZe ? row["zachet_edinica"] : row["num_hours"];
 
     if (idclass == r::DT_CURSE_WORK || idclass == r::DT_CURSE_PRACTICE)
       cursDiscip.push_back(Discip(title, "", ocenka));
@@ -203,42 +207,30 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
     {
       if (title.toUpper().trim() == string_t(L"ИНОСТРАННЫЙ ЯЗЫК"))
         title += " (" + lang + ")";
-      if (useZe)
-        AddDiscip(commonDiscip, Discip(title, ze + " з.е.", ocenka, numPlan));
-      else
-        AddDiscip(commonDiscip, Discip(title, hours + " час.", ocenka, numPlan));
+      AddDiscip(commonDiscip, Discip(title, fun::suffix(useZe, times), ocenka, numPlan));
     }
     if (idclass == r::DT_PRACTICE)
     {
-      if (useZe)
-        practice.push_back(Discip(title, ze + " з.е.", ocenka));
-      else
-        practice.push_back(Discip(title, r::weeks_to_str(hours), ocenka));
-      practiceWeeks += hours.toInt();
+      practicTime += times.toInt();
+      practice.push_back(Discip(title, fun::suffix(useZe, times), ocenka));
     }
     if (idclass == r::DT_ITOG_ATESTACIA)
       itog.push_back(Discip(title, "х", ocenka));
     if (idclass == r::DT_KVALIFIC_WORK)
     {
-      itogWeeks = hours;
+      itogTime = times;
       vkrWork = Discip("выпускная квалификационная работа – дипломная работа на тему «" + vkrTitle + "»", "х", ocenka);
     }
   }
 
   // сформируем specDiscip
   // практики
-  if (useZe)
-    specDiscip.push_back(Discip("Практики", toStr(practiceWeeks) + " з.е.", "x"));
-  else
-    specDiscip.push_back(Discip("Практики", r::weeks_to_str(toStr(practiceWeeks)), "x"));
+  specDiscip.push_back(Discip("Практики", fun::suffix(useZe, toStr(practicTime)), "x"));
   specDiscip.push_back(Discip("в том числе:", "", ""));
   for (size_t i = 0; i < practice.size(); ++i)
     specDiscip.push_back(practice[i]);
   // гос. аттестация
-  if (useZe)
-    specDiscip.push_back(Discip("Государственная итоговая аттестация", itogWeeks + " з.е.", "x"));
-  else
-    specDiscip.push_back(Discip("Государственная итоговая аттестация", r::weeks_to_str(itogWeeks), "x"));
+  specDiscip.push_back(Discip("Государственная итоговая аттестация", fun::suffix(useZe, itogTime), "x"));
   specDiscip.push_back(Discip("в том числе:", "", ""));
   for (size_t i = 0; i < itog.size(); ++i)
     specDiscip.push_back(itog[i]);

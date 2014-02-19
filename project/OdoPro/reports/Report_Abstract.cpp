@@ -148,7 +148,11 @@ void r::GetPrivateData(PrivateData& data, int studentId)
     data.regNum       = row["edunumreg"];
     data.dataVidachi  = to_str_date(row["edudatediplom"]);
     data.dataQualific = to_str_date(row["edudatequalif"]);
-    data.shifrspec    = theApp.GetTitleForKeyFromVoc(VK_SHIFRSPEC, row["specid"].toInt(), true);
+
+    if (data.direct.empty())
+      data.shifrspec = theApp.GetTitleForKeyFromVoc(VK_SHIFRSPEC, row["specid"].toInt(), true);
+    else
+      data.shifrspec = theApp.GetTitleForKeyFromVoc(VK_SHIFRSPEC, row["directid"].toInt(), true);
 
     data.isMagister = data.specOrProfilTag.toLower().trim() == "маг";
   }
