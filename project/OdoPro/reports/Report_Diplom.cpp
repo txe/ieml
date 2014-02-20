@@ -171,11 +171,17 @@ void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& priv
   bool renameUniver = privData.inYear.toInt() < 2011 || (privData.inYear.toInt() == 2011 && (privData.inMonth.toInt() < 7 || (privData.inMonth.toInt() == 7 && privData.inDay.toInt() < 8)));
   if (renameUniver)
   {
-    dirData.bottomInfo = L"Образовательная организация переименована в 2011 году.";
+    dirData.bottomInfo =  L"Образовательная организация переименована в 2011 году.";
     dirData.bottomInfo += L"\nСтарое полное официальное наименование образовательной организации – Государственное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет».";
+    dirData.bottomInfo += L"\n";
   }
-  dirData.bottomInfo += L"\nФорма обучения: заочная.\n";
-  dirData.bottomInfo += L"Часть образовательной программы в объеме ? недель освоена в ?.";
+  dirData.bottomInfo += L"Форма обучения: заочная.";
+  dirData.bottomInfo += L"\nЧасть образовательной программы в объеме ? недель освоена в ?.";
+
+  if (privData.direct.empty())
+    dirData.bottomInfo += L"\nСпециализация: " + privData.specializ.toLower() + L".";
+  else if (tag == "бак" || tag == "бакус")
+    dirData.bottomInfo += L"\nНаправленность (профиль) образовательной программы: " + privData.specOrProfil.toLower() + L".";
 }
 //-------------------------------------------------------------------------
 void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip, std::vector<Discip>& commonDiscip, std::vector<Discip>& specDiscip, string_t lang, string_t vkrTitle, bool useZe)
