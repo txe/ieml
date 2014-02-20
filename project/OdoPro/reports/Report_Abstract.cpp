@@ -146,7 +146,7 @@ void r::GetPrivateData(PrivateData& data, int studentId)
 
     data.diplomNum    = row["edunumdiplom"];
     data.regNum       = row["edunumreg"];
-    data.dataVidachi  = to_str_date(row["edudatediplom"]);
+    data.dataVidachi  = row["edudatediplom"];
     data.dataQualific = to_str_date(row["edudatequalif"]);
 
     if (data.direct.empty())

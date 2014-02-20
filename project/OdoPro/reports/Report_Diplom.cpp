@@ -35,9 +35,13 @@ void ReportDiplom::Run(int grpId, int studentId)
   macros.Cell(1, 8, 6, "Range.Select");
   macros.SelectionText(privData.prevDoc.toUpperFirst() + " " + privData.prevDocYear + " год");
 
-  // текущая дата
+  // номер регистрации
+  macros.Cell(1, 13, 5, "Range.Select");
+  macros.SelectionText(privData.regNum);
+
+  // дата выдачи
   macros.Cell(1, 15, 7, "Range.Select");
-  macros.SelectionText(r::GetCurrentDate());
+  macros.SelectionText(r::to_str_date(privData.dataVidachi, true));  
 
   // специалиста (специалиста с отличием, бакалавра, бакалавра с отличием)
   macros.Cell(1, 9, 4, "Range.Select");
@@ -178,7 +182,8 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
 {
   struct fun
   {
-    static string_t suffix(bool useZe, string_t val) { return useZe ? (val + "  з.е.") : r::weeks_to_str(val); }
+    static string_t ze_hours(bool useZe, string_t val) { return useZe ? (val + "  з.е.") : (val + " час."); }
+    static string_t ze_weeks(bool useZe, string_t val) { return useZe ? (val + "  з.е.") : r::weeks_to_str(val); }
   };
 
   std::vector<Discip> practice; // практики
@@ -207,12 +212,12 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
     {
       if (title.toUpper().trim() == string_t(L"ИНОСТРАННЫЙ ЯЗЫК"))
         title += " (" + lang + ")";
-      AddDiscip(commonDiscip, Discip(title, fun::suffix(useZe, times), ocenka, numPlan));
+      AddDiscip(commonDiscip, Discip(title, fun::ze_hours(useZe, times), ocenka, numPlan));
     }
     if (idclass == r::DT_PRACTICE)
     {
       practicTime += times.toInt();
-      practice.push_back(Discip(title, fun::suffix(useZe, times), ocenka));
+      practice.push_back(Discip(title, fun::ze_weeks(useZe, times), ocenka));
     }
     if (idclass == r::DT_ITOG_ATESTACIA)
       itog.push_back(Discip(title, "х", ocenka));
@@ -225,12 +230,12 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
 
   // сформируем specDiscip
   // практики
-  specDiscip.push_back(Discip("Практики", fun::suffix(useZe, toStr(practicTime)), "x"));
+  specDiscip.push_back(Discip("Практики", fun::ze_weeks(useZe, toStr(practicTime)), "x"));
   specDiscip.push_back(Discip("в том числе:", "", ""));
   for (size_t i = 0; i < practice.size(); ++i)
     specDiscip.push_back(practice[i]);
   // гос. аттестация
-  specDiscip.push_back(Discip("Государственная итоговая аттестация", fun::suffix(useZe, itogTime), "x"));
+  specDiscip.push_back(Discip("Государственная итоговая аттестация", fun::ze_weeks(useZe, itogTime), "x"));
   specDiscip.push_back(Discip("в том числе:", "", ""));
   for (size_t i = 0; i < itog.size(); ++i)
     specDiscip.push_back(itog[i]);
