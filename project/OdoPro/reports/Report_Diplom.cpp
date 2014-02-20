@@ -118,8 +118,8 @@ void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& priv
   bool isBachelor = privData.specOrProfilTag != "";
   
   // специалиста, специалиста с отличием, бакалавра, бакалавра с отличием
-  if (isBachelor  && privData.isOtlDiplom)   dirData.title1 = L"бакалавра с отличием";
-  if (isBachelor  && !privData.isOtlDiplom)  dirData.title1 = L"бакалавра";
+  if (isBachelor  && privData.isOtlDiplom)  dirData.title1 = L"бакалавра с отличием";
+  if (isBachelor  && !privData.isOtlDiplom) dirData.title1 = L"бакалавра";
   if (!isBachelor && privData.isOtlDiplom)  dirData.title1 = L"специалиста с отличием";
   if (!isBachelor && !privData.isOtlDiplom) dirData.title1 = L"специалиста";
 

@@ -146,6 +146,8 @@ void r::GetPrivateData(PrivateData& data, int studentId)
 
     data.diplomNum    = row["edunumdiplom"];
     data.regNum       = row["edunumreg"];
+    if (data.regNum.empty())
+      data.regNum = "<невалидный номер!>";
     data.dataVidachi  = row["edudatediplom"];
     data.dataQualific = to_str_date(row["edudatequalif"]);
 
