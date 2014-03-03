@@ -9,6 +9,10 @@
 #include "UnitFuncs.h"
 #include "mysql.h"
 #include "MacroExcel.h"
+#include <vector>
+#include <string>
+#include <sstream>
+
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
@@ -167,11 +171,12 @@ void    __fastcall  TFormReportUchebKartStud::CreateWordDocument(void)
 {
     AnsiString NumZ, SecondName, FirstName, ThirdName, Adres, NumPricas, InDate,
         spec, VipQualifWork, OutDate, Qualific, nGak;
+    AnsiString perevodInfo[5];
 
     GetOchenkiStudenta();
     UpdateView();
     GetInfoStudent(NumZ, SecondName, FirstName, ThirdName, Adres, NumPricas, InDate,
-        spec, VipQualifWork, OutDate, Qualific, nGak);
+        spec, VipQualifWork, OutDate, Qualific, nGak, perevodInfo);
 
     ExcelMacros macros;
     macros.BeginMacros();
@@ -207,6 +212,17 @@ void    __fastcall  TFormReportUchebKartStud::CreateWordDocument(void)
         macros.Select("H25");
         macros.Formula(" комиссии  (протокол №    " + nGak);
     }
+
+    // заполняем отметки о переводах
+    AnsiString perevodPos[5] = {"A62", "H62", "A96", "H96", "A130"};
+    for (int i = 0; i < 5; ++i)
+       if (perevodInfo[i] != "")
+       {
+         macros.Select(perevodPos[i]);
+         macros.Formula(perevodInfo[i]);
+       }
+
+
     // зполняем оценками таблицу
 
     for (int i = 0; i < mas_ochenka.size(); i++)
@@ -356,7 +372,7 @@ void    __fastcall  TFormReportUchebKartStud::GetOchenkiStudenta(void)
 //---------------------------------------------------------------------------
 void __fastcall TFormReportUchebKartStud::GetInfoStudent(AnsiString& NumZ, AnsiString& SN, AnsiString& FN, AnsiString& TN,
         AnsiString& Adres, AnsiString& NumPricas, AnsiString& InDate, AnsiString& spec,
-        AnsiString& VipQualifWork, AnsiString& OutDate, AnsiString& Qualific, AnsiString& nGak)
+        AnsiString& VipQualifWork, AnsiString& OutDate, AnsiString& Qualific, AnsiString& nGak, AnsiString perevodInfo[5])
 {
     NumZ = "???";
     SN = "???";
@@ -374,7 +390,7 @@ void __fastcall TFormReportUchebKartStud::GetInfoStudent(AnsiString& NumZ, AnsiS
     MYSQL_ROW row;
 
     AnsiString myquery = "select s.secondname,s.firstname,s.thirdname, s.addr," \
-        "s.enternum,s.enterdate,s.specid, s.vkr_title, s.znum, s.edudatequalif, s.edunumprotgak from "+opts.DBStudTable+" as s "\
+        "s.enternum,s.enterdate,s.specid, s.vkr_title, s.znum, s.edudatequalif, s.edunumprotgak, s.perevod_na_kurs from "+opts.DBStudTable+" as s "\
         "where s.deleted=0 and s.id=" + ToStr(AnsiString(idstudent));
 
     mysql_query(mysql,myquery.c_str());
@@ -398,6 +414,7 @@ void __fastcall TFormReportUchebKartStud::GetInfoStudent(AnsiString& NumZ, AnsiS
 
                 OutDate = AnsiString(row[9]);
                 nGak =  AnsiString(row[10]);
+                StringToPerevodInfo(perevodInfo, AnsiString(row[11]));
             }
         }
         mysql_free_result(result);
@@ -463,4 +480,28 @@ void __fastcall TFormReportUchebKartStud::StringToAudHours(AnsiString  h[12], An
     }
 }
 //---------------------------------------------------------------------------
+void __fastcall TFormReportUchebKartStud::StringToPerevodInfo(AnsiString info[5], AnsiString str)
+{
+    std::vector<AnsiString> list;
+    std::stringstream ss(str.c_str());
+	std::string item;
+    while (std::getline(ss, item, '&'))
+	    list.push_back(item.c_str());
+
+    if (list.size() == 10)
+        for (int i = 0; i < 10; i += 2)
+        {
+            AnsiString number = list[i];
+            AnsiString date   = list[i+1];
+            if (number != "" && date != "")
+            {
+              try
+              {
+                date = GetDateAsString(date, true);
+                info[i/2] = "Распоряжение № " + number + "  от  " + date;
+              } catch (...) {}
+             }
+
+        }
+}
 
