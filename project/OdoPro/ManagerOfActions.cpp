@@ -68,13 +68,13 @@ BOOL CALLBACK ManagerOfActions::ElementEventProcMenu( LPVOID tag, HELEMENT he, U
 		dlg.DoModal();
 		return TRUE;
 	}
-	if (aux::wcseq(id, L"buh-report"))
+	if (aux::wcseq(id, L"buh-report")) // оплата подробно
 	{
 		CActionBuhReport dlg(main->_parent);
 		dlg.DoModal();
 		return TRUE;
 	}
-	if (aux::wcseq(id, L"buh-report2"))
+	if (aux::wcseq(id, L"buh-report2")) // оплата на начало месяца
 	{
 		CActionBuhReport2 dlg(main->_parent);
 		dlg.DoModal();

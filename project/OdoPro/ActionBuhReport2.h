@@ -22,13 +22,13 @@ private:
 	void FullSpecInLst();
 	void StateChange();
 	void CreateBuhData(int koef1, int koef2, int koef3);
-	void SetKoefPlan(int koef, string_t koefType, bool isFeb);
 	void ProcessPlan(int koef1, int koef2, int koef3);
 	void ProcessPay();
 	string_t GetSpecLst(string_t name);
 	string_t GetGrpLst(string_t name);
 	void GetYearMonthDay(std::wstring date1, int& year, int& month, int& day);
 	
+  int MonthCount(int studyYear, int studyMonth, int selectYear, int selectMonth, int maxMonths);
 	// 
 	void Report(void);
 	// обрабатывает кнопки

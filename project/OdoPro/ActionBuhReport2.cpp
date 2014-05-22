@@ -187,6 +187,23 @@ void CActionBuhReport2::GetYearMonthDay(std::wstring date1, int& year, int& mont
 	day   = aux::wtoi((result.size() > 2)?result[2].c_str():L"0", 0);
 }
 
+int CActionBuhReport2::MonthCount(int studyYear, int studyMonth, int selectYear, int selectMonth, int maxMonths)
+{
+  int count = 0;
+  if (studyYear == selectYear)
+    count = selectMonth - studyMonth;
+  else if (selectYear > studyYear)
+    count =  (12 - studyMonth) + selectMonth + (selectYear - studyYear) * 12;
+  else
+    count = 0;
+
+  if (count < 0)
+    count = 0;
+  if (count > maxMonths)
+    count = maxMonths;
+  return count;
+}
+
 void CActionBuhReport2::Report(void)
 {
 	string_t date1 = json::v2t(link_element("date-1").get_value());
@@ -206,13 +223,16 @@ void CActionBuhReport2::Report(void)
 	string_t year  = json::v2t(link_element("pay-year").get_value());
 	int dYear  = aux::wtoi(year);
 
-	// если учебый год 2013-2014 то коэфициент изменения плана
-	// на февр 13-14, начало будет в августе 13
-	int koef1 = (xMonth - 8) + (xYear - dYear) * 12;
-	// на сент 13-14, начало будет в сентябре 13
-	int koef2 = (xMonth - 9) + (xYear - dYear) * 12;
-	// на февр 14-15, начало будет в феврале 14
-	int koef3 = (xMonth - 2) + (xYear - dYear - 1) * 12;
+  // !!! ранее февральские планы делились пополам 6 и 6 месяцев
+  // теперь они деляться на 7 и 5 месяцев
+
+	// учебый год 2013-2014, найдем сколько месяцев попадет в отчет
+	// на февр 13-14, начало половинки будет в сентябре 13 и до февраля, т.е. не более 5 месяцев
+	int koef1 = MonthCount(dYear, 9, xYear, xMonth, 5);
+	// на сент 13-14, начало будет в сентябре 13 и до следующиего сентября, т.е. не более 12 месяцев
+	int koef2 = MonthCount(dYear, 9, xYear, xMonth, 12);
+	// на февр 13-14, начало половинки будет в феврале 14 и до сентября, т.е. не более 7 месяцев
+	int koef3 = MonthCount(dYear+1, 2, xYear, xMonth, 12);
 
 	if (link_element("o-spec").get_state(STATE_CHECKED))
 		if (GetSpecLst("").empty())
@@ -421,26 +441,7 @@ void CActionBuhReport2::CreateBuhData(int koef1, int koef2, int koef3)
 	ShellExecute(NULL, L"open", name.str().c_str(), NULL, NULL, SW_SHOWNORMAL);
 }
 
-void CActionBuhReport2::SetKoefPlan(int koef, string_t koefType, bool isFeb)
-{
-	// поправим план, за каждый месяц 1/12(6) плана
-	// если >= 12(6), то ничего делать не надо
-	if (koef <= 0)
-		theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = 0 WHERE old_pay.type = " + koefType);
-	else
-	{
-		// полный учебрый год для сентябрьских
-		if (!isFeb && koef < 12)	
-			theApp.GetCon().Query("UPDATE old_pay "
-			" SET old_pay.plan = (old_pay.plan * " +string_t(aux::itow(koef)) + " / 12.0)"
-			" WHERE old_pay.type = " + koefType);
-		// половина года для февральских
-		if (isFeb && koef < 6)	
-			theApp.GetCon().Query("UPDATE old_pay "
-			" SET old_pay.plan = (old_pay.plan * " +string_t(aux::itow(koef)) + " / 6.0)"
-			" WHERE old_pay.type = " + koefType);
-	}
-}
+
 
 void CActionBuhReport2::ProcessPlan(int koef1, int koef2, int koef3)
 {
@@ -487,8 +488,13 @@ void CActionBuhReport2::ProcessPlan(int koef1, int koef2, int koef3)
 		" WHERE old_pay.type = 'a' AND p.idstud = old_pay.idstud "
 		" AND p.idopts = old_pay.idopt AND p.deleted = 0 ");
 
-	// поправим план, за каждый месяц 1/12 плана
-	SetKoefPlan(koef2, "'a'", false);
+	// поправим план
+  if (koef2 <= 0) // от 0 до 12
+    theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = 0 WHERE old_pay.type = 'a'");
+  else if (koef2 != 12)
+    theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = (old_pay.plan * " +string_t(aux::itow(koef2)) + " / 12.0) WHERE old_pay.type = 'a'");
+
+
 
 	//# это февральские предыдущие
 	theApp.GetCon().Query("INSERT old_pay (idstud, idopt, datestart, plan, half_year, pay, type)             "
@@ -507,17 +513,20 @@ void CActionBuhReport2::ProcessPlan(int koef1, int koef2, int koef3)
 		" SET old_pay.plan = p.commoncountmoney "
 		" WHERE old_pay.type = 'b' AND p.idstud = old_pay.idstud "
 		" AND p.idopts = old_pay.idopt AND p.deleted = 0 ");
-	// уполовиним план, если это не сокращенный год
-	theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = old_pay.plan/2 WHERE old_pay.type = 'b' AND old_pay.half_year = 0 ");
-	// уберем план для сокращенных февральских, т.к. у них нет подходящей половинки 
+	
+  // уберем план для сокращенных февральских, т.к. у них нет подходящей половинки 
 	theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = 0 WHERE old_pay.type = 'b' AND old_pay.half_year = 1 ");
-	//скоректируем выплаты
-	theApp.GetCon().Query("UPDATE old_pay SET old_pay.pay = old_pay.pay - old_pay.plan WHERE old_pay.type = 'b' ");
-	//сделаеим для них проверку что бы не было отрицательных оплат
-	theApp.GetCon().Query("UPDATE old_pay SET old_pay.pay = 0 WHERE old_pay.pay < 0 AND old_pay.type = 'b' ");
+  //скоректируем выплаты, они должны остаться только для второй половике
+  theApp.GetCon().Query("UPDATE old_pay SET old_pay.pay = old_pay.pay - (old_pay.plan * 7.0 / 12.0) WHERE old_pay.type = 'b' ");
+  //сделаем для них проверку что бы не было отрицательных оплат
+  theApp.GetCon().Query("UPDATE old_pay SET old_pay.pay = 0 WHERE old_pay.pay < 0 AND old_pay.type = 'b' ");
 
-	// поправим план, за каждый месяц 1/6 плана
-	SetKoefPlan(koef1, "'b'", true);
+  // поправим план
+  if (koef1 <= 0) // от 0 до 5
+    theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = 0 WHERE old_pay.type = 'b'");
+  else
+    theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = (old_pay.plan * " +string_t(aux::itow(koef1)) + " / 12.0) WHERE old_pay.type = 'b'");
+
 
 	//# это февральские последующие
 	theApp.GetCon().Query("INSERT old_pay (idstud, idopt, datestart, plan, half_year, pay, type)            "
@@ -535,13 +544,19 @@ void CActionBuhReport2::ProcessPlan(int koef1, int koef2, int koef3)
 		" SET old_pay.plan = p.commoncountmoney "
 		" WHERE old_pay.type = 'c' AND p.idstud = old_pay.idstud "
 		" AND p.idopts = old_pay.idopt AND p.deleted = 0 ");
-	// уполовиним план, но если это сокращенный год, то этого делать не надо
-	theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = old_pay.plan/2 WHERE old_pay.type = 'c' AND old_pay.half_year = 0 ");
-	//# сделаеим для них проверку что бы не было оплаты больше плана
-	theApp.GetCon().Query("UPDATE old_pay SET old_pay.pay = old_pay.plan WHERE old_pay.pay > old_pay.plan AND old_pay.type = 'c' ");
 
-	// поправим план, за каждый месяц 1/6 плана
-	SetKoefPlan(koef3, "'c'", true);
+  // поправим план
+  if (koef3 <= 0) // от 0 до 7
+    theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = 0 WHERE old_pay.type = 'c'");
+  else
+  {
+    theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = (old_pay.plan * " +string_t(aux::itow(koef3)) + " / 12.0) WHERE old_pay.type = 'c' AND old_pay.half_year = 0");
+    // для сокращенных по своему
+    theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = (old_pay.plan * " +string_t(aux::itow(koef3)) + " / 7.0) WHERE old_pay.type = 'c' AND old_pay.half_year = 1");
+  }
+
+  //# сделаем для них проверку что бы не было оплаты больше плана
+  theApp.GetCon().Query("UPDATE old_pay SET old_pay.pay = old_pay.plan WHERE old_pay.pay > old_pay.plan AND old_pay.type = 'c' ");
 
 
 	// этап 2
@@ -704,8 +719,9 @@ void CActionBuhReport2::ProcessPay()
 		" SET pay1.plan = p.commoncountmoney "
 		" WHERE pay1.type = 'b' AND p.idstud = pay1.idstud "
 		" AND p.idopts = pay1.idopt AND p.deleted = 0 ");
-	// уполовиним план, но если это сокращенный год, то этого делать не надо
-	theApp.GetCon().Query("UPDATE pay1 SET pay1.plan = pay1.plan/2 WHERE pay1.type = 'b' AND pay1.half_year = 0 ");
+
+	// уполовиним план, но если это сокращенный год, то этого делать не надо , здесь правильно что 7.0
+	theApp.GetCon().Query("UPDATE pay1 SET pay1.plan = (pay1.plan * 7.0 / 12.0)  WHERE pay1.type = 'b' AND pay1.half_year = 0 ");
 	//скоректируем выплаты
 	theApp.GetCon().Query("UPDATE pay1 SET pay1.pay = pay1.pay - pay1.plan WHERE pay1.type = 'b' ");
 	// сделаеим для них проверку что бы не было отрицательных оплат
@@ -730,8 +746,8 @@ void CActionBuhReport2::ProcessPay()
 		" SET pay1.plan = p.commoncountmoney "
 		" WHERE pay1.type = 'c' AND p.idstud = pay1.idstud "
 		" AND p.idopts = pay1.idopt AND p.deleted = 0 ");
-	// уполовиним план, но если это сокращенный год, то этого делать не надо
-	theApp.GetCon().Query("UPDATE pay1 SET pay1.plan = pay1.plan/2 WHERE pay1.type = 'c' AND pay1.half_year = 0 ");
+	// уполовиним план, но если это сокращенный год, то этого делать не надо, здесь правильно что 7.0
+	theApp.GetCon().Query("UPDATE pay1 SET pay1.plan = (pay1.plan * 7.0 / 12.0) WHERE pay1.type = 'c' AND pay1.half_year = 0 ");
 	// сделаим для них проверку что бы не было оплаты больше плана
 	theApp.GetCon().Query("UPDATE pay1 SET pay1.pay = pay1.plan WHERE pay1.pay > pay1.plan AND pay1.type = 'c' ");
 
