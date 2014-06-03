@@ -28,7 +28,7 @@ private:
 	string_t GetGrpLst(string_t name);
 	void GetYearMonthDay(std::wstring date1, int& year, int& month, int& day);
 	
-  int MonthCount(int studyYear, int studyMonth, int selectYear, int selectMonth, int maxMonths);
+  int MonthCount(int studyYear, int studyMonth, int selectYear, int selectMonth);
 	// 
 	void Report(void);
 	// обрабатывает кнопки

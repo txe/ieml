@@ -187,20 +187,18 @@ void CActionBuhReport2::GetYearMonthDay(std::wstring date1, int& year, int& mont
 	day   = aux::wtoi((result.size() > 2)?result[2].c_str():L"0", 0);
 }
 
-int CActionBuhReport2::MonthCount(int studyYear, int studyMonth, int selectYear, int selectMonth, int maxMonths)
+int CActionBuhReport2::MonthCount(int studyYear, int studyMonth, int selectYear, int selectMonth)
 {
   int count = 0;
   if (studyYear == selectYear)
     count = selectMonth - studyMonth;
   else if (selectYear > studyYear)
-    count =  (12 - studyMonth) + selectMonth + (selectYear - studyYear) * 12;
+    count =  (12 - studyMonth) + selectMonth + (selectYear - studyYear - 1) * 12;
   else
     count = 0;
 
   if (count < 0)
     count = 0;
-  if (count > maxMonths)
-    count = maxMonths;
   return count;
 }
 
@@ -228,11 +226,11 @@ void CActionBuhReport2::Report(void)
 
 	// учебый год 2013-2014, найдем сколько месяцев попадет в отчет
 	// на февр 13-14, начало половинки будет в сентябре 13 и до февраля, т.е. не более 5 месяцев
-	int koef1 = MonthCount(dYear, 9, xYear, xMonth, 5);
-	// на сент 13-14, начало будет в сентябре 13 и до следующиего сентября, т.е. не более 12 месяцев
-	int koef2 = MonthCount(dYear, 9, xYear, xMonth, 12);
+	int koef1 = MonthCount(dYear, 9, xYear, xMonth);
+	// на сент 13-14, начало будет в сентябре 13 и до следующиего сентября, т.е. не более 12 месяцев, но для сокращ. не более 7
+	int koef2 = MonthCount(dYear, 9, xYear, xMonth);
 	// на февр 13-14, начало половинки будет в феврале 14 и до сентября, т.е. не более 7 месяцев
-	int koef3 = MonthCount(dYear+1, 2, xYear, xMonth, 12);
+	int koef3 = MonthCount(dYear+1, 2, xYear, xMonth);
 
 	if (link_element("o-spec").get_state(STATE_CHECKED))
 		if (GetSpecLst("").empty())
@@ -441,6 +439,12 @@ void CActionBuhReport2::CreateBuhData(int koef1, int koef2, int koef3)
 	ShellExecute(NULL, L"open", name.str().c_str(), NULL, NULL, SW_SHOWNORMAL);
 }
 
+string_t maxTo(int monthCount, int maxCount)
+{
+  if (monthCount > maxCount)
+    return string_t(aux::itow(maxCount));
+  return string_t(aux::itow(monthCount));
+}
 
 
 void CActionBuhReport2::ProcessPlan(int koef1, int koef2, int koef3)
@@ -489,11 +493,14 @@ void CActionBuhReport2::ProcessPlan(int koef1, int koef2, int koef3)
 		" AND p.idopts = old_pay.idopt AND p.deleted = 0 ");
 
 	// поправим план
-  if (koef2 <= 0) // от 0 до 12
+  if (koef2 <= 0)
     theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = 0 WHERE old_pay.type = 'a'");
-  else if (koef2 != 12)
-    theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = (old_pay.plan * " +string_t(aux::itow(koef2)) + " / 12.0) WHERE old_pay.type = 'a'");
-
+  else
+  {
+    // на сент 13-14, начало будет в сентябре 13 и до следующиего сентября, т.е. не более 12 месяцев, но для сокращ. не более 5
+    theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = (old_pay.plan * " + maxTo(koef2, 12) + " / 12.0) WHERE old_pay.type = 'a' AND old_pay.half_year = 0");
+    theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = (old_pay.plan * " + maxTo(koef2, 5) + " / 5.0) WHERE old_pay.type = 'a' AND old_pay.half_year = 1");
+  }
 
 
 	//# это февральские предыдущие
@@ -525,8 +532,10 @@ void CActionBuhReport2::ProcessPlan(int koef1, int koef2, int koef3)
   if (koef1 <= 0) // от 0 до 5
     theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = 0 WHERE old_pay.type = 'b'");
   else
-    theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = (old_pay.plan * " +string_t(aux::itow(koef1)) + " / 12.0) WHERE old_pay.type = 'b'");
-
+  {
+    // для полн. не более 5 месяцев, а сокращ. вообще не должны попасть
+    theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = (old_pay.plan * " + maxTo(koef1, 5) + " / 12.0) WHERE old_pay.type = 'b'");
+  }
 
 	//# это февральские последующие
 	theApp.GetCon().Query("INSERT old_pay (idstud, idopt, datestart, plan, half_year, pay, type)            "
@@ -546,13 +555,13 @@ void CActionBuhReport2::ProcessPlan(int koef1, int koef2, int koef3)
 		" AND p.idopts = old_pay.idopt AND p.deleted = 0 ");
 
   // поправим план
-  if (koef3 <= 0) // от 0 до 7
+  if (koef3 <= 0)
     theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = 0 WHERE old_pay.type = 'c'");
   else
   {
-    theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = (old_pay.plan * " +string_t(aux::itow(koef3)) + " / 12.0) WHERE old_pay.type = 'c' AND old_pay.half_year = 0");
-    // для сокращенных по своему
-    theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = (old_pay.plan * " +string_t(aux::itow(koef3)) + " / 7.0) WHERE old_pay.type = 'c' AND old_pay.half_year = 1");
+    // для полного и сокращ. не может быть больше 7 месяцев
+    theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = (old_pay.plan * " + maxTo(koef3, 7) + " / 12.0) WHERE old_pay.type = 'c' AND old_pay.half_year = 0");
+    theApp.GetCon().Query("UPDATE old_pay SET old_pay.plan = (old_pay.plan * " + maxTo(koef3, 7) + " / 7.0) WHERE old_pay.type = 'c' AND old_pay.half_year = 1");
   }
 
   //# сделаем для них проверку что бы не было оплаты больше плана
