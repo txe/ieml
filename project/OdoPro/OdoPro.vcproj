@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="OdoPro"
 	ProjectGUID="{CC4275A9-09EF-4454-902A-C0EE1B075180}"
 	RootNamespace="OdoPro"
@@ -686,6 +686,14 @@
 			</File>
 			<File
 				RelativePath=".\reports\Report_Diplom.h"
+				>
+			</File>
+			<File
+				RelativePath=".\reports\Report_Dogovor2014.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\reports\Report_Dogovor2014.h"
 				>
 			</File>
 			<File
