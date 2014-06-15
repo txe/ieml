@@ -22,6 +22,7 @@ public:
   void SelectionUnderlineText(const string_t& text, bool underline); 
   void SelectionTypeParagraph(int count  = 1);
   void InsertLine(const string_t& line);
+  void Replace(const string_t& text, const string_t& repl);
   //---------------------------------------------------------------------------
   void TablesAdd(int rowCount, int colCount);
   void TablesColumns(int tableNum, int colNum, const string_t& param);
