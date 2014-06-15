@@ -47,7 +47,7 @@ ReportDogovor::ReportDogovorData ReportDogovor::GetData(int grpId, int studentId
   else                         data.kod += privData.direct;
 
   string_t dogovorQuery = string_t() +
-    "SELECT s.dogyearid,s.dogshifrid,s.dogfastid,s.dognum,s.eduformid,s.passseries,s.passnum,s.passdate,s.passplace,s.addr,s.liveaddr,s.phones " \
+    "SELECT s.dogyearid,s.dogshifrid,s.dogfastid,s.dognum,s.eduformid,s.passseries,s.passnum,s.passkod,s.passdate,s.passplace,s.addr,s.liveaddr,s.phones " \
     " FROM students as s WHERE s.deleted=0 and s.id=" + aux::itow(studentId);
   mybase::MYFASTRESULT dogovorRes = theApp.GetCon().Query(dogovorQuery);
   if (mybase::MYFASTROW	row = dogovorRes.fetch_row())
@@ -62,7 +62,7 @@ ReportDogovor::ReportDogovorData ReportDogovor::GetData(int grpId, int studentId
     data.dogovorNum = dogShifr + "-" + dogYear + dogFast + "-" + row["dognum"];
 
     //
-    data.passport = "Паспорт серия " + row["passseries"] + " №" + row["passnum"] + " код подразделения выдан " 
+    data.passport = "Паспорт серия " + row["passseries"] + " №" + row["passnum"] + " код подразделения " + row["passkod"] + " выдан " 
       + r::to_str_date(row["passdate"], "года ") + row["passplace"];
     data.adres1 = "Адрес по месту регистрации: " + row["addr"];
     data.adres2 = "Адрес по месту фактического проживания: " + row["liveaddr"];

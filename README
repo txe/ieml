@@ -5,14 +5,13 @@
 
 
 //***  для служебных целей  ***//
+ALTER TABLE `students` ADD COLUMN `passkod` VARCHAR(10) NULL DEFAULT NULL AFTER `passnum`;
 
+// устарело
 ALTER TABLE `students` CHANGE COLUMN `edunumdiplom` `edunumdiplom` VARCHAR(15) NULL DEFAULT NULL AFTER `roleid`;
 ALTER TABLE `students` ADD COLUMN `edunumprilog` VARCHAR(15) NULL DEFAULT NULL AFTER `edunumdiplom`;
 
 
-
-
-// устарело
 ALTER TABLE students ADD COLUMN perevod_na_kurs text DEFAULT NULL
 
 не забыть изменить odoportal.cfg на config.ini и добавить секцию [link]
