@@ -107,8 +107,15 @@ string_t ReportDogovor::MoneyToStr(int money)
   string_t result = "";
 
   int dig,dec,ed,hand;
-  if (moneyStr.size() <= 5)
+  if (moneyStr.size() <= 6)
   {
+    if (moneyStr.size() == 6)
+    {
+      hand = moneyStr.subString(0,1).toInt();
+      if (hand > 0)
+        result = handred[hand-1] + " ";
+      moneyStr = moneyStr.subString(1, -1);
+    }
     if (moneyStr.size() == 5)
     {
       dig = moneyStr.subString(0,2).toInt();
