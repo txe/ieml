@@ -25,7 +25,7 @@ namespace r
                      DT_SCI_WORK = 8        // научно-исследовательская рабоа
   };
 //-------------------------------------------------------------------------
-  string_t to_str_date(string_t sqlDate, bool isYear = false);
+  string_t to_str_date(string_t sqlDate, string_t suffix = L"");
   string_t to_digital_date(string_t sqlDate);
   string_t hours_to_str(string_t hours);
   string_t weeks_to_str(string_t weeks);
@@ -34,7 +34,7 @@ namespace r
   inline string_t GetMonth(string_t sqlDate) { return sqlDate.subString(5,2); }
   inline string_t GetDay(string_t sqlDate)   { return sqlDate.subString(8,2); }
   
-  string_t GetCurrentDate();
+  string_t GetCurrentDate(string_t suffix);
 
   inline string_t toOcenka(int num)
   {

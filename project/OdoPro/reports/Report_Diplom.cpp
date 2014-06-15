@@ -29,7 +29,7 @@ void ReportDiplom::Run(int grpId, int studentId)
 
   // дата рождения
   macros.Cell(1, 6, 8, "Range.Select");
-  macros.SelectionText(r::to_str_date(privData.bornDate, true));
+  macros.SelectionText(r::to_str_date(privData.bornDate, "года"));
 
   // аттестат
   macros.Cell(1, 8, 6, "Range.Select");
@@ -41,7 +41,7 @@ void ReportDiplom::Run(int grpId, int studentId)
 
   // дата выдачи
   macros.Cell(1, 15, 7, "Range.Select");
-  macros.SelectionText(r::to_str_date(privData.dataVidachi, true));  
+  macros.SelectionText(r::to_str_date(privData.dataVidachi, "года"));  
 
   // специалиста (специалиста с отличием, бакалавра, бакалавра с отличием)
   macros.Cell(1, 9, 4, "Range.Select");

@@ -113,7 +113,7 @@ void ReportCharacteristic::Run(int grpId, int studentId)
   macros.SelectionText("Д.В. Хавин\n");
   macros.SelectionText("\n");
   macros.SelectionText("vbTab");
-  macros.SelectionText(r::GetCurrentDate() + "\n");
+  macros.SelectionText(r::GetCurrentDate("года") + "\n");
  
   macros.EndMacros();
   macros.RunMacros("");

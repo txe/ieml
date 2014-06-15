@@ -3,7 +3,7 @@
 #include "../SingeltonApp.h"
 
 //---------------------------------------------------------------------------
-string_t r::to_str_date(string_t sqlDate, bool isYear /*= false*/)
+string_t r::to_str_date(string_t sqlDate, string_t suffix /* = L"" */)
 {
   static string_t mounthNames[12]={ "€нвар€", "феврал€", "марта", "апрел€", "ма€", "июн€", "июл€", "августа", "сент€бр€", "окт€бр€", "но€бр€", "декабр€"};
   string_t res = "";
@@ -21,8 +21,8 @@ string_t r::to_str_date(string_t sqlDate, bool isYear /*= false*/)
     res += mounthNames[mNum] + " ";
     // год
     res += sqlDate.subString(0,4);
-    if (isYear) 
-      res += " года";
+    if (suffix.size()) 
+      res += L" " + suffix;
   }
   catch(...)
   {
@@ -84,11 +84,11 @@ string_t r::weeks_to_str(string_t weeks)
   return weeks;
 }
 //---------------------------------------------------------------------------
-string_t r::GetCurrentDate()
+string_t r::GetCurrentDate(string_t suffix)
 {
   mybase::MYFASTRESULT res = theApp.GetCon().Query("SELECT CURDATE() as date");
   if (mybase::MYFASTROW	row = res.fetch_row())
-    return r::to_str_date(row["date"], true);
+    return r::to_str_date(row["date"], suffix);
   return r::to_str_date("");
 }
 //---------------------------------------------------------------------------

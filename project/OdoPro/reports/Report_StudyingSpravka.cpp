@@ -66,14 +66,14 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   macros.Cell(1, 4, 2, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphCenter");
   macros.Cell(1, 4, 2, "VerticalAlignment=wdCellAlignVerticalTop");
-  macros.Cell(1, 4, 2, "Range.Text=" + toWrap(r::GetCurrentDate()));
+  macros.Cell(1, 4, 2, "Range.Text=" + toWrap(r::GetCurrentDate("года")));
 
   macros.Cell(1, 2, 1, "Range.Select");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.Cell(1, 2, 1, "VerticalAlignment=wdCellAlignVerticalTop");
 
   // дата рождени€
-  macros.SelectionText("ƒата рождени€ " + r::to_str_date(privData.bornDate, true));
+  macros.SelectionText("ƒата рождени€ " + r::to_str_date(privData.bornDate, "года"));
   macros.SelectionTypeParagraph(2);
   macros.SelectionText("ƒокумент об уровне образовани€, на основании которого поступила на обучение:\n");
   macros.SelectionText(privData.prevDoc + " " + privData.prevDocYear + " год");
