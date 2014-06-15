@@ -12,7 +12,10 @@
 #include "ManadUpdate.h"
 #include "reports/Report_Abstract.h"
 
-enum VOK_KEY {VK_GRP, VK_EDUCATIONS, VK_EDUDOC, VK_SPECS, VK_SPEZIALIZ, VK_QUALIFIC, VK_DIRECT, VK_DISCIPCLASSIFIC, VK_SHIFRSPEC};
+namespace vok_key
+{
+  enum VOK_KEY {VK_GRP, VK_EDUCATIONS, VK_EDUDOC, VK_SPECS, VK_SPEZIALIZ, VK_QUALIFIC, VK_DIRECT, VK_DISCIPCLASSIFIC, VK_SHIFRSPEC};
+}
 
 class SingeltonApp
 {
@@ -40,7 +43,7 @@ public:
 	// возвращает ФИО текущего студента
 	string_t GetFIO(void);
 	// возвращает описание для индефикатора и ключа из таблицы VOC
-	string_t GetTitleForKeyFromVoc(VOK_KEY vkey, int num, bool no_throw = false, string_t* get_tag = NULL);
+  string_t GetTitleForKeyFromVoc(vok_key::VOK_KEY vkey, int num, bool no_throw = false, string_t* get_tag = NULL);
 	// возвращает для индификатора имя группы
 	string_t GetGroupName(int grpid);
 	// возвращает ид специальности для данного студента

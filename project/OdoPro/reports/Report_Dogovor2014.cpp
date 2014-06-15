@@ -27,9 +27,23 @@ void ReportDogovor::Run(int grpId, int studentId)
 ReportDogovor::ReportDogovorData ReportDogovor::GetData(int grpId, int studentId)
 {
   ReportDogovorData data;
+
+  string_t  query = string_t() +
+    "SELECT s.secondname,s.firstname,s.thirdname,s.dogyearid,s.dogshifrid,s.dogfastid,s.dognum " \
+    " FROM students as s WHERE s.deleted=0 and s.id=" + aux::itow(studentId);
+
+  mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
+  if (mybase::MYFASTROW	row = res.fetch_row())
+  {
+    data.fio = row["secondname"] + " " + row["firstname"] + " " + row["thirdname"];
+  
+    theApp.GetTitleForKeyFromVoc(vok_key::VK_SPECS, row["educationid"].toInt(), true);
+  }
+
+
   data.dogovorNum = L"123";
-  data.currentData  = L"01 августа 2014 г.";
-  data.fio = L"Гурьянов Евгений Витальевич";
+  data.currentData  = r::GetCurrentDate("г.");
+
   data.programma = L"программа";
   data.kvalif = L"студент";
   data.numSum = L"32000";

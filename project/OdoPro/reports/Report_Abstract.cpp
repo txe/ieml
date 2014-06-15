@@ -119,19 +119,19 @@ void r::GetPrivateData(PrivateData& data, int studentId)
     data.secondName = row["secondname"];
     data.firstName  = row["firstname"];
     data.thirdName  = row["thirdname"];
-    data.grpName    = theApp.GetTitleForKeyFromVoc(VK_GRP, row["grpid"].toInt(), true);
+    data.grpName    = theApp.GetTitleForKeyFromVoc(vok_key::VK_GRP, row["grpid"].toInt(), true);
     data.bornDate   = row["bdate"];
     data.vkrTitle   = row["vkr_title"];
     
-    data.prevEdu       = theApp.GetTitleForKeyFromVoc(VK_EDUCATIONS, row["educationid"].toInt(), true);
-    data.prevDoc       = theApp.GetTitleForKeyFromVoc(VK_EDUDOC, row["edudocid"].toInt(), true);
+    data.prevEdu       = theApp.GetTitleForKeyFromVoc(vok_key::VK_EDUCATIONS, row["educationid"].toInt(), true);
+    data.prevDoc       = theApp.GetTitleForKeyFromVoc(vok_key::VK_EDUDOC, row["edudocid"].toInt(), true);
     data.prevDocYear   = GetYear(row["eduenddate"]);
     data.prevPlace     = row["eduplace"];
     
-    data.specOrProfil  = theApp.GetTitleForKeyFromVoc(VK_SPECS, row["specid"].toInt(), true, &data.specOrProfilTag);
-    data.specializ  = theApp.GetTitleForKeyFromVoc(VK_SPEZIALIZ, row["specid"].toInt(), true);
-    data.qualific   = theApp.GetTitleForKeyFromVoc(VK_QUALIFIC, row["specid"].toInt(), true);
-    data.direct     = theApp.GetTitleForKeyFromVoc(VK_DIRECT, row["directid"].toInt(), true);
+    data.specOrProfil  = theApp.GetTitleForKeyFromVoc(vok_key::VK_SPECS, row["specid"].toInt(), true, &data.specOrProfilTag);
+    data.specializ  = theApp.GetTitleForKeyFromVoc(vok_key::VK_SPEZIALIZ, row["specid"].toInt(), true);
+    data.qualific   = theApp.GetTitleForKeyFromVoc(vok_key::VK_QUALIFIC, row["specid"].toInt(), true);
+    data.direct     = theApp.GetTitleForKeyFromVoc(vok_key::VK_DIRECT, row["directid"].toInt(), true);
     data.inYear     = GetYear(row["enterdate"]);
     data.inMonth    = GetMonth(row["enterdate"]);
     data.inDay      = GetDay(row["enterdate"]);
@@ -152,9 +152,9 @@ void r::GetPrivateData(PrivateData& data, int studentId)
     data.dataQualific = to_str_date(row["edudatequalif"]);
 
     if (data.direct.empty())
-      data.shifrspec = theApp.GetTitleForKeyFromVoc(VK_SHIFRSPEC, row["specid"].toInt(), true);
+      data.shifrspec = theApp.GetTitleForKeyFromVoc(vok_key::VK_SHIFRSPEC, row["specid"].toInt(), true);
     else
-      data.shifrspec = theApp.GetTitleForKeyFromVoc(VK_SHIFRSPEC, row["directid"].toInt(), true);
+      data.shifrspec = theApp.GetTitleForKeyFromVoc(vok_key::VK_SHIFRSPEC, row["directid"].toInt(), true);
 
     data.isMagister = data.specOrProfilTag.toLower().trim() == "маг";
   }

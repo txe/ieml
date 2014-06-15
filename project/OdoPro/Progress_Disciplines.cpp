@@ -175,7 +175,7 @@ void CManagDisciplinesDlg::UpdateViewDiscipTable(int showDisc)
   string_t				buf;
   while (row = res.fetch_row())	
   {	
-    string_t idclass = theApp.GetTitleForKeyFromVoc(VK_DISCIPCLASSIFIC, aux::wtoi(row["idclass"]), true);
+    string_t idclass = theApp.GetTitleForKeyFromVoc(vok_key::VK_DISCIPCLASSIFIC, aux::wtoi(row["idclass"]), true);
 
     buf += "<tr discip_id=" + row["id"] + 
       " sem_hours=\"" + row["sem_hours"] + "\""
