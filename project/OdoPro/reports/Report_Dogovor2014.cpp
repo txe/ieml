@@ -14,11 +14,16 @@ void ReportDogovor::Run(int grpId, int studentId)
   macros.Replace("$DOG_NUM$",   data.dogovorNum);
   macros.Replace("$CUR_TIME$",  data.currentData);
   macros.Replace("$FIO$",       data.fio);
-  macros.Replace("$PROGRAMMA$", data.programma);
+  macros.Replace("$KOD$",       data.kod);
+  macros.Replace("$FORMA$",     data.forma);
   macros.Replace("$KVALIF$",    data.kvalif);
-  macros.Replace("$SUM1$",      data.numSum);
-  macros.Replace("$SUM2$",      data.strSum);
-  macros.Replace("$DATA1$",     data.data1);
+  macros.Replace("$SUM_NUM$",   data.numSum);
+  macros.Replace("$SUM_STR$",   data.strSum);
+
+  for (int i = 0; i < 6; ++i)
+    macros.Replace("$OPLATA" + string_t(aux::itow(i+1)) + "$", data.oplata[i]);
+
+  macros.Replace("$DATA1$", data.data1);
 
   macros.EndMacros();
   macros.RunMacros("dogovor-2014.dot");
@@ -26,29 +31,136 @@ void ReportDogovor::Run(int grpId, int studentId)
 //---------------------------------------------------------------------------
 ReportDogovor::ReportDogovorData ReportDogovor::GetData(int grpId, int studentId)
 {
+  r::PrivateData privData;
+  r::GetPrivateData(privData, studentId);
+
   ReportDogovorData data;
-
-  string_t  query = string_t() +
-    "SELECT s.secondname,s.firstname,s.thirdname,s.dogyearid,s.dogshifrid,s.dogfastid,s.dognum " \
-    " FROM students as s WHERE s.deleted=0 and s.id=" + aux::itow(studentId);
-
-  mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
-  if (mybase::MYFASTROW	row = res.fetch_row())
-  {
-    data.fio = row["secondname"] + " " + row["firstname"] + " " + row["thirdname"];
-  
-    theApp.GetTitleForKeyFromVoc(vok_key::VK_SPECS, row["educationid"].toInt(), true);
-  }
-
-
-  data.dogovorNum = L"123";
+  data.fio = privData.secondName + " " + privData.firstName + " " + privData.thirdName;
   data.currentData  = r::GetCurrentDate("г.");
 
-  data.programma = L"программа";
-  data.kvalif = L"студент";
-  data.numSum = L"32000";
-  data.strSum = L"много денег";
+  // код и наименование программы
+  data.kod = privData.shifrspec + " ";
+  if (privData.direct.empty()) data.kod += privData.specOrProfil;
+  else                         data.kod += privData.direct;
+
+  // найдем форму и номер договора
+  string_t dogovorQuery = string_t() +
+    "SELECT s.dogyearid,s.dogshifrid,s.dogfastid,s.dognum,s.eduformid " \
+    " FROM students as s WHERE s.deleted=0 and s.id=" + aux::itow(studentId);
+  mybase::MYFASTRESULT dogovorRes = theApp.GetCon().Query(dogovorQuery);
+  if (mybase::MYFASTROW	row = dogovorRes.fetch_row())
+  {
+    data.forma += " " + theApp.GetTitleForKeyFromVoc(vok_key::VK_EDUFORM, row["eduformid"].toInt(), true);
+
+    string_t dogYear  = theApp.GetTitleForKeyFromVoc(vok_key::VK_DOG_YEAR,  row["dogyearid"].toInt(), true);
+    string_t dogShifr = theApp.GetTitleForKeyFromVoc(vok_key::VK_DOG_SHIFR, row["dogshifrid"].toInt(), true);
+    string_t dogFast  = theApp.GetTitleForKeyFromVoc(vok_key::VK_DOG_FAST,  row["dogfastid"].toInt(), true);
+    data.dogovorNum = dogShifr + "-" + dogYear + dogFast + "-" + row["dognum"];
+  }
+
+  // разберемс€ с деньгами
+  std::map<int, int> moneyYear; // год -> деньги
+  string_t moneyQuery = string_t() + 
+    "SELECT opts.id, opts.datestart, opts.commoncountmoney, opts.half_year FROM payoptstest as opts WHERE opts.idgroup = "  + aux::itow(grpId);
+  mybase::MYFASTRESULT moneyRes = theApp.GetCon().Query(moneyQuery);
+  while (mybase::MYFASTROW row = moneyRes.fetch_row())
+    moneyYear[r::GetYear(row["datestart"]).toInt()] = row["commoncountmoney"].toInt();
+  int allMoney = 0;
+  for (int yearNum = 0; yearNum < 6; ++yearNum) 
+    if (int money = moneyYear[yearNum + 2014])
+    {
+      allMoney += money;
+      data.oplata[yearNum] = aux::itow(money);
+    }
+    else
+      data.oplata[yearNum] = "-";
+
+  data.numSum = aux::itow(allMoney);
+  data.strSum = MoneyToStr(allMoney);
+
   data.data1  = L"что то где то";
 
   return data;
+}
+//---------------------------------------------------------------------------
+string_t ReportDogovor::MoneyToStr(int money)
+{
+  static const string_t hausends[20]={"одна","две","три","четыре","п€ть","шесть","семь","восемь","дев€ть","дес€ть","одиннадцать",
+                                      "двенадцать","тринадцать","четырнадцать","п€тнадцать","шестнадцать","семнадцать",
+                                      "восемнадцать","дев€тнадцать","двадцать"};
+  static const string_t hausendsdec[10] = {"дес€ть","двадцать","тридцать","сорок","п€тьдес€т","шестьдес€т","семьдес€т","восемьдес€т","дев€носто","сто"};
+  static const string_t handred[10]     = {"сто","двести","триста","четыреста","п€тьсот","шестьсот","семьсот","восемьсот","дев€тьсот","одна тыс€ча"};
+  static const string_t eds[20]         = {"один","два","три","четыре","п€ть","шесть","семь","восемь","дев€ть","дес€ть","одиннадцать",
+                                           "двенадцать","тринадцать","четырнадцать","п€тнадцать","шестнадцать","семнадцать",
+                                           "восемнадцать","дев€тнадцать","двадцать"};
+
+  string_t moneyStr = aux::itow(money);
+  string_t result = "";
+
+  int dig,dec,ed,hand;
+  if (moneyStr.size() <= 5)
+  {
+    if (moneyStr.size() == 5)
+    {
+      dig = moneyStr.subString(0,2).toInt();
+      if (dig < 20 && dig > 0)
+      {
+        result += hausends[dig-1];
+        if (dig == 1)              result += " тыс€ча";
+        if (dig >= 2 && dig <= 4)  result += " тыс€чи";
+        if (dig >= 5 && dig <= 20) result += " тыс€ч";
+      }
+      if (dig >= 20)
+      {
+        dec = dig/10;
+        ed  = dig%10;
+        if (dec > 0)
+          result += hausendsdec[dec-1];
+        if (ed > 0)
+        {
+          result += " " + hausends[ed-1];
+          if (ed == 1)            result += " тыс€ча";
+          if (ed >= 2 && ed <= 4) result += " тыс€чи";
+          if (ed >= 5 && ed <= 9) result += " тыс€ч";
+        }
+        else result += " тыс€ч";
+      }
+
+      moneyStr = moneyStr.subString(2, -1);
+    }
+    if (moneyStr.size() == 4)
+    {
+      dig = moneyStr.subString(0,1).toInt();
+      if (dig < 20 && dig > 0)
+      {
+        result += hausends[dig-1];
+        if (dig == 1)             result += " тыс€ча";
+        if (dig >= 2 && dig <= 4) result += " тыс€чи";
+        if (dig >= 5 && dig <= 9) result += " тыс€ч";
+      }
+
+      moneyStr = moneyStr.subString(1, -1);
+    }
+    if (moneyStr.size() == 3)
+    {
+      hand = moneyStr.subString(0,1).toInt();
+      if (hand > 0)
+        result += " " + handred[hand-1];
+
+      dig = moneyStr.subString(1,2).toInt();
+      if (dig < 20 && dig > 0) 
+        result += " " + eds[dig-1];
+      if (dig >= 20)
+      {
+        dec = dig/10;
+        ed  = dig%10;
+        if (dec > 0) result += " " + hausendsdec[dec-1];
+        if (ed  > 0) result += " " + eds[ed-1];
+      }
+    }
+  }
+  if (result.size() > 0)
+    result = result.toUpperFirst();
+ 
+  return result;
 }

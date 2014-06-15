@@ -13,7 +13,8 @@ private:
     string_t dogovorNum;
     string_t currentData;
     string_t fio;
-    string_t programma;
+    string_t kod;
+    string_t forma;
     string_t kvalif;
     string_t numSum;
     string_t strSum;
@@ -27,4 +28,5 @@ public:
 
 private:
   ReportDogovorData GetData(int grpId, int studentId);
+  string_t          MoneyToStr(int money);
 };
