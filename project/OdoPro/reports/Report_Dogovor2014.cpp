@@ -23,7 +23,10 @@ void ReportDogovor::Run(int grpId, int studentId)
   for (int i = 0; i < 6; ++i)
     macros.Replace("$OPLATA" + string_t(aux::itow(i+1)) + "$", data.oplata[i]);
 
-  macros.Replace("$DATA1$", data.data1);
+  macros.Replace("$PASSPORT$", data.passport);
+  macros.Replace("$ADRES1$",   data.adres1);
+  macros.Replace("$ADRES2$",   data.adres2);
+  macros.Replace("$TEL$",      data.telefon);
 
   macros.EndMacros();
   macros.RunMacros("dogovor-2014.dot");
@@ -43,19 +46,27 @@ ReportDogovor::ReportDogovorData ReportDogovor::GetData(int grpId, int studentId
   if (privData.direct.empty()) data.kod += privData.specOrProfil;
   else                         data.kod += privData.direct;
 
-  // найдем форму и номер договора
   string_t dogovorQuery = string_t() +
-    "SELECT s.dogyearid,s.dogshifrid,s.dogfastid,s.dognum,s.eduformid " \
+    "SELECT s.dogyearid,s.dogshifrid,s.dogfastid,s.dognum,s.eduformid,s.passseries,s.passnum,s.passdate,s.passplace,s.addr,s.liveaddr,s.phones " \
     " FROM students as s WHERE s.deleted=0 and s.id=" + aux::itow(studentId);
   mybase::MYFASTRESULT dogovorRes = theApp.GetCon().Query(dogovorQuery);
   if (mybase::MYFASTROW	row = dogovorRes.fetch_row())
   {
+    // форма обучения
     data.forma += " " + theApp.GetTitleForKeyFromVoc(vok_key::VK_EDUFORM, row["eduformid"].toInt(), true);
 
+    // номер договора
     string_t dogYear  = theApp.GetTitleForKeyFromVoc(vok_key::VK_DOG_YEAR,  row["dogyearid"].toInt(), true);
     string_t dogShifr = theApp.GetTitleForKeyFromVoc(vok_key::VK_DOG_SHIFR, row["dogshifrid"].toInt(), true);
     string_t dogFast  = theApp.GetTitleForKeyFromVoc(vok_key::VK_DOG_FAST,  row["dogfastid"].toInt(), true);
     data.dogovorNum = dogShifr + "-" + dogYear + dogFast + "-" + row["dognum"];
+
+    //
+    data.passport = "Паспорт серия " + row["passseries"] + " №" + row["passnum"] + " код подразделения выдан " 
+      + r::to_str_date(row["passdate"], "года ") + row["passplace"];
+    data.adres1 = "Адрес по месту регистрации: " + row["addr"];
+    data.adres2 = "Адрес по месту фактического проживания: " + row["liveaddr"];
+    data.telefon = "Тел. " + row["phones"];
   }
 
   // разберемся с деньгами
@@ -77,8 +88,6 @@ ReportDogovor::ReportDogovorData ReportDogovor::GetData(int grpId, int studentId
 
   data.numSum = aux::itow(allMoney);
   data.strSum = MoneyToStr(allMoney);
-
-  data.data1  = L"что то где то";
 
   return data;
 }

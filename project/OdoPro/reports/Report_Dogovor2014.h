@@ -19,7 +19,10 @@ private:
     string_t numSum;
     string_t strSum;
     string_t oplata[6];
-    string_t data1;
+    string_t passport;
+    string_t adres1;
+    string_t adres2;
+    string_t telefon;
   };
 
 public:
