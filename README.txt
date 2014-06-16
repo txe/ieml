@@ -4,10 +4,14 @@
 - отчеты берут информацию о месторасположении базы из реестра;
 
 
+
 //***  для служебных целей  ***//
-ALTER TABLE `students` ADD COLUMN `passkod` VARCHAR(10) NULL DEFAULT NULL AFTER `passnum`;
+ALTER TABLE `students`	CHANGE COLUMN `edunumreg` `edunumreg` VARCHAR(7) NULL DEFAULT NULL AFTER `edunumprilog`;
 
 // устарело
+ALTER TABLE `students` ADD COLUMN `passkod` VARCHAR(10) NULL DEFAULT NULL AFTER `passnum`;
+
+
 ALTER TABLE `students` CHANGE COLUMN `edunumdiplom` `edunumdiplom` VARCHAR(15) NULL DEFAULT NULL AFTER `roleid`;
 ALTER TABLE `students` ADD COLUMN `edunumprilog` VARCHAR(15) NULL DEFAULT NULL AFTER `edunumdiplom`;
 
