@@ -38,8 +38,9 @@ ReportDogovor::ReportDogovorData ReportDogovor::GetData(int grpId, int studentId
   r::GetPrivateData(privData, studentId);
 
   ReportDogovorData data;
-  data.fio = privData.secondName + " " + privData.firstName + " " + privData.thirdName;
-  data.currentData  = r::GetCurrentDate("г.");
+  data.fio         = privData.secondName + " " + privData.firstName + " " + privData.thirdName;
+  data.currentData = r::GetCurrentDate("г.");
+  data.kvalif      = privData.qualific.toLower();
 
   // код и наименование программы
   data.kod = privData.shifrspec + " ";

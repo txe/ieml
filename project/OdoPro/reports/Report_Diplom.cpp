@@ -251,7 +251,7 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
 
   if (anotherEnd)
   {
-    specDiscip.push_back(Discip("Срок осовоения образовательной программы", "260 недель", "x"));
+    specDiscip.push_back(Discip("Срок освоения образовательной программы", "260 недель", "x"));
     specDiscip.push_back(Discip("в том числе аудиторных часов:", "800 час.", "x"));
   }
   else
