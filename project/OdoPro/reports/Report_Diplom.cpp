@@ -14,7 +14,8 @@ void ReportDiplom::Run(int grpId, int studentId)
   std::vector<Discip> commonDiscip;
   std::vector<Discip> specDiscip;
   bool useZe = privData.specOrProfilTag == "бак" || privData.specOrProfilTag == "бакус";
-  GetDiscipInfo(studentId, cursDiscip, commonDiscip, specDiscip, privData.lang, privData.vkrTitle, useZe);
+  bool anotherEnd = privData.specOrProfilTag.empty() || privData.specOrProfilTag == "бак1";
+  GetDiscipInfo(studentId, cursDiscip, commonDiscip, specDiscip, privData.lang, privData.vkrTitle, useZe, anotherEnd);
 
   WordMacros macros;
   macros.BeginMacros();
@@ -184,7 +185,7 @@ void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& priv
     dirData.bottomInfo += L"\nНаправленность (профиль) образовательной программы: " + privData.specOrProfil.toLower() + L".";
 }
 //-------------------------------------------------------------------------
-void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip, std::vector<Discip>& commonDiscip, std::vector<Discip>& specDiscip, string_t lang, string_t vkrTitle, bool useZe)
+void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip, std::vector<Discip>& commonDiscip, std::vector<Discip>& specDiscip, string_t lang, string_t vkrTitle, bool useZe, bool anotherEnd)
 {
   struct fun
   {
@@ -248,8 +249,17 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
   if (!vkrWork.title.empty())
     specDiscip.push_back(vkrWork);
 
-  specDiscip.push_back(Discip("Общая трудоемкость образовательной программы", "260 недель", "x"));
-  specDiscip.push_back(Discip("в том числе объем работы обучающихся во взаимодействии с преподавателем:", "800 час.", "x"));
+  if (anotherEnd)
+  {
+    specDiscip.push_back(Discip("Срок осовоения образовательной программы", "260 недель", "x"));
+    specDiscip.push_back(Discip("в том числе аудиторных часов:", "800 час.", "x"));
+  }
+  else
+  {
+    specDiscip.push_back(Discip("Общая трудоемкость образовательной программы", "260 недель", "x"));
+    specDiscip.push_back(Discip("в том числе объем работы обучающихся во взаимодействии с преподавателем:", "800 час.", "x"));
+  }
+
 }
 //-------------------------------------------------------------------------
 // разобьет на строки и вернет сколько строк займет
