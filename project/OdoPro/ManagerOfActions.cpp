@@ -124,19 +124,27 @@ void ManagerOfActions::Init(LiteWnd* parent, HELEMENT menu)
 	HTMLayoutAttachEventHandlerEx(_menu, ElementEventProcMenu, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_menu, "vert-delta-1"), ElementEventProcDelta, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_menu, "vert-delta-2"), ElementEventProcDelta, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
-	LoadDelta();
+	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_menu, "show-dog-num"), ElementEventProcDelta, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+  LoadDelta();
 }
 
 BOOL CALLBACK ManagerOfActions::ElementEventProcDelta( LPVOID tag, HELEMENT he, UINT evtg, LPVOID prms )
 {
 	BEHAVIOR_EVENT_PARAMS* pr = static_cast<BEHAVIOR_EVENT_PARAMS*>(prms);
-	if (pr->cmd != EDIT_VALUE_CHANGED)
-		return FALSE;
-
-	ManagerOfActions* dlg = static_cast<ManagerOfActions*>(tag);
-	dlg->SaveDelta();
-
-	return TRUE;
+	if (pr->cmd == EDIT_VALUE_CHANGED)
+  {
+    ManagerOfActions* dlg = static_cast<ManagerOfActions*>(tag);
+    dlg->SaveDelta();
+    return TRUE;
+  }
+  if (pr->cmd == BUTTON_STATE_CHANGED || pr->cmd == BUTTON_CLICK)
+  {
+    ManagerOfActions* dlg = static_cast<ManagerOfActions*>(tag);
+    dlg->SaveDelta();
+    return TRUE;
+  }
+    
+  return FALSE;
 }
 
 void ManagerOfActions::LoadDelta()
@@ -147,6 +155,7 @@ void ManagerOfActions::LoadDelta()
 	
 	json::t2v(LiteWnd::link_element(_menu, "vert-delta-1"), reg.ReadString("deltadogovor_1", "0"));
 	json::t2v(LiteWnd::link_element(_menu, "vert-delta-2"), reg.ReadString("deltadogovor_2", "0"));
+  json::t2v(LiteWnd::link_element(_menu, "show-dog-num"), reg.ReadString("show-dog-num", "0"));
 }
 
 void ManagerOfActions::SaveDelta()
@@ -157,4 +166,5 @@ void ManagerOfActions::SaveDelta()
 
 	reg.WriteString("deltadogovor_1", json::v2t(LiteWnd::link_element(_menu, "vert-delta-1")).c_str());
 	reg.WriteString("deltadogovor_2", json::v2t(LiteWnd::link_element(_menu, "vert-delta-2")).c_str());
+  reg.WriteString("show-dog-num",   json::v2t(LiteWnd::link_element(_menu, "show-dog-num")).c_str());
 }
