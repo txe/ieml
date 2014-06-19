@@ -142,14 +142,19 @@ void CMainDlg::UpdateGrid(void)
 
 	mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
 		
-	string_t			buf;
 	mybase::MYFASTROW	row;
 	int					count = 0;
 
 	SetStatusBar(SB_COUNT, "...");
-	// удаляем строки кроме заголовка таблицы
-  t::ClearTable(stud_grid_, 1);
-		
+
+  // удаляем строки кроме заголовка таблицы
+  t::ClearTable(stud_grid_, 0);
+  string_t buf;
+  if (show_dog_nums_)
+    buf = "<tr><th>№</th><th>Фамилия</th><th>Имя</th><th>Отчество</th><th>№ зачетки</th><th>№ договора</th><th>Группа</th><th>Город</th></tr>";
+  else
+    buf = "<tr><th>№</th><th>Фамилия</th><th>Имя</th><th>Отчество</th><th>№ зачетки</th><th>Группа</th><th>Город</th></tr>";
+
 	while (row = res.fetch_row())	
 	{
     string_t dogNum;
@@ -157,17 +162,16 @@ void CMainDlg::UpdateGrid(void)
       dogNum = dogNums[row["id"].toInt()];
 
 		buf += "<tr value=" + row["id"] + " grpid=" + row["grpid"] + ">";
-		buf += string_t() + "<td>" + aux::itow(++count)	+ "</td>"
-			"<td>" + row["secondname"] + "</td>"
-			"<td>" + row["firstname"] + "</td>"
-			"<td>" + row["thirdname"]	+ "</td>";
-    if (!show_dog_nums_)
-		  buf += "<td>" + row["znum"] + "</td>";
-    else
-      buf += "<td>" + row["znum"] + " | " + dogNum + "</td>";
+		buf += string_t() + "<td>" + aux::itow(++count) + "</td>"
+			     "<td>" + row["secondname"]  + "</td>"
+			     "<td>" + row["firstname"]   + "</td>"
+			     "<td>" + row["thirdname"]	 + "</td>"
+           "<td>" + row["znum"]        + "</td>";
+    if (show_dog_nums_)
+      buf += "<td>" + dogNum + "</td>";
 		buf += "<td>" + row["group"] + "</td>"
-			"<td>" + row["city"] + "</td>"
-			"</tr>";
+			     "<td>" + row["city"]  + "</td>"
+			     "</tr>";
 	}
 	
 	if (_mbslen(buf))
@@ -539,18 +543,19 @@ void CMainDlg::ShowFindResult()
 
 	SetStatusBar(SB_COUNT, "...");
 	// удаляем строки кроме заголовка таблицы
-  t::ClearTable(stud_grid_, 1);
+  t::ClearTable(stud_grid_, 0);
+  buf += "<tr><th>№</th><th>Фамилия</th><th>Имя</th><th>Отчество</th><th>№ зачетки</th><th>Группа</th><th>Город</th></tr>";
 
 	while (row = res.fetch_row())	
 	{
 		buf += "<tr value=" + row["id"] + " grpid = " + row["grpid"] + ">";
 		buf += string_t() + "<td>" + aux::itow(++count)	+ "</td>"
 			"<td>" + row["secondname"]	+ "</td>"
-			"<td>" + row["firstname"]	+ "</td>"
-			"<td>" + row["thirdname"]	+ "</td>"
-			"<td>" + row["znum"]		+ "</td>"
-			"<td>" + row["group"]		+ "</td>"
-			"<td>" + row["city"]		+ "</td>"
+			"<td>" + row["firstname"]  	+ "</td>"
+			"<td>" + row["thirdname"]	  + "</td>"
+			"<td>" + row["znum"]		    + "</td>"
+			"<td>" + row["group"]		    + "</td>"
+			"<td>" + row["city"]		    + "</td>"
 			"</tr>";
 	}
 
