@@ -59,6 +59,8 @@ private:
 	htmlayout::dom::element GetSelectedStudent(void);
 	// возвращает id студента который был выбран в таблице 
 	long GetSelectedStudentID(void);
+  // возвращает список договором для группы
+  std::map<int, string_t> GetDogovorNum(int grpId);
 
 private:
   virtual void IActionParent_UpdateWindow();

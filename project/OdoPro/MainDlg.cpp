@@ -126,6 +126,10 @@ void CMainDlg::UpdateGrid(void)
 {
 	assert(stud_grid_.is_valid());
 
+  std::map<int, string_t> dogNums;
+  if (show_dog_nums_)
+    dogNums = GetDogovorNum(theApp.GetCurrentGroupID());
+
 	string_t  query = string_t() +
 			" SELECT students.id, secondname, firstname, thirdname, znum, grpid, "
 			" voc.title AS city, voc1.title AS `group` "
@@ -148,14 +152,21 @@ void CMainDlg::UpdateGrid(void)
 		
 	while (row = res.fetch_row())	
 	{
+    string_t dogNum;
+    if (show_dog_nums_)
+      dogNum = dogNums[row["id"].toInt()];
+
 		buf += "<tr value=" + row["id"] + " grpid=" + row["grpid"] + ">";
 		buf += string_t() + "<td>" + aux::itow(++count)	+ "</td>"
-			"<td>" + row["secondname"]	+ "</td>"
-			"<td>" + row["firstname"]	+ "</td>"
-			"<td>" + row["thirdname"]	+ "</td>"
-			"<td>" + row["znum"]		+ "</td>"
-			"<td>" + row["group"]		+ "</td>"
-			"<td>" + row["city"]		+ "</td>"
+			"<td>" + row["secondname"] + "</td>"
+			"<td>" + row["firstname"] + "</td>"
+			"<td>" + row["thirdname"]	+ "</td>";
+    if (!show_dog_nums_)
+		  buf += "<td>" + row["znum"] + "</td>";
+    else
+      buf += "<td>" + row["znum"] + " | " + dogNum + "</td>";
+		buf += "<td>" + row["group"] + "</td>"
+			"<td>" + row["city"] + "</td>"
 			"</tr>";
 	}
 	
@@ -425,6 +436,26 @@ long CMainDlg::GetSelectedStudentID(void)
 		return -1;
 
 	return st.get_attribute_int("value", -1);
+}
+
+// возвращает список договором для группы
+std::map<int, string_t> CMainDlg::GetDogovorNum(int grpId)
+{
+  std::map<int, string_t> dogNums;
+
+  string_t query = string_t() +
+    " SELECT s.id, vYear.title as year, vShift.title as shift, vFast.title as fast,s.dognum"
+    " FROM students as s, voc as vYear, voc as vShift, voc as vFast"
+    " WHERE s.grpid = " + aux::itow(theApp.GetCurrentGroupID()) + " AND s.deleted = 0"
+    " AND vYear.deleted = 0 AND vYear.vkey = 'dogyear' AND vYear.num = s.dogyearid"
+    " AND vShift.deleted = 0 AND vShift.vkey = 'dogshifr' AND vShift.num = s.dogshifrid"
+    " AND vFast.deleted = 0 AND vFast.vkey = 'dogfast' AND vFast.num = s.dogfastid";
+
+  mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
+  while (mybase::MYFASTROW row = res.fetch_row())	
+    dogNums[row["id"].toInt()] = row["shift"] + "-" + row["year"] + row["fast"] + "-" + row["dognum"];
+
+  return dogNums;
 }
 
 // обработчик изменения типа поиска
