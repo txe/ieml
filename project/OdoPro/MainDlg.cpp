@@ -9,6 +9,7 @@
 #include "json-aux-ext.h"
 #include "logger.h"
 #include "for_version.h"
+#include "registry.h"
 
 using namespace htmlayout::dom;
 
@@ -20,7 +21,7 @@ using namespace htmlayout::dom;
 // CMainDlg dialog
 
 CMainDlg::CMainDlg(LiteWnd* pParent /*=NULL*/)
-	: LiteWnd(pParent)
+	: LiteWnd(pParent), show_dog_nums_(false)
 {
 }
 
@@ -76,16 +77,17 @@ int CMainDlg::OnCreate()
 		" AND title NOT like 'ПГС%'"
 		" AND title NOT like 'ТГВ%");
 	//  заполнем значениями статус бар	
-	SetStatusBar(SB_HOST, theApp.GetCon().GetParam(mybase::PR_HOST) + ":" + 
-		theApp.GetCon().GetParam(mybase::PR_PORT));
+	SetStatusBar(SB_HOST,  theApp.GetCon().GetParam(mybase::PR_HOST) + ":" + theApp.GetCon().GetParam(mybase::PR_PORT));
 	SetStatusBar(SB_LOGIN, theApp.GetCon().GetParam(mybase::PR_LOGIN));
-	SetStatusBar(SB_BD, theApp.GetCon().GetParam(mybase::PR_BD));
-	SetStatusBar(SB_BUILD,  string_t(__DATE__) + "/" + string_t(__TIME__));
+	SetStatusBar(SB_BD,    theApp.GetCon().GetParam(mybase::PR_BD));
+	SetStatusBar(SB_BUILD, string_t(__DATE__) + "/" + string_t(__TIME__));
 	// загружаем отчеты
 	manag_rep_.Init(link_element("menu-bar"));
-	manag_actions_.Init(this, link_element("menu-bar"));
+  manag_actions_.Init(this, link_element("menu-bar"), this);
 	theApp.GetUpdater().Init(m_hWnd);
-	//  обновляем таблицу студентов
+
+  // обновляем таблицу студентов
+  LoadRegParams();
 	theApp.SetCurrentGroupID(1538);
 	UpdateGrid();
 
@@ -109,6 +111,14 @@ void CMainDlg::InitDomElement(void)
 	//HTMLayoutAttachEventHandlerEx(link_element("filter_type"), ElementEventProcChangeFindType, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
 	// обработчик для меню
 	HTMLayoutAttachEventHandlerEx(link_element("menu-bar"), ElementEventProcMenu, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+}
+
+void CMainDlg::LoadRegParams()
+{
+  Reg reg;
+  reg.SetRootKey(HKEY_CURRENT_USER);
+  reg.SetKey("ODOBase\\ODOBase\\OTHER");
+  show_dog_nums_ = reg.ReadString("show-dog-num", "0") != "0";
 }
 
 // обновляем таблицу со студентами
@@ -562,4 +572,11 @@ BOOL CALLBACK CMainDlg::ElementEventProcMenu(LPVOID tag, HELEMENT he, UINT evtg,
 		return TRUE;
 	}
 	return FALSE;
+}
+
+//-------------------------------------------------------------------------
+void CMainDlg::IActionParent_UpdateWindow()
+{
+  LoadRegParams();
+  UpdateGrid();
 }
