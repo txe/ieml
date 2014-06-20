@@ -30,9 +30,9 @@ namespace r
   string_t hours_to_str(string_t hours);
   string_t weeks_to_str(string_t weeks);
   
-  inline string_t GetYear(string_t sqlDate)  { return sqlDate.subString(0,4); }
-  inline string_t GetMonth(string_t sqlDate) { return sqlDate.subString(5,2); }
-  inline string_t GetDay(string_t sqlDate)   { return sqlDate.subString(8,2); }
+  inline string_t GetYear(string_t sqlDate)  { return sqlDate.empty() ? "0000" : sqlDate.subString(0,4); }
+  inline string_t GetMonth(string_t sqlDate) { return sqlDate.empty() ? "00"   : sqlDate.subString(5,2); }
+  inline string_t GetDay(string_t sqlDate)   { return sqlDate.empty() ? "00"   : sqlDate.subString(8,2); }
   
   string_t GetCurrentDate(string_t suffix);
 
