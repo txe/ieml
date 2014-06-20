@@ -43,9 +43,10 @@ ReportDogovor::ReportDogovorData ReportDogovor::GetData(int grpId, int studentId
   data.kvalif      = privData.qualific.toLower();
 
   // код и наименование программы
-  data.kod = privData.shifrspec + " ";
-  if (privData.direct.empty()) data.kod += privData.specOrProfil;
-  else                         data.kod += privData.direct;
+  if (privData.direct.empty())
+    data.kod = privData.shifrspec + " " + privData.specOrProfil;
+  else
+    data.kod = "по направлению подготовки " + privData.shifrspec + " " + privData.direct + " (аккредитованная образовательная программа) c профилем " + privData.specOrProfil;
 
   string_t dogovorQuery = string_t() +
     "SELECT s.dogyearid,s.dogshifrid,s.dogfastid,s.dognum,s.eduformid,s.passseries,s.passnum,s.passkod,s.passdate,s.passplace,s.addr,s.liveaddr,s.phones " \
@@ -54,7 +55,7 @@ ReportDogovor::ReportDogovorData ReportDogovor::GetData(int grpId, int studentId
   if (mybase::MYFASTROW	row = dogovorRes.fetch_row())
   {
     // форма обучения
-    data.forma += " " + theApp.GetTitleForKeyFromVoc(vok_key::VK_EDUFORM, row["eduformid"].toInt(), true);
+    data.kod += ", " + theApp.GetTitleForKeyFromVoc(vok_key::VK_EDUFORM, row["eduformid"].toInt(), true) + ".";
 
     // номер договора
     string_t dogYear  = theApp.GetTitleForKeyFromVoc(vok_key::VK_DOG_YEAR,  row["dogyearid"].toInt(), true);
