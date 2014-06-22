@@ -74,7 +74,7 @@ ReportDogovor::ReportDogovorData ReportDogovor::GetData(int grpId, int studentId
   // נאחבונולסÿ ס הוםüדאלט
   std::map<int, int> moneyYear; // דמה -> הוםüדט
   string_t moneyQuery = string_t() + 
-    "SELECT opts.id, opts.datestart, opts.commoncountmoney, opts.half_year FROM payoptstest as opts WHERE opts.idgroup = "  + aux::itow(grpId);
+    "SELECT opts.id, opts.datestart, opts.commoncountmoney, opts.half_year FROM payoptstest as opts WHERE opts.deleted = 0 AND opts.idgroup = "  + aux::itow(grpId);
   mybase::MYFASTRESULT moneyRes = theApp.GetCon().Query(moneyQuery);
   while (mybase::MYFASTROW row = moneyRes.fetch_row())
     moneyYear[r::GetYear(row["datestart"]).toInt()] = row["commoncountmoney"].toInt();
