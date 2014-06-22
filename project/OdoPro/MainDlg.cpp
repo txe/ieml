@@ -9,6 +9,7 @@
 #include "json-aux-ext.h"
 #include "logger.h"
 #include "for_version.h"
+#include "registry.h"
 
 using namespace htmlayout::dom;
 
@@ -20,7 +21,7 @@ using namespace htmlayout::dom;
 // CMainDlg dialog
 
 CMainDlg::CMainDlg(LiteWnd* pParent /*=NULL*/)
-	: LiteWnd(pParent)
+	: LiteWnd(pParent), show_dog_nums_(false)
 {
 }
 
@@ -76,16 +77,17 @@ int CMainDlg::OnCreate()
 		" AND title NOT like 'ПГС%'"
 		" AND title NOT like 'ТГВ%");
 	//  заполнем значениями статус бар	
-	SetStatusBar(SB_HOST, theApp.GetCon().GetParam(mybase::PR_HOST) + ":" + 
-		theApp.GetCon().GetParam(mybase::PR_PORT));
+	SetStatusBar(SB_HOST,  theApp.GetCon().GetParam(mybase::PR_HOST) + ":" + theApp.GetCon().GetParam(mybase::PR_PORT));
 	SetStatusBar(SB_LOGIN, theApp.GetCon().GetParam(mybase::PR_LOGIN));
-	SetStatusBar(SB_BD, theApp.GetCon().GetParam(mybase::PR_BD));
-	SetStatusBar(SB_BUILD,  string_t(__DATE__) + "/" + string_t(__TIME__));
+	SetStatusBar(SB_BD,    theApp.GetCon().GetParam(mybase::PR_BD));
+	SetStatusBar(SB_BUILD, string_t(__DATE__) + "/" + string_t(__TIME__));
 	// загружаем отчеты
 	manag_rep_.Init(link_element("menu-bar"));
-	manag_actions_.Init(this, link_element("menu-bar"));
+  manag_actions_.Init(this, link_element("menu-bar"), this);
 	theApp.GetUpdater().Init(m_hWnd);
-	//  обновляем таблицу студентов
+
+  // обновляем таблицу студентов
+  LoadRegParams();
 	theApp.SetCurrentGroupID(1538);
 	UpdateGrid();
 
@@ -111,10 +113,22 @@ void CMainDlg::InitDomElement(void)
 	HTMLayoutAttachEventHandlerEx(link_element("menu-bar"), ElementEventProcMenu, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 }
 
+void CMainDlg::LoadRegParams()
+{
+  Reg reg;
+  reg.SetRootKey(HKEY_CURRENT_USER);
+  reg.SetKey("ODOBase\\ODOBase\\OTHER");
+  show_dog_nums_ = reg.ReadString("show-dog-num", "0") != "0";
+}
+
 // обновляем таблицу со студентами
 void CMainDlg::UpdateGrid(void)
 {
 	assert(stud_grid_.is_valid());
+
+  std::map<int, string_t> dogNums;
+  if (show_dog_nums_)
+    dogNums = GetDogovorNum(theApp.GetCurrentGroupID());
 
 	string_t  query = string_t() +
 			" SELECT students.id, secondname, firstname, thirdname, znum, grpid, "
@@ -128,25 +142,36 @@ void CMainDlg::UpdateGrid(void)
 
 	mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
 		
-	string_t			buf;
 	mybase::MYFASTROW	row;
 	int					count = 0;
 
 	SetStatusBar(SB_COUNT, "...");
-	// удаляем строки кроме заголовка таблицы
-  t::ClearTable(stud_grid_, 1);
-		
+
+  // удаляем строки кроме заголовка таблицы
+  t::ClearTable(stud_grid_, 0);
+  string_t buf;
+  if (show_dog_nums_)
+    buf = "<tr><th>№</th><th>Фамилия</th><th>Имя</th><th>Отчество</th><th>№ зачетки</th><th>№ договора</th><th>Группа</th><th>Город</th></tr>";
+  else
+    buf = "<tr><th>№</th><th>Фамилия</th><th>Имя</th><th>Отчество</th><th>№ зачетки</th><th>Группа</th><th>Город</th></tr>";
+
 	while (row = res.fetch_row())	
 	{
+    string_t dogNum;
+    if (show_dog_nums_)
+      dogNum = dogNums[row["id"].toInt()];
+
 		buf += "<tr value=" + row["id"] + " grpid=" + row["grpid"] + ">";
-		buf += string_t() + "<td>" + aux::itow(++count)	+ "</td>"
-			"<td>" + row["secondname"]	+ "</td>"
-			"<td>" + row["firstname"]	+ "</td>"
-			"<td>" + row["thirdname"]	+ "</td>"
-			"<td>" + row["znum"]		+ "</td>"
-			"<td>" + row["group"]		+ "</td>"
-			"<td>" + row["city"]		+ "</td>"
-			"</tr>";
+		buf += string_t() + "<td>" + aux::itow(++count) + "</td>"
+			     "<td>" + row["secondname"]  + "</td>"
+			     "<td>" + row["firstname"]   + "</td>"
+			     "<td>" + row["thirdname"]	 + "</td>"
+           "<td>" + row["znum"]        + "</td>";
+    if (show_dog_nums_)
+      buf += "<td>" + dogNum + "</td>";
+		buf += "<td>" + row["group"] + "</td>"
+			     "<td>" + row["city"]  + "</td>"
+			     "</tr>";
 	}
 	
 	if (_mbslen(buf))
@@ -417,6 +442,26 @@ long CMainDlg::GetSelectedStudentID(void)
 	return st.get_attribute_int("value", -1);
 }
 
+// возвращает список договором для группы
+std::map<int, string_t> CMainDlg::GetDogovorNum(int grpId)
+{
+  std::map<int, string_t> dogNums;
+
+  string_t query = string_t() +
+    " SELECT s.id, vYear.title as year, vShift.title as shift, vFast.title as fast,s.dognum"
+    " FROM students as s, voc as vYear, voc as vShift, voc as vFast"
+    " WHERE s.grpid = " + aux::itow(theApp.GetCurrentGroupID()) + " AND s.deleted = 0"
+    " AND vYear.deleted = 0 AND vYear.vkey = 'dogyear' AND vYear.num = s.dogyearid"
+    " AND vShift.deleted = 0 AND vShift.vkey = 'dogshifr' AND vShift.num = s.dogshifrid"
+    " AND vFast.deleted = 0 AND vFast.vkey = 'dogfast' AND vFast.num = s.dogfastid";
+
+  mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
+  while (mybase::MYFASTROW row = res.fetch_row())	
+    dogNums[row["id"].toInt()] = row["shift"] + "-" + row["year"] + row["fast"] + "-" + row["dognum"];
+
+  return dogNums;
+}
+
 // обработчик изменения типа поиска
 BOOL CALLBACK CMainDlg::ElementEventProcChangeFindType(LPVOID tag, HELEMENT he, UINT evtg, LPVOID prms)
 {
@@ -498,18 +543,19 @@ void CMainDlg::ShowFindResult()
 
 	SetStatusBar(SB_COUNT, "...");
 	// удаляем строки кроме заголовка таблицы
-  t::ClearTable(stud_grid_, 1);
+  t::ClearTable(stud_grid_, 0);
+  buf += "<tr><th>№</th><th>Фамилия</th><th>Имя</th><th>Отчество</th><th>№ зачетки</th><th>Группа</th><th>Город</th></tr>";
 
 	while (row = res.fetch_row())	
 	{
 		buf += "<tr value=" + row["id"] + " grpid = " + row["grpid"] + ">";
 		buf += string_t() + "<td>" + aux::itow(++count)	+ "</td>"
 			"<td>" + row["secondname"]	+ "</td>"
-			"<td>" + row["firstname"]	+ "</td>"
-			"<td>" + row["thirdname"]	+ "</td>"
-			"<td>" + row["znum"]		+ "</td>"
-			"<td>" + row["group"]		+ "</td>"
-			"<td>" + row["city"]		+ "</td>"
+			"<td>" + row["firstname"]  	+ "</td>"
+			"<td>" + row["thirdname"]	  + "</td>"
+			"<td>" + row["znum"]		    + "</td>"
+			"<td>" + row["group"]		    + "</td>"
+			"<td>" + row["city"]		    + "</td>"
 			"</tr>";
 	}
 
@@ -562,4 +608,11 @@ BOOL CALLBACK CMainDlg::ElementEventProcMenu(LPVOID tag, HELEMENT he, UINT evtg,
 		return TRUE;
 	}
 	return FALSE;
+}
+
+//-------------------------------------------------------------------------
+void CMainDlg::IActionParent_UpdateWindow()
+{
+  LoadRegParams();
+  UpdateGrid();
 }

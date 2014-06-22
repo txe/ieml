@@ -109,8 +109,8 @@ bool Updater::create_rsync_process(const std::string &param_for_rsync)
 	si.dwFlags = STARTF_USESTDHANDLES;
 	si.hStdOutput = hWrite;
 
-	if (!CreateProcessA(NULL, (LPSTR)param_for_rsync.c_str(), NULL, NULL, TRUE, 
-		CREATE_NO_WINDOW | NORMAL_PRIORITY_CLASS | CREATE_SUSPENDED, NULL, NULL, &si, &_pi))
+  SetEnvironmentVariableA("CYGWIN", "nontsec"); // иначе rsync скопирует права левого пользователя, из-за чего перестанут открывать dot файлы
+	if (!CreateProcessA(NULL, (LPSTR)param_for_rsync.c_str(), NULL, NULL, TRUE, CREATE_NO_WINDOW | NORMAL_PRIORITY_CLASS | CREATE_SUSPENDED, NULL, NULL, &si, &_pi))
 	{
 		LOG_ERROR << FULL_LOCATION() << ":" << "не запустился процесс";
 		DWORD err = GetLastError();
@@ -135,15 +135,20 @@ DWORD Updater::read_update_progress_thread(LPVOID param)
 		char		chBuf[BUFSIZE];
 		DWORD		dwRead;
 		DWORD		ec = 0; //exit code
-		if (!GetExitCodeThread(updater->_pi.hThread, &ec) || ec != STILL_ACTIVE)
-			break;
-		while (ReadFile(updater->_hReadPipe, chBuf, BUFSIZE - 1, &dwRead,	NULL) || dwRead)
-		{
-			chBuf[dwRead] = '\0';
-			output += chBuf;
-			LOG_DEBUG << output;
-			updater->parse(output);
-		}
+		
+    DWORD bytesAvailable = 0;
+    while (PeekNamedPipe(updater->_hReadPipe, NULL, 0, NULL, &bytesAvailable, NULL) && bytesAvailable > 0)
+  		if (ReadFile(updater->_hReadPipe, chBuf, BUFSIZE - 1, &dwRead,	NULL) && dwRead)
+	  	{
+		  	chBuf[dwRead] = '\0';
+			  output += chBuf;
+			  LOG_DEBUG << output;
+			  updater->parse(output);
+		  }
+
+    if (!GetExitCodeThread(updater->_pi.hThread, &ec) || ec != STILL_ACTIVE)
+      break;
+
 	} 
 	updater->AddProgressInfo(prog_info::PROGRESS_END);
 	updater->DestroyHandle();
@@ -161,13 +166,17 @@ DWORD Updater::read_check_update_thread(LPVOID param)
 		char		chBuf[BUFSIZE];
 		DWORD		dwRead;
 		DWORD		ec = 0; //exit code
-		if (!GetExitCodeThread(updater->_pi.hThread, &ec) || ec != STILL_ACTIVE)
+
+    DWORD bytesAvailable = 0;
+    while (PeekNamedPipe(updater->_hReadPipe, NULL, 0, NULL, &bytesAvailable, NULL) && bytesAvailable > 0)
+      if (ReadFile(updater->_hReadPipe, chBuf, BUFSIZE - 1, &dwRead,	NULL) && dwRead)
+      {
+        chBuf[dwRead] = '\0';
+        output += chBuf;
+
+      }
+    if (!GetExitCodeThread(updater->_pi.hThread, &ec) || ec != STILL_ACTIVE)
 			break;
-		while(ReadFile(updater->_hReadPipe, chBuf, BUFSIZE - 1, &dwRead,	NULL) || dwRead)
-		{
-			chBuf[dwRead] = '\0';
-			output += chBuf;
-		}
 	} 
 	
 	LOG_DEBUG << output;

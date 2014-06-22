@@ -10,7 +10,7 @@
 
 
 // CMainDlg dialog
-class CMainDlg : public LiteWnd
+class CMainDlg : public LiteWnd, public IActionParent
 {
 	// используюс€ дл€ статус бара
 	enum {SB_HOST = 0, SB_LOGIN, SB_BD, SB_FILTR, SB_COUNT, SB_BUILD};
@@ -19,21 +19,27 @@ class CMainDlg : public LiteWnd
 // Construction
 public:
 	CMainDlg(LiteWnd* pParent = NULL);		// standard constructor
+
 public:
 	virtual int		OnCreate();
 	virtual BOOL	PreCreateWindow(CREATESTRUCT& cs); 
+
 private:
 	htmlayout::dom::element stud_grid_;		// таблица со списком студентов дл€ выбранной группы
 	ManagerReports			manag_rep_;
 	ManagerOfActions		manag_actions_;
+  bool                show_dog_nums_;
+
 public:
 	void UpdateGrid(void);				// обновл€ет таблицу со студентами
 	void ShowFindResult();    // показывает результат поиска 
 	void ShowFindResultEx();				// показывает результат расширенного поиска
 	void SetStatusBar(const UINT& status,const string_t& value); // мен€ет значени€ в статус-баре
 	void StudentProperty(void);			// вызывает диалог со свойствами студента
+
 private:
-	void InitDomElement(void);			// св€зывает элементы дом с отображением
+	void InitDomElement();			// св€зывает элементы дом с отображением
+  void LoadRegParams();       // считывает параметры из реестра
 	void UpdateGrpList(const string_t& dom_name, const string_t& grp_name_filter);	// обновл€ет список групп
 	// вызываетс€ при выборе группы
 	static BOOL CALLBACK ElementEventProcForPanelGroup(LPVOID tag, HELEMENT he, UINT evtg, LPVOID prms);
@@ -53,4 +59,9 @@ private:
 	htmlayout::dom::element GetSelectedStudent(void);
 	// возвращает id студента который был выбран в таблице 
 	long GetSelectedStudentID(void);
+  // возвращает список договором дл€ группы
+  std::map<int, string_t> GetDogovorNum(int grpId);
+
+private:
+  virtual void IActionParent_UpdateWindow();
 };
