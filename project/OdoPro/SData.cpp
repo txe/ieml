@@ -74,7 +74,8 @@ void SData::Init(htmlayout::dom::element root)
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "cityid"),		    "city");
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "sel-egediscip"),	"egediscip");
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "citizenryid"),	  "citizenry");
-	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "directid"),	    "direct");
+	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "directid"),	    "direct", true);
+  t::LoadContentFromVocForList(LiteWnd::link_element(root_, "dogextra"),	    "dogextra");
 
   AdjustDirectList(); // добавим в скобках номера шифров
 

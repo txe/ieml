@@ -436,7 +436,7 @@
         </div>
         <!-- -- --  --  --  --  --  -- TAB 2  --  --  --  --  --  --  --  --   -->
         <div name="panel-id2">
-            <div style="flow: horizontal">
+            <div style="flow: horizontal;line-height: 16px">
                 <div style="padding: 4px">
                     Образование<br>
                     <select id="educationid" class="my" style="width: 100%%; text-align: center;">
@@ -447,7 +447,7 @@
                     <input type="text" id="eduspec" class="my" size="20" maxlength="255" novalue="<нет значения!>">
                 </div>
             </div>
-            <div style="flow: horizontal">
+            <div style="flow: horizontal;line-height: 16px">
                 <div style="padding: 4px">
                     Диплом об образовании<br>
                     <select id="edudocid" class="my" style="width: 100%%; text-align: center;">
@@ -476,7 +476,7 @@
         </div>
         <!-- -- --  --  --  --  --  -- TAB 7  --  --  --  --  --  --  --  --   -->
         <div name="panel-id7">
-            <div style="flow: horizontal">
+            <div style="flow: horizontal;line-height: 16px">
                 <div style="padding: 4px">
                     № свидетельства<br>
                     <input type="masked" mask="##-#########-##" id="egereg" class="my" size="20" maxlength="255">
@@ -570,11 +570,11 @@
                 <select id="eduformid" class="my" style="overflow: hidden; width: 100%%;">
                 </select>
             </div>
-            <div style="flow: horizontal">
-                <div style="padding: 4px">
+            <div style="flow: horizontal;line-height: 16px">
+                <div style="padding: 4px;padding-right: 20px">
                     Номер зачетной книжки<br>
                     <input type="text" id="znum" class="my" size="20" maxlength="8" novalue="<нет значения!>">
-                    <button id="bt-fast-znum">..</button>
+                    <button id="bt-fast-znum" style="margin-bottom:-1px">..</button>
                 </div>
                 <div style="padding: 4px">
                     Город<br>
@@ -582,56 +582,53 @@
                     </select>
                 </div>
             </div>
+            
+             	        
             <div style="padding-left: 4px; padding-right: 4px;">
                 <fieldset style="border: 1px solid #bdbccc;">
-                    <legend style="color: black;">Приказ о зачислении:</legend>
-                    <div style="flow: horizontal;">
-                        <div style="width: 10%">
-                        </div>
-                        <div>
-                            <div style="padding: 4px">
-                                номер<br>
-                                <input type="text" id="enternum" class="my" size="5" maxlength="255" novalue="<нет значения!>">
-                            </div>
-                            <div style="padding: 4px;">
-                                <div>
-                                    шифр договора
-                                </div>
-                                <div style="flow: horizontal;">
-                                    <div style="padding-right: 8px">
-                                        <select id="dogshifrid" class="my" style="width: 100%%; text-align: center;">
-                                        </select>
-                                    </div>
-                                    <div style="width: 40%%;">
-                                        <select id="dogfastid" class="my" style="width: 100%%; text-align: center;">
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <div style="padding: 4px">
-                                дата<br>
-                                <input type="date" class="my" size="5" id="enterdate">
-                                <button id="bt-fast-enter">..</button>
-                            </div>
-                            <div style="flow: horizontal;">
-                                <div style="width: 40%; padding: 4px">
-                                    год<br>
-                                    <select id="dogyearid" class="my" style="width: 100%%; text-align: center;">
-                                    </select>
-                                </div>
-                                <div style="padding: 4px">
-                                    <span style="font-size: 12">номер договора</span><br>
-                                    <input type="text" id="dognum" class="my" size="5" maxlength="7" novalue="<нет значения!>"
-                                        format="fdigits:0; leading-zero:true; decimal-sep:','; negative-sign:false">
-                                </div>
-                            </div>
-                        </div>
+                <legend style="color: black;">Приказ о зачислении</legend>
+                <div style="flow: horizontal;padding: 4px;line-height: 16px">
+                    <div style="width:60px;padding-right: 4px">
+                        №<br/>
+                        <input type="text" id="enternum" class="my" size="5" maxlength="255" novalue="<нет значения!>">
                     </div>
+                    <div style="width:90px;padding-right: 4px">
+                        дата<br/>
+                        <input type="date" class="my" size="5" id="enterdate">
+                    </div>
+                    <div style="padding-right:0px;margin: -1px">
+                        <br/>
+                        <button id="bt-fast-enter">..</button>
+                    </div>
+                    <div style="padding-right: 4px">
+                       шифр<br/>
+                       <select id="dogshifrid" class="my" style="width: 100%%; text-align: center;">
+                       </select>
+                    </div>
+                    <div style="width:80px;padding-right: 4px">
+                        <br/>
+                        <select id="dogfastid" class="my" style="width: 100%%; text-align: center;">
+                        </select>
+                    </div>
+                    <div style="width:70px;padding-right: 4px;">
+                        год<br/>
+                        <select id="dogyearid" class="my" style="width: 100%%; text-align: center;">
+                        </select>
+                    </div>
+                    <div style="width:70px;">
+                        договор<br/>
+                        <input type="text" id="dognum" class="my" size="5" maxlength="7" novalue="<нет значения!>" format="fdigits:0; leading-zero:true; decimal-sep:','; negative-sign:false">
+                    </div>
+                </div>
+                <div style="padding: 4px;padding-top: 0px;">
+                    Особые условия<br/>
+                    <select id="dogextra" class="my" style="width: 100%%; text-align: left;">
+                    </select>
+                </div>
                 </fieldset>
             </div>
-            <div>
+
+            <div style="padding-left: 4px; padding-right: 4px;">
                 <fieldset style="border: 1px solid #bdbccc;">
                     <legend style="color: black;">Приказы о переводе на</legend>
                     <div style="flow: horizontal;">
