@@ -190,6 +190,7 @@ string_t SingeltonApp::GetTitleForKeyFromVoc(vok_key::VOK_KEY vkey, int num, boo
   case vok_key::VK_DOG_YEAR:   key = "dogyear";    break;
   case vok_key::VK_DOG_SHIFR:  key = "dogshifr";   break;
   case vok_key::VK_DOG_FAST:   key = "dogfast";    break;
+  case vok_key::VK_DOG_EXTRA:  key = "dogextra";   break;
 
 	}
 

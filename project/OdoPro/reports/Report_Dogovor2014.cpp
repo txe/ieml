@@ -23,6 +23,7 @@ void ReportDogovor::Run(int grpId, int studentId)
   for (int i = 0; i < 6; ++i)
     macros.Replace("$OPLATA" + string_t(aux::itow(i+1)) + "$", data.oplata[i]);
 
+  macros.Replace("$EXTRA$",    data.extra);
   macros.Replace("$PASSPORT$", data.passport);
   macros.Replace("$ADRES1$",   data.adres1);
   macros.Replace("$ADRES2$",   data.adres2);
@@ -49,13 +50,16 @@ ReportDogovor::ReportDogovorData ReportDogovor::GetData(int grpId, int studentId
     data.kod = "по направлению подготовки " + privData.shifrspec + " " + privData.direct + " (аккредитованная образовательная программа) c профилем " + privData.specOrProfil;
 
   string_t dogovorQuery = string_t() +
-    "SELECT s.dogyearid,s.dogshifrid,s.dogfastid,s.dognum,s.eduformid,s.passseries,s.passnum,s.passkod,s.passdate,s.passplace,s.addr,s.liveaddr,s.phones " \
+    "SELECT s.dogextra, s.dogyearid,s.dogshifrid,s.dogfastid,s.dognum,s.eduformid,s.passseries,s.passnum,s.passkod,s.passdate,s.passplace,s.addr,s.liveaddr,s.phones " \
     " FROM students as s WHERE s.deleted=0 and s.id=" + aux::itow(studentId);
   mybase::MYFASTRESULT dogovorRes = theApp.GetCon().Query(dogovorQuery);
   if (mybase::MYFASTROW	row = dogovorRes.fetch_row())
   {
     // форма обучения
     data.kod += ", " + theApp.GetTitleForKeyFromVoc(vok_key::VK_EDUFORM, row["eduformid"].toInt(), true) + ".";
+
+    // особые сведения
+    data.extra = theApp.GetTitleForKeyFromVoc(vok_key::VK_DOG_EXTRA, row["dogextra"].toInt(), true);
 
     // номер договора
     string_t dogYear  = theApp.GetTitleForKeyFromVoc(vok_key::VK_DOG_YEAR,  row["dogyearid"].toInt(), true);
