@@ -6,9 +6,25 @@
 
 
 //***  для служебных целей  ***//
-ALTER TABLE `students`	CHANGE COLUMN `edunumreg` `edunumreg` VARCHAR(7) NULL DEFAULT NULL AFTER `edunumprilog`;
+
+ALTER TABLE `payfactstest` ADD COLUMN `ordernum` int(11) NULL DEFAULT 0 AFTER `moneypay`;
+
+CREATE TABLE `group_info` (                                                  
+                `grpid` int(11) NOT NULL,                                        
+                `facultyid` int(11) NOT NULL,                                       
+                `deleted` tinyint(1) NOT NULL default '0',                                   
+                PRIMARY KEY  (`grpid`),
+					 INDEX `indx_facultyid` (`facultyid`, `deleted`)                                                                                                       
+              ) ENGINE=InnoDB ;
+
+
+
+
+
 
 // устарело
+ALTER TABLE `students`	CHANGE COLUMN `edunumreg` `edunumreg` VARCHAR(7) NULL DEFAULT NULL AFTER `edunumprilog`;
+
 ALTER TABLE `students` ADD COLUMN `passkod` VARCHAR(10) NULL DEFAULT NULL AFTER `passnum`;
 
 
