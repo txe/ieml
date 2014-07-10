@@ -49,7 +49,7 @@ namespace r
     string_t prevEdu, prevDoc, prevDocYear, prevPlace; 
     string_t inYear, inMonth, inDay, outYear, outMonth, outDay, exitDate, exitNum;
     string_t vkrTitle, specOrProfil, specializ, qualific, lang, shifrspec;
-    string_t diplomNum, regNum, dataVidachi, dataQualific, direct;
+    string_t diplomNum, prilNum, regNum, dataVidachi, dataQualific, direct;
     bool     isMale, isMagister;
     bool     isOtlDiplom;
     string_t specOrProfilTag;

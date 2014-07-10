@@ -11,8 +11,13 @@ void ReportSoglasovanie::Run(int grpId, int studentId)
 
   ReportSoglasovanieData data = GetData(grpId, studentId);
 
-  macros.Replace("$TITLE$",    data.title);
-  macros.Replace("$CUR_TIME$", data.date);
+  macros.Replace("$TITLE$",      data.title);
+  macros.Replace("$FIO$",        data.fio);
+  macros.Replace("$DIPLOM_NUM$", data.diplomNum);
+  macros.Replace("$PRIL_NUM$",   data.prilNum);
+  macros.Replace("$DAY$",        data.day);
+  macros.Replace("$MONTH$",      data.month);
+  macros.Replace("$YEAR$",       data.year);
  
   macros.EndMacros();
   macros.RunMacros("soglasovanie.dot");
@@ -25,14 +30,23 @@ ReportSoglasovanie::ReportSoglasovanieData ReportSoglasovanie::GetData(int grpId
 
   ReportSoglasovanieData data;
   
-  data.title = "от студента института экономики, управления и права, обучающегося по образовательной программе \"";
+  data.title = "института экономики, управления и права, обучающегося по образовательной программе ";
   if (privData.specOrProfilTag == "бак")
-    data.title += privData.direct;
+    data.title += "\"\"" + privData.direct + "\"\"";
   else
-    data.title += privData.specOrProfil;
-  data.title += "\" ";
-  data.title += privData.secondName + " " + privData.firstName + " " + privData.thirdName;
+    data.title += "\"\"" + privData.specOrProfil + "\"\"";
 
-  data.date = r::GetCurrentDate("");
+  data.fio       = privData.secondName + " " + privData.firstName + " " + privData.thirdName;
+  data.diplomNum = privData.diplomNum;
+  data.prilNum   = privData.prilNum;
+  
+  string_t date = r::GetCurrentDate("");
+  if (date.indexOf(L"!") == -1) // если дата получилась валидной
+  {
+    data.day   = date.subString(0, 2);
+    data.month = date.subString(3, date.size() - 3 - 4 - 1);
+    data.year  = date.subString(date.size() - 4, 4);
+  }
+
   return data;
 }

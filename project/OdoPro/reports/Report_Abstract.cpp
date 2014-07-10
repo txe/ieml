@@ -104,8 +104,8 @@ void r::GetPrivateData(PrivateData& data, int studentId)
 
   string_t  query = string_t() +
     "SELECT s.secondname,s.firstname,s.thirdname,s.grpid,s.bdate,s.vkr_title," \
-    "s.educationid,s.edudocid,s.eduenddate,s.eduplace, s.specid,s.enterdate,s.exitdate, s.exitnum,s.sex,v.title as lang, s.edunumdiplom, " \
-    "s.edunumreg,s.edudatediplom,s.edudatequalif,s.directid,s.edudiplomotl " \
+    " s.educationid,s.edudocid,s.eduenddate,s.eduplace, s.specid,s.enterdate,s.exitdate, s.exitnum,s.sex,v.title as lang, s.edunumdiplom, " \
+    " s.edunumprilog, s.edunumreg, s.edudatediplom,s.edudatequalif,s.directid,s.edudiplomotl " \
     " FROM students as s, "\
     " voc as v where s.deleted=0 and v.deleted=0 and s.id=" + aux::itow(studentId) + 
     " and s.languageid=v.num and v.vkey=\"language\"";
@@ -145,6 +145,7 @@ void r::GetPrivateData(PrivateData& data, int studentId)
     data.isOtlDiplom = row["edudiplomotl"] == "1";
 
     data.diplomNum    = row["edunumdiplom"];
+    data.prilNum      = row["edunumprilog"];
     data.regNum       = row["edunumreg"];
     if (data.regNum.empty())
       data.regNum = "<невалидный номер!>";

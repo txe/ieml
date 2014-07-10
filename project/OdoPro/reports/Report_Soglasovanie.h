@@ -11,7 +11,12 @@ private:
   struct ReportSoglasovanieData
   {
     string_t title;
-    string_t date;
+    string_t fio;
+    string_t diplomNum;
+    string_t prilNum;
+    string_t day;
+    string_t month;
+    string_t year;
   };
 
 public:
