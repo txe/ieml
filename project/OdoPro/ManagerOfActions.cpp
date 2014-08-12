@@ -10,6 +10,8 @@
 #include "json-aux-ext.h"
 #include "LiteWnd.h"
 #include "registry.h"
+#include "reports-buh/BuhReport_Month.h"
+#include "reports-buh/BuhReport_Saldo.h"
 
 void ManagerOfActions::Init(LiteWnd* parent, HELEMENT menu, IActionParent* actionParent)
 {
@@ -107,6 +109,18 @@ BOOL CALLBACK ManagerOfActions::ElementEventProcMenu( LPVOID tag, HELEMENT he, U
 		dlg.DoModal();
 		return TRUE;
 	}
+  if (aux::wcseq(id, L"buh-report-month")) // оплата за мес€ц по дн€м
+  {
+    BuhReport_Month dlg(main->_parent);
+    dlg.DoModal();
+    return TRUE;
+  }
+  if (aux::wcseq(id, L"buh-report-saldo")) // оборотно-сальдова€ ведомость
+  {
+    BuhReport_Saldo dlg(main->_parent);
+    dlg.DoModal();
+    return TRUE;
+  }
 	return FALSE;
 }
 

@@ -733,6 +733,26 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="reports-buh"
+			>
+			<File
+				RelativePath=".\reports-buh\BuhReport_Month.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\reports-buh\BuhReport_Month.h"
+				>
+			</File>
+			<File
+				RelativePath=".\reports-buh\BuhReport_Saldo.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\reports-buh\BuhReport_Saldo.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"
 			>
