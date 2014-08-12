@@ -340,7 +340,7 @@
             <div panel="panel-id6" accesskey="P">
                 <u>О</u>плата за обучение</div>
         </div>
-        <!-- -- --  --  --  --  --  -- TAB 1  --  --  --  --  --  --  --  --   -->
+        <!-- -- --  --  --  --  --  -- TAB 1 Личные данные --  --  --  --  --  --  --  --   -->
         <div name="panel-id1" selected="true">
             <div style="flow: horizontal;">
                 <div style="padding: 4px">
@@ -434,7 +434,7 @@
                 </div>
             </div>
         </div>
-        <!-- -- --  --  --  --  --  -- TAB 2  --  --  --  --  --  --  --  --   -->
+        <!-- -- --  --  --  --  --  -- TAB 2 Образование --  --  --  --  --  --  --  --   -->
         <div name="panel-id2">
             <div style="flow: horizontal;line-height: 16px">
                 <div style="padding: 4px">
@@ -474,7 +474,7 @@
                 </div>
             </div>
         </div>
-        <!-- -- --  --  --  --  --  -- TAB 7  --  --  --  --  --  --  --  --   -->
+        <!-- -- --  --  --  --  --  -- TAB 3 Еге  --  --  --  --  --  --  --  --   -->
         <div name="panel-id7">
             <div style="flow: horizontal;line-height: 16px">
                 <div style="padding: 4px">
@@ -537,7 +537,7 @@
             </div>
 
         </div>
-        <!-- -- --  --  --  --  --  -- TAB 3  --  --  --  --  --  --  --  --   -->
+        <!-- -- --  --  --  --  --  -- TAB 4 Обучение  --  --  --  --  --  --  --  --   -->
         <div name="panel-id3">
             <div style="flow: horizontal">
                 <div style="padding: 4px; width: 30%">
@@ -675,7 +675,7 @@
                 </fieldset>
             </div>
         </div>
-        <!-- -- --  --  --  --  --  -- TAB 4  --  --  --  --  --  --  --  --   -->
+        <!-- -- --  --  --  --  --  -- TAB 5 Выпуск  --  --  --  --  --  --  --  --   -->
         <div name="panel-id4">
             <div style="padding: 4px">
                 Примечание
@@ -744,7 +744,7 @@
                 <input type="text" id="vkr_title" class="my" maxlength="255" novalue="<нет значения!>">
             </div>
         </div>
-        <!-- -- --  --  --  --  --  -- TAB 5  --  --  --  --  --  --  --  --   -->
+        <!-- -- --  --  --  --  --  -- TAB 6 Успеваемость  --  --  --  --  --  --  --  --   -->
         <div name="panel-id5">
             <div style="flow: horizontal; height: 100%%">
                 <div style="padding: 4px; height: 100%%">
@@ -802,7 +802,7 @@
                 </div>
             </div>
         </div>
-        <!-- -- --  --  --  --  --  -- TAB 6  --  --  --  --  --  --  --  --   -->
+        <!-- -- --  --  --  --  --  -- TAB 7 Оплата за обучение  --  --  --  --  --  --  --  --   -->
         <div name="panel-id6">
             <div style="flow:horizontal;width:*;height:*">
                 <div style="width:100%%;height:100%%;">
@@ -814,11 +814,12 @@
                     <fieldset>
                     <legend style="color: black;">Ввод оплаты</legend>
                         <div style="flow:grid;white-space: nowrap;">
-                            <div style="left:1#;top:1#;padding:2px; width:50%%">дата оплаты</div>
-                            <div style="left:2#;right:3#;top:1#;padding:2px; width:50%%"><input type="date" id="pay-date" style="width:*"></div>
-                            <div style="left:1#;top:2#;padding:2px; width:50%%">сумма оплаты</div>
-                            <div style="left:2#;right:3#;top:2#;padding:2px;"><select id="pay-pay" style="overflow: hidden; width: 100%%;"/></div>
-                            
+                            <div style="left:1#;top:1#;padding:2px; width:50%%">№ поруч.</div>
+                            <div style="left:2#;right:3#;top:1#;padding:2px; width:50%%"><input type="number" id="pay-order" style="width:*" value="0" size="3" step="1" minvalue="0" maxvalue="999"></div>
+                            <div style="left:1#;top:2#;padding:2px; width:50%%">дата</div>
+                            <div style="left:2#;right:3#;top:2#;padding:2px; width:50%%"><input type="date" id="pay-date" style="width:*"></div>
+                            <div style="left:1#;top:3#;padding:2px; width:50%%">сумма</div>
+                            <div style="left:2#;right:3#;top:3#;padding:2px;"><select id="pay-pay" style="overflow: hidden; width: 100%%;"/></div>
                         </div> 
                         <div style="padding-top:4px" align="right">
                             <div style="padding-top:4px"><button id="pay-save"  value="Сохранить"/></div>
@@ -853,10 +854,10 @@
                                         <option value="2008">2008 - 2009</option>
                                         <option value="2009">2009 - 2010</option>
                                         <option value="2010">2010 - 2011</option>
-                                        <option value="2011" selected>2011 - 2012</option>
+                                        <option value="2011">2011 - 2012</option>
                                         <option value="2012">2012 - 2013</option>
                                         <option value="2013">2013 - 2014</option>
-                                        <option value="2014">2014 - 2015</option>
+                                        <option value="2014" selected>2014 - 2015</option>
                                         <option value="2015">2015 - 2016</option>
                                         <option value="2016">2016 - 2017</option>
                                         <option value="2017">2017 - 2018</option>

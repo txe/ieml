@@ -109,7 +109,7 @@ void SPayment::UpdateViewPayment()
 	std::map<std::wstring, int>			 pay;
 	
 	string_t pay_query = string_t() +
-		" SELECT id, idstud, datepay, moneypay, idopts, deleted " 
+		" SELECT id, idstud, datepay, moneypay, idopts, ordernum " 
 		" FROM payfactstest "
 		" WHERE deleted = 0 AND idstud = " + aux::itow(theApp.GetCurrentStudentID()) + 
 		" ORDER BY idopts, datepay";
@@ -118,9 +118,11 @@ void SPayment::UpdateViewPayment()
 	while (mybase::MYFASTROW pay_row = pay_res.fetch_row())	
 	{	
 		std::wstring optid = pay_row["idopts"];
+    string_t orderNum = pay_row["ordernum"];
+
 		pay[optid] = pay[optid] + aux::wtoi(pay_row["moneypay"]);
-		string_t inf = "<option idfact=" + pay_row["id"] + "><caption>дата платежа: " + pay_row["datepay"] + 
-			" сумма платежа: " + pay_row["moneypay"] + "</caption></option>";
+    string_t inf = "<option idfact=" + pay_row["id"] + "><caption>платеж: дата " + pay_row["datepay"] + 
+      " сумма " + pay_row["moneypay"] + " № " + orderNum + "</caption></option>";
 		info_pay[optid] = info_pay[optid] + inf; 
 	}
 
@@ -244,16 +246,17 @@ void SPayment::AddPay(void)
 	if (!CheckInputPay())
 		return;
 
-	string_t pay_date	= json::v2t(LiteWnd::link_element(_root, "pay-date").get_value()); 
-	string_t pay_pay	= json::get_caption(LiteWnd::link_element(_root, "pay-pay"));//json::v2t(LiteWnd::link_element(_root, "pay-pay").get_value());
-	string_t studid		= aux::itow(theApp.GetCurrentStudentID());
-	string_t optid		= GetCurrentCat().get_attribute("optid");
-	string_t period		= GetCurrentCat().get_attribute("period");
+  string_t pay_order = json::v2t(LiteWnd::link_element(_root, "pay-order").get_value());
+	string_t pay_date	 = json::v2t(LiteWnd::link_element(_root, "pay-date").get_value()); 
+	string_t pay_pay	 = json::get_caption(LiteWnd::link_element(_root, "pay-pay"));//json::v2t(LiteWnd::link_element(_root, "pay-pay").get_value());
+	string_t studid		 = aux::itow(theApp.GetCurrentStudentID());
+	string_t optid		 = GetCurrentCat().get_attribute("optid");
+	string_t period		 = GetCurrentCat().get_attribute("period");
 
 	string_t query = string_t() + 
 		"INSERT INTO payfactstest "
-		"(idstud,datepay,moneypay,idopts) " 
-		" VALUES(" + studid +", '" + pay_date + "', " + pay_pay + ", " + optid + ")";
+		"(idstud,datepay,moneypay,idopts, ordernum) " 
+		" VALUES(" + studid +", '" + pay_date + "', " + pay_pay + ", " + optid + ", " + pay_order + ")";
 	theApp.GetCon().Query(query);
 	
 	UpdateView();
@@ -264,6 +267,7 @@ void SPayment::AddPay(void)
 		"\nПериод оплаты:\t\t" + period + 
 		"\nДата оплаты:\t\t" + pay_date + 
 		"\nСумма данной оплаты:\t" + pay_pay + " руб.";
+
 	MessageBox(::GetActiveWindow(), msg, 
 		L"Сообщение", MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
 }
