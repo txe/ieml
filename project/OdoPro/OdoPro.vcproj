@@ -479,6 +479,16 @@
 				Filter="html;htm"
 				>
 				<File
+					RelativePath=".\res\buh-report-month.htm"
+					DeploymentContent="true"
+					>
+				</File>
+				<File
+					RelativePath=".\res\buh-report-saldo.htm"
+					DeploymentContent="true"
+					>
+				</File>
+				<File
 					RelativePath=".\res\buh-report.htm"
 					DeploymentContent="true"
 					>
