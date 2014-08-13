@@ -14,6 +14,7 @@ private:
 	htmlayout::dom::element	sel_egediscip_;
 	htmlayout::dom::element	table_ege_discip_;
 	htmlayout::dom::element	ege_ball_;
+  htmlayout::dom::element	faculty_;
 	std::vector<htmlayout::dom::element> perevod_nums_;
 	std::vector<htmlayout::dom::element> perevod_dates_;
 
@@ -39,6 +40,8 @@ private:
 	void ShowPerevodInfo(string_t perevodInfo);
 	// возвращает готовую строку переводов
 	string_t GetPerevodInfo();
+  // показывает какой факультет
+  void UpdateFacultyView();
 	// обновл€ет таблицу предметов по ≈√Ё
 	void UpdateEgeTable();
 	// добавл€ет\измен€ет оценку предмета по ≈√Ё
@@ -69,6 +72,9 @@ private:
 	void FastSetPerevod();
   // добавим в скобках номера шифров
   void AdjustDirectList();
+  // мен€ет факультет дл€ всей группы
+  void ChangeFaculty();
+
 public:
 	// создает в  базе информацию о новом студенте
 	bool CreateData(void);

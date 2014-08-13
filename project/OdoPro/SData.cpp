@@ -44,6 +44,7 @@ void SData::Init(htmlayout::dom::element root)
 	sel_egediscip_		= LiteWnd::link_element(root_, "sel-egediscip");
 	table_ege_discip_	= LiteWnd::link_element(root_, "table-ege-discip");
 	ege_ball_			    = LiteWnd::link_element(root_, "ege-ball");
+  faculty_          = LiteWnd::link_element(root_, "faculty");
 
   perevod_nums_.push_back(LiteWnd::link_element(root_, "perevod-num-2"));
 	perevod_nums_.push_back(LiteWnd::link_element(root_, "perevod-num-3"));
@@ -76,6 +77,7 @@ void SData::Init(htmlayout::dom::element root)
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "citizenryid"),	  "citizenry");
 	t::LoadContentFromVocForList(LiteWnd::link_element(root_, "directid"),	    "direct", true);
   t::LoadContentFromVocForList(LiteWnd::link_element(root_, "dogextra"),	    "dogextra");
+  t::LoadContentFromVocForList(LiteWnd::link_element(root_, "faculty"),	      "faculty");
 
   AdjustDirectList(); // добавим в скобках номера шифров
 
@@ -127,6 +129,7 @@ void SData::UpdateView(void)
 
 	map_elements_["grpid"].send_event(SELECT_SELECTION_CHANGED);
 
+  UpdateFacultyView();
 	UpdateEgeTable();
 	ShowPerevodInfo(row["perevod_na_kurs"]);
 	
@@ -137,6 +140,9 @@ void SData::UpdateView(void)
 // сохраняет данные на студента
 bool SData::SaveData(void)
 {
+  // сохраним измерения факультета для всей группы
+  ChangeFaculty();
+
 	std::map<string_t, string_t> values;
 	get_current_value(values);
 	// составим запрос
@@ -608,7 +614,23 @@ BOOL CALLBACK SData::ElementEventProcEgeDiscip(LPVOID tag, HELEMENT he, UINT evt
 
 	return TRUE;
 }
+//-------------------------------------------------------------------------
+// показывает какой факультет
+void SData::UpdateFacultyView()
+{
+  string_t query = string_t() +
+    " SELECT facultyid FROM group_info "
+    " WHERE `deleted` = 0 AND `grpid` = " + aux::itow(theApp.GetCurrentGroupID()) + " LIMIT 1";
 
+  string_t val = "0"; // ставлю сдесь ноль для гарантии единообразного поведения 
+  mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
+  if (mybase::MYFASTROW	row = res.fetch_row())
+    val = row["facultyid"];
+
+  json::t2v(faculty_, val); // к сожелению нет пути что бы сбросить значение выпадающего списка
+  faculty_.set_attribute("old-value", val);
+}
+//-------------------------------------------------------------------------
 // обновляет таблицу предметов по ЕГЭ
 void SData::UpdateEgeTable()
 {
@@ -999,3 +1021,19 @@ void SData::AdjustDirectList()
       child.set_text(string_t(child.text()) + L" (" + it->second + ")");
   }
 }
+//-------------------------------------------------------------------------
+// меняет факультет для всей группы
+void SData::ChangeFaculty()
+{
+  string_t newVal = json::v2t(faculty_);
+  string_t oldVal = faculty_.get_attribute("old-value");
+  if (newVal == oldVal)
+    return;
+  string_t grpId = aux::itow(theApp.GetCurrentGroupID());
+  string_t query = "INSERT INTO group_info (grpid, facultyid) VALUES( " + grpId + ", " + newVal + ")"
+                   " ON DUPLICATE KEY UPDATE facultyid=" + newVal;
+
+  theApp.GetCon().Query(query);
+
+}
+

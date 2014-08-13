@@ -191,7 +191,7 @@ string_t SingeltonApp::GetTitleForKeyFromVoc(vok_key::VOK_KEY vkey, int num, boo
   case vok_key::VK_DOG_SHIFR:  key = "dogshifr";   break;
   case vok_key::VK_DOG_FAST:   key = "dogfast";    break;
   case vok_key::VK_DOG_EXTRA:  key = "dogextra";   break;
-
+  case vok_key::VK_FACULTY:    key = "faculty";    break;
 	}
 
 	string_t query = string_t() + " SELECT title, tag FROM voc "

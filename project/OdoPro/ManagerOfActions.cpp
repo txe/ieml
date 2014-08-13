@@ -117,8 +117,8 @@ BOOL CALLBACK ManagerOfActions::ElementEventProcMenu( LPVOID tag, HELEMENT he, U
   }
   if (aux::wcseq(id, L"buh-report-saldo")) // оборотно-сальдовая ведомость
   {
-    BuhReport_Saldo dlg(main->_parent);
-    dlg.DoModal();
+    //BuhReport_Saldo dlg(main->_parent);
+    //dlg.DoModal();
     return TRUE;
   }
 	return FALSE;
