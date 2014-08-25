@@ -14,107 +14,26 @@
             margin: 5px;
             overflow: hidden;
         }
-		button[type="checkbox"]
-		{ 
-			text-decoration:none;
-		}
-		span
-        { 
-        	border:1px solid red;
-        }
-		#shot
-		{
-			margin:-5px
-		}
-		
-		/*----------------------------------------*/
-        table
-        {
-            border: 1px solid #bdbccc;
-            overflow: auto;
-            width: 100%%;
-            height: 100%%;
-            behavior: grid;
-            background-color: white;
-        }
-        table th
-        {
-            color: white;
-            font-family: "Century Gothic" , "Verdana";
-            font-size: 9pt;
-            border: none;
-            padding: 4px;
-            background-color: #DDD;
-            background-image: url(header.png);
-            background-repeat: expand stretch-left stretch-right stretch-middle;
-            background-position: 3px 3px 3px 3px;
-            white-space:nowrap;
-            
-        }
-        table th:hover
-        {
-            color: #ffe598;
-            transition: blend;
-            background-image: url(header-hover.png);
-        }
-        table tr:nth-child(odd)
-        {
-            background-color: white;
-        }
-        /* each odd row */
-        table tr:nth-child(even)
-        {
-            background-color: #F4F3F9;
-        }
-        /* each even row */
-        
-        table td 
-        { 
-            padding:2px; 
-            padding-left:6px;
-            font-family:"Verdana"; 
-	        font-size:8pt;  
-	        border:1pt;
-	        text-align:center;
-        }
-        table tr:current /* current row */ 
-        { 
-            background-color:#bdbccc;
-            color:black;
-        } 
-        
-        table option:current
-        {
-        	 background-color:#bdbccc;
-            color:black;
-        }
-        
-        table td:nth-child(4) { text-align:left; } /* first column */
-        table td:nth-child(5) { text-align:left; } /* first column */
         
         
 	</style>
 </head>
 <body>
 	<div style="width: 100%%; height: 100%%;">
-	    <div style="height: 50%%;flow: horizontal">
-    	    <div style="padding-right: 6px" style="height: 100%%">
-		        <table id="month-grid" fixedrows="1" cellspacing="0" >
-	                <tr><th style="width:60">Дата</th><th>Сумма</th></tr>
-		        </table>
+	    <fieldset>
+		    <legend style="color: black">Выбор режима</legend>
+		    <div style="padding: 3px; padding-left: 15px">
+		        <div><button id="month-radio" type="radio" name="-" checked>За месяц</button></div>
+			    <div><button id="day-radio" type="radio" name="-">За день</button></div>
+			    <div>
+			        <button id="fio-radio" type="radio" name="-" >За ордер по фамилиям</button>
+			        <input type="number" id="order-num" style="width:*" value="0" size="3" step="1" minvalue="0" maxvalue="999" />
+			    </div>
 		    </div>
-		    <div style="padding-right: 6px" style="height: 100%%">
-		        <table id="ordernum-grid" fixedrows="1" cellspacing="0">
-		            <tr><th style="width:60">№ ордера</th><th>Сумма</th><th>Кол-во</th></tr>
-		        </table>
-		    </div>		
-	    </div>
-	    <div div style="padding-right: 6px" style="height: 100%%">
-	        <table id="fio-grid" fixedrows="1" cellspacing="0">
-		        <tr><th style="width:60">Дата</th><th>№ ордера</th><th>Сумма</th><th>Фамилия</th><th>№ договора</th></tr>
-		    </table>
-	    </div>
-    </div>
+	    </fieldset>  
+	    <br/>
+	    Дата: <input type="date" id="xday" />
+	</div>
 	<div align="right" style="padding-top: 3px; padding-left: 15px">
 	    <button id="bt-report">Отчет</button>
         <button id="bt-close">Закрыть</button>

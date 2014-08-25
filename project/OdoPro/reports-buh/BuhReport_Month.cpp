@@ -24,7 +24,7 @@ BOOL BuhReport_Month::PreCreateWindow(CREATESTRUCT& cs)
 //-------------------------------------------------------------------------
 int BuhReport_Month::OnCreate()
 {
-  SetWindowPos(m_hWnd, NULL, -1, -1, 800, 800, 
+  SetWindowPos(m_hWnd, NULL, -1, -1, 300, 230, 
     SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOZORDER);
   CenterWindow();
 
@@ -43,18 +43,12 @@ int BuhReport_Month::OnCreate()
 //-------------------------------------------------------------------------
 void BuhReport_Month::InitDomElement()
 {
-  monthGrid_    = link_element("month-grid");
-  orderNumGrid_ = link_element("ordernum-grid");
-  fioGrid_      = link_element("fio-grid");
-
-  HTMLayoutAttachEventHandlerEx(monthGrid_,    ElementEventProcFor, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
-  HTMLayoutAttachEventHandlerEx(orderNumGrid_, ElementEventProcFor, this, HANDLE_BEHAVIOR_EVENT | DISABLE_INITIALIZATION);
+  orderNumBox_ = link_element("order-num");
+  dateBox_     = link_element("xday");
 
   // присоедин€ем обоработчики к кнопкам
   HTMLayoutAttachEventHandlerEx(link_element("bt-report"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
   HTMLayoutAttachEventHandlerEx(link_element("bt-close"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
-
-  FillMonthGrid("2014-01");
 }
 
 // обрабатывает кнопки
@@ -72,89 +66,77 @@ BOOL CALLBACK BuhReport_Month::ElementEventProcBt(LPVOID tag, HELEMENT he, UINT 
     dlg->Close();
     return TRUE;
   }
-
-  return FALSE;
-}
-//-------------------------------------------------------------------------
-// обрабатывает выбор предмета/семестра
-BOOL CALLBACK BuhReport_Month::ElementEventProcFor(LPVOID tag, HELEMENT he, UINT evtg, LPVOID prms)
-{
-  if (evtg != HANDLE_BEHAVIOR_EVENT)
-    return FALSE;
-
-  BEHAVIOR_EVENT_PARAMS* pr = static_cast<BEHAVIOR_EVENT_PARAMS*>(prms);
-  if (pr->cmd == TABLE_ROW_CLICK)
+  if (id == L"bt-report")
   {
-    element el = pr->heTarget;
-    BuhReport_Month* dlg = static_cast<BuhReport_Month*>(tag);
-    if (dlg->monthGrid_ == he)    dlg->FillOrderNumGrid(el.get_attribute("payDay"));
-    if (dlg->orderNumGrid_ == he) dlg->FillFioGrid(el.get_attribute("payDay"), el.get_attribute("orderNum"));
+    dlg->Report();
     return TRUE;
   }
 
   return FALSE;
 }
 //-------------------------------------------------------------------------
-// заполнить таблицу мес€ца данными
-void BuhReport_Month::FillMonthGrid(string_t payMonth)
+void BuhReport_Month::Report(void)
+{
+  string_t xDate = json::v2t(dateBox_.get_value());
+  if (xDate.empty())
+  {
+    MessageBox(m_hWnd, L"Ќе введена дата", L"—ообщение", MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
+    return;
+  }
+
+  if (link_element("month-radio").get_state(STATE_CHECKED))
+    ReportMonth(xDate.subString(0, 5));
+  if (link_element("day-radio").get_state(STATE_CHECKED))
+    ReportDay(xDate);
+  if (link_element("fio-radio").get_state(STATE_CHECKED))
+    ReportFio(xDate, json::v2t(dateBox_.get_value()));
+}
+//-------------------------------------------------------------------------
+void BuhReport_Month::ReportMonth(string_t month)
 {
   // получим мес€чные данные
-  string_t startMonth = "'" + payMonth + "-01'";
-  string_t endMonth   = "'" + payMonth + "-31'";
+  string_t startMonth = "'" + month + "-01'";
+  string_t endMonth   = "'" + month + "-31'";
   mybase::MYFASTRESULT res = theApp.GetCon().Query(
     " SELECT pay.datepay, SUM(pay.moneypay) as summa "
     " FROM payfactstest as pay "
     " WHERE pay.deleted = 0 AND pay.datepay >= " + startMonth + " AND pay.datepay <= " + endMonth + 
     " GROUP BY pay.datepay ORDER BY datepay");
 
-  string_t buf;
-  while (mybase::MYFASTROW row = res.fetch_row())
-  {
-    buf += "<tr payday='" + row["datepay"] + "'>"
-           "<td>" + row["datepay"] + "</td>"
-           "<td>" + row["summa"]  + "</td>";
-           "</tr>";
-  }
-
-  if (_mbslen(buf))
-    monthGrid_.set_html(buf, _mbslen(buf), SIH_APPEND_AFTER_LAST);
-  monthGrid_.update();
+//   string_t buf;
+//   while (mybase::MYFASTROW row = res.fetch_row())
+//   {
+//     buf += "<tr payday='" + row["datepay"] + "'>"
+//       "<td>" + row["datepay"] + "</td>"
+//       "<td>" + row["summa"]  + "</td>";
+//     "</tr>";
+//   }
 }
 //-------------------------------------------------------------------------
-// заполнить таблицу номеров выплат
-void BuhReport_Month::FillOrderNumGrid(string_t payDay)
+void BuhReport_Month::ReportDay(string_t day)
 {
   mybase::MYFASTRESULT res = theApp.GetCon().Query(
     " SELECT pay.ordernum, SUM(pay.moneypay) as summa, COUNT(*) as cnt "
     " FROM payfactstest as pay "
-    " WHERE pay.deleted = 0 AND pay.datepay = '" + payDay + "'" 
+    " WHERE pay.deleted = 0 AND pay.datepay = '" + day + "'" 
     " GROUP BY pay.ordernum ORDER BY ordernum");
 
-  string_t buf;
-  while (mybase::MYFASTROW row = res.fetch_row())
-  {
-    buf += "<tr payday='" + payDay + "' ordernum='" + row["ordernum"] + "'>"
-      "<td>" + row["ordernum"] + "</td>"
-      "<td>" + row["summa"]  + "</td>"
-      "<td>" + row["cnt"]  + "</td>"
-      "</tr>";
-  }
-
-  t::ClearTable(orderNumGrid_, 1);
-  if (_mbslen(buf))
-    orderNumGrid_.set_html(buf, _mbslen(buf), SIH_APPEND_AFTER_LAST);
-  orderNumGrid_.update();
-
-  t::ClearTable(fioGrid_, 1);
-  fioGrid_.update();
+//   string_t buf;
+//   while (mybase::MYFASTROW row = res.fetch_row())
+//   {
+//     buf += "<tr payday='" + payDay + "' ordernum='" + row["ordernum"] + "'>"
+//       "<td>" + row["ordernum"] + "</td>"
+//       "<td>" + row["summa"]  + "</td>"
+//       "<td>" + row["cnt"]  + "</td>"
+//       "</tr>";
+//   }
 }
 //-------------------------------------------------------------------------
-// заполнить таблицу фамилий
-void BuhReport_Month::FillFioGrid(string_t payDay, string_t orderNum)
+void BuhReport_Month::ReportFio(string_t day, string_t orderNum)
 {
   theApp.GetCon().Query("drop temporary table if exists full_table");
   theApp.GetCon().Query(
-  "CREATE TEMPORARY TABLE full_table "
+    "CREATE TEMPORARY TABLE full_table "
     " ( "
     "  id        int(11), "
     "  summa     int(11)  "
@@ -162,7 +144,7 @@ void BuhReport_Month::FillFioGrid(string_t payDay, string_t orderNum)
   theApp.GetCon().Query("INSERT full_table (id, summa) "
     " SELECT pay.idstud, SUM(pay.moneypay) as summa "
     " FROM payfactstest as pay "
-    " WHERE pay.deleted = 0 AND pay.datepay = '" + payDay + "' AND pay.ordernum=" + orderNum +  
+    " WHERE pay.deleted = 0 AND pay.datepay = '" + day + "' AND pay.ordernum=" + orderNum +  
     " GROUP BY id");
 
   string_t query = string_t() +
@@ -175,23 +157,16 @@ void BuhReport_Month::FillFioGrid(string_t payDay, string_t orderNum)
     " ORDER BY num, fio";
   mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
 
-
-  string_t buf;
-  while (mybase::MYFASTROW row = res.fetch_row())
-  {
-    buf += "<tr>"
-      "<td>" + payDay        + "</td>"
-      "<td>" + orderNum      + "</td>"
-      "<td>" + row["summa"]  + "</td>"
-      "<td>" + row["fio"]    + "</td>"
-      "<td>" + row["num"]    + "</td>"
-      "</tr>";
-  }
-
-  t::ClearTable(fioGrid_, 1);
-  if (_mbslen(buf))
-    fioGrid_.set_html(buf, _mbslen(buf), SIH_APPEND_AFTER_LAST);
-  fioGrid_.update();
-
-  theApp.GetCon().Query("drop temporary table if exists full_table");
+// 
+//   string_t buf;
+//   while (mybase::MYFASTROW row = res.fetch_row())
+//   {
+//     buf += "<tr>"
+//       "<td>" + payDay        + "</td>"
+//       "<td>" + orderNum      + "</td>"
+//       "<td>" + row["summa"]  + "</td>"
+//       "<td>" + row["fio"]    + "</td>"
+//       "<td>" + row["num"]    + "</td>"
+//       "</tr>";
+//   }
 }
