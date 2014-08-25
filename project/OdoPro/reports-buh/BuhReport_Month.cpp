@@ -94,7 +94,7 @@ void BuhReport_Month::Report(void)
   if (link_element("day-radio").get_state(STATE_CHECKED))
     ReportDay(xDate);
   if (link_element("fio-radio").get_state(STATE_CHECKED))
-    ReportFio(xDate, json::v2t(dateBox_.get_value()));
+    ReportFio(xDate, json::v2t(orderNumBox_.get_value()));
 }
 //-------------------------------------------------------------------------
 void BuhReport_Month::ReportMonth(string_t month)
@@ -138,6 +138,7 @@ void BuhReport_Month::ReportMonth(string_t month)
   macros.TablesColumns(1, 2, "PreferredWidth = CentimetersToPoints(4)");
   macros.Cell(1, 1, 1, "Range.Text=" + toWrap("Дата"));
   macros.Cell(1, 1, 2, "Range.Text=" + toWrap("Сумма"));
+  macros.InsertLine("ActiveDocument.Tables.Item(1).Rows.Item(1).Range.Font.Bold = true");
 
   int itog = 0;
   for (size_t i = 0; i < lst.size(); ++i)
@@ -196,6 +197,7 @@ void BuhReport_Month::ReportDay(string_t day)
   macros.Cell(1, 1, 1, "Range.Text=" + toWrap("№ ордера"));
   macros.Cell(1, 1, 2, "Range.Text=" + toWrap("Сумма"));
   macros.Cell(1, 1, 3, "Range.Text=" + toWrap("Кол-во"));
+  macros.InsertLine("ActiveDocument.Tables.Item(1).Rows.Item(1).Range.Font.Bold = true");
 
   int itog = 0;
   for (size_t i = 0; i < lst.size(); ++i)
@@ -237,18 +239,61 @@ void BuhReport_Month::ReportFio(string_t day, string_t orderNum)
     " ORDER BY num, fio";
   mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
 
-// 
-//   string_t buf;
-//   while (mybase::MYFASTROW row = res.fetch_row())
-//   {
-//     buf += "<tr>"
-//       "<td>" + payDay        + "</td>"
-//       "<td>" + orderNum      + "</td>"
-//       "<td>" + row["summa"]  + "</td>"
-//       "<td>" + row["fio"]    + "</td>"
-//       "<td>" + row["num"]    + "</td>"
-//       "</tr>";
-//   }
+  struct fio_pay
+  {
+    string_t summa;
+    string_t fio;
+    string_t dogNum;
+    fio_pay(string_t _summa, string_t _fio, string_t _dogNum) : summa(_summa), fio(_fio), dogNum(_dogNum){}
+  };
+  std::vector<fio_pay> lst;
+  while (mybase::MYFASTROW row = res.fetch_row())
+    lst.push_back(fio_pay(row["summa"], row["fio"], row["num"]));
+  theApp.GetCon().Query("drop temporary table if exists full_table");
+
+  WordMacros macros;
+  macros.BeginMacros();
+  ReportHeader(macros, "Оплата за месяц по дням", toRightDate(day));
+
+  macros.TablesAdd(lst.size()+1, 5);
+  macros.InsertLine("ActiveDocument.Tables.Item(1).Columns.Item(1).Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
+  macros.InsertLine("ActiveDocument.Tables.Item(1).Columns.Item(2).Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
+  macros.InsertLine("ActiveDocument.Tables.Item(1).Columns.Item(3).Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphRight");
+  macros.InsertLine("ActiveDocument.Tables.Item(1).Columns.Item(4).Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
+  macros.InsertLine("ActiveDocument.Tables.Item(1).Columns.Item(5).Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
+
+  macros.TablesColumns(1, 1, "Width = CentimetersToPoints(2.3)");
+  macros.TablesColumns(1, 2, "Width = CentimetersToPoints(1.7)");
+  macros.TablesColumns(1, 3, "Width = CentimetersToPoints(1.7)");
+  macros.TablesColumns(1, 4, "Width = CentimetersToPoints(7.3)");
+  macros.TablesColumns(1, 5, "Width = CentimetersToPoints(5.5)");
+
+  macros.Cell(1, 1, 1, "Range.Text=" + toWrap("Дата"));
+  macros.Cell(1, 1, 2, "Range.Text=" + toWrap("№ ордера"));
+  macros.Cell(1, 1, 3, "Range.Text=" + toWrap("Сумма"));
+  macros.Cell(1, 1, 4, "Range.Text=" + toWrap("Фамилия"));
+  macros.Cell(1, 1, 5, "Range.Text=" + toWrap("№ договора"));
+  macros.InsertLine("ActiveDocument.Tables.Item(1).Rows.Item(1).Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphCenter");
+  macros.InsertLine("ActiveDocument.Tables.Item(1).Rows.Item(1).Range.Font.Bold = true");
+
+  for (size_t i = 0; i < lst.size(); ++i)
+  {
+    macros.Cell(1, i+2, 1, "Range.Text=" + toWrap(toRightDate(day)));
+    macros.Cell(1, i+2, 2, "Range.Text=" + toWrap(orderNum));
+    macros.Cell(1, i+2, 3, "Range.Text=" + toWrap(lst[i].summa));
+    macros.Cell(1, i+2, 4, "Range.Text=" + toWrap(lst[i].fio));
+    macros.Cell(1, i+2, 5, "Range.Text=" + toWrap(lst[i].dogNum));
+  }
+
+  macros.EndMacros();
+  macros.RunMacros("");
+
 }
 //-------------------------------------------------------------------------
 void BuhReport_Month::SerializeData(bool toSave)
