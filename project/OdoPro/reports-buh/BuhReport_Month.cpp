@@ -161,15 +161,55 @@ void BuhReport_Month::ReportDay(string_t day)
     " WHERE pay.deleted = 0 AND pay.datepay = '" + day + "'" 
     " GROUP BY pay.ordernum ORDER BY ordernum");
 
-//   string_t buf;
-//   while (mybase::MYFASTROW row = res.fetch_row())
-//   {
-//     buf += "<tr payday='" + payDay + "' ordernum='" + row["ordernum"] + "'>"
-//       "<td>" + row["ordernum"] + "</td>"
-//       "<td>" + row["summa"]  + "</td>"
-//       "<td>" + row["cnt"]  + "</td>"
-//       "</tr>";
-//   }
+  struct day_pay
+  {
+    string_t orderNum;
+    string_t summa;
+    string_t count;
+    day_pay(string_t o, string_t s, string_t c) : orderNum(o), summa(s), count(c) {}
+  };
+  std::vector<day_pay> lst;
+  while (mybase::MYFASTROW row = res.fetch_row())
+    lst.push_back(day_pay(row["ordernum"], row["summa"], row["cnt"]));
+
+  WordMacros macros;
+  macros.BeginMacros();
+  ReportHeader(macros, "Оплата за месяц по дням", toRightDate(day));
+
+  macros.TablesAdd(lst.size()+2, 3);
+  macros.InsertLine("ActiveDocument.Tables.Item(1).Columns.Item(1).Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
+  macros.InsertLine("ActiveDocument.Tables.Item(1).Columns.Item(2).Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphRight");
+  macros.InsertLine("ActiveDocument.Tables.Item(1).Columns.Item(3).Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphRight");
+  macros.Cell(1, 1, 1, "Range.Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphCenter");
+  macros.Cell(1, 1, 2, "Range.Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphCenter");
+  macros.Cell(1, 1, 3, "Range.Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphCenter");
+
+  macros.TablesColumns(1, 1, "PreferredWidth = CentimetersToPoints(3)");
+  macros.TablesColumns(1, 2, "PreferredWidth = CentimetersToPoints(4)");
+  macros.TablesColumns(1, 3, "PreferredWidth = CentimetersToPoints(2)");
+  macros.Cell(1, 1, 1, "Range.Text=" + toWrap("№ ордера"));
+  macros.Cell(1, 1, 2, "Range.Text=" + toWrap("Сумма"));
+  macros.Cell(1, 1, 3, "Range.Text=" + toWrap("Кол-во"));
+
+  int itog = 0;
+  for (size_t i = 0; i < lst.size(); ++i)
+  {
+    macros.Cell(1, i+2, 1, "Range.Text=" + toWrap(lst[i].orderNum));
+    macros.Cell(1, i+2, 2, "Range.Text=" + toWrap(lst[i].summa));
+    macros.Cell(1, i+2, 3, "Range.Text=" + toWrap(lst[i].count));
+    itog += lst[i].count.toInt();
+  }
+  macros.Cell(1, lst.size()+2, 1, "Range.Text=" + toWrap("Итог"));
+  macros.Cell(1, lst.size()+2, 3, "Range.Text=" + toWrap((LPCSTR)aux::itoa(itog)));
+
+  macros.EndMacros();
+  macros.RunMacros("");
 }
 //-------------------------------------------------------------------------
 void BuhReport_Month::ReportFio(string_t day, string_t orderNum)
