@@ -21,6 +21,7 @@ private:
   void ReportMonth(string_t month);
   void ReportDay(string_t day);
   void ReportFio(string_t day, string_t orderNum);
+  void SerializeData(bool toSave);
 
 private:
   // обрабатывает кнопки

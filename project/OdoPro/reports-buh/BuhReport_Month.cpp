@@ -2,6 +2,7 @@
 #include "BuhReport_Month.h"
 #include "..\SingeltonApp.h"
 #include "..\json-aux-ext.h"
+#include "..\registry.h"
 #include <sys/timeb.h>
 #include <sstream>
 #include <iomanip>
@@ -46,11 +47,13 @@ void BuhReport_Month::InitDomElement()
   orderNumBox_ = link_element("order-num");
   dateBox_     = link_element("xday");
 
+  SerializeData(false);
+
   // присоединяем обоработчики к кнопкам
   HTMLayoutAttachEventHandlerEx(link_element("bt-report"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
   HTMLayoutAttachEventHandlerEx(link_element("bt-close"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 }
-
+//-------------------------------------------------------------------------
 // обрабатывает кнопки
 BOOL CALLBACK BuhReport_Month::ElementEventProcBt(LPVOID tag, HELEMENT he, UINT evtg, LPVOID prms)
 {
@@ -63,6 +66,7 @@ BOOL CALLBACK BuhReport_Month::ElementEventProcBt(LPVOID tag, HELEMENT he, UINT 
 
   if (id == L"bt-close")
   {
+    dlg->SerializeData(true);
     dlg->Close();
     return TRUE;
   }
@@ -169,4 +173,28 @@ void BuhReport_Month::ReportFio(string_t day, string_t orderNum)
 //       "<td>" + row["num"]    + "</td>"
 //       "</tr>";
 //   }
+}
+//-------------------------------------------------------------------------
+void BuhReport_Month::SerializeData(bool toSave)
+{
+  Reg reg;
+  reg.SetRootKey(HKEY_CURRENT_USER);
+  reg.SetKey("ODOBase\\ODOBase\\OTHER");
+
+  if (toSave)
+  {
+    reg.WriteString("buh-report-month-date",    json::v2t(dateBox_).c_str());
+    reg.WriteString("buh-report-month-order",   json::v2t(orderNumBox_).c_str());
+    reg.WriteString("buh-report-month-radio-1", json::v2t(link_element("month-radio")).c_str());
+    reg.WriteString("buh-report-month-radio-2", json::v2t(link_element("day-radio")).c_str());
+    reg.WriteString("buh-report-month-radio-3", json::v2t(link_element("fio-radio")).c_str());
+  }
+  else
+  {
+    json::t2v(dateBox_,                    reg.ReadString("buh-report-month-date",    ""));
+    json::t2v(orderNumBox_,                reg.ReadString("buh-report-month-order",   "0"));
+    json::t2v(link_element("month-radio"), reg.ReadString("buh-report-month-radio-1", "1"));
+    json::t2v(link_element("day-radio"),   reg.ReadString("buh-report-month-radio-2", "0"));
+    json::t2v(link_element("fio-radio"),   reg.ReadString("buh-report-month-radio-3", "0"));
+  }
 }
