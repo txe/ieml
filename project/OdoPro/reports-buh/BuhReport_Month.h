@@ -3,6 +3,7 @@
 #include <htmlayout.h>
 #include "..\litewnd.h"
 #include "..\string_t.h"
+#include "../msoffice/WordMacro.h"
 
 using namespace htmlayout::dom;
 
@@ -22,6 +23,8 @@ private:
   void ReportDay(string_t day);
   void ReportFio(string_t day, string_t orderNum);
   void SerializeData(bool toSave);
+  void ReportHeader(WordMacros& macros, string_t title, string_t date);
+  string_t toRightDate(string_t date);
 
 private:
   // обрабатывает кнопки

@@ -72,6 +72,7 @@ BOOL CALLBACK BuhReport_Month::ElementEventProcBt(LPVOID tag, HELEMENT he, UINT 
   }
   if (id == L"bt-report")
   {
+    dlg->SerializeData(true);
     dlg->Report();
     return TRUE;
   }
@@ -89,7 +90,7 @@ void BuhReport_Month::Report(void)
   }
 
   if (link_element("month-radio").get_state(STATE_CHECKED))
-    ReportMonth(xDate.subString(0, 5));
+    ReportMonth(xDate.subString(0, xDate.size()-2));
   if (link_element("day-radio").get_state(STATE_CHECKED))
     ReportDay(xDate);
   if (link_element("fio-radio").get_state(STATE_CHECKED))
@@ -99,22 +100,57 @@ void BuhReport_Month::Report(void)
 void BuhReport_Month::ReportMonth(string_t month)
 {
   // получим мес€чные данные
-  string_t startMonth = "'" + month + "-01'";
-  string_t endMonth   = "'" + month + "-31'";
+  string_t startMonth = month + "01";
+  string_t endMonth   = month + "31";
   mybase::MYFASTRESULT res = theApp.GetCon().Query(
     " SELECT pay.datepay, SUM(pay.moneypay) as summa "
     " FROM payfactstest as pay "
-    " WHERE pay.deleted = 0 AND pay.datepay >= " + startMonth + " AND pay.datepay <= " + endMonth + 
+    " WHERE pay.deleted = 0 AND pay.datepay >= '" + startMonth + "' AND pay.datepay <= '" + endMonth + "'"
     " GROUP BY pay.datepay ORDER BY datepay");
 
-//   string_t buf;
-//   while (mybase::MYFASTROW row = res.fetch_row())
-//   {
-//     buf += "<tr payday='" + row["datepay"] + "'>"
-//       "<td>" + row["datepay"] + "</td>"
-//       "<td>" + row["summa"]  + "</td>";
-//     "</tr>";
-//   }
+  struct month_pay
+  {
+    string_t day;
+    string_t pay;
+    month_pay(string_t d, string_t p) : day(d),pay(p) {}
+  };
+  std::vector<month_pay> lst;
+  while (mybase::MYFASTROW row = res.fetch_row())
+    lst.push_back(month_pay(row["datepay"], row["summa"]));
+
+  WordMacros macros;
+  macros.BeginMacros();
+  ReportHeader(macros, "ќплата за мес€ц по дн€м", toRightDate(startMonth) + " - " + toRightDate(endMonth));
+
+  macros.TablesAdd(lst.size()+2, 2);
+  macros.InsertLine("ActiveDocument.Tables.Item(1).Columns.Item(1).Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphCenter");
+  macros.InsertLine("ActiveDocument.Tables.Item(1).Columns.Item(2).Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphRight");
+  macros.Cell(1, 1, 1, "Range.Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphCenter");
+  macros.Cell(1, 1, 2, "Range.Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphCenter");
+  macros.Cell(1, lst.size()+2, 1, "Range.Select");
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
+
+  macros.TablesColumns(1, 1, "PreferredWidth = CentimetersToPoints(4)");
+  macros.TablesColumns(1, 2, "PreferredWidth = CentimetersToPoints(4)");
+  macros.Cell(1, 1, 1, "Range.Text=" + toWrap("ƒата"));
+  macros.Cell(1, 1, 2, "Range.Text=" + toWrap("—умма"));
+
+  int itog = 0;
+  for (size_t i = 0; i < lst.size(); ++i)
+  {
+    macros.Cell(1, i+2, 1, "Range.Text=" + toWrap(toRightDate(lst[i].day)));
+    macros.Cell(1, i+2, 2, "Range.Text=" + toWrap(lst[i].pay));
+    itog += lst[i].pay.toInt();
+  }
+  macros.Cell(1, lst.size()+2, 1, "Range.Text=" + toWrap("»тог"));
+  macros.Cell(1, lst.size()+2, 2, "Range.Text=" + toWrap((LPCSTR)aux::itoa(itog)));
+
+  macros.EndMacros();
+  macros.RunMacros("");
 }
 //-------------------------------------------------------------------------
 void BuhReport_Month::ReportDay(string_t day)
@@ -197,4 +233,43 @@ void BuhReport_Month::SerializeData(bool toSave)
     json::t2v(link_element("day-radio"),   reg.ReadString("buh-report-month-radio-2", "0"));
     json::t2v(link_element("fio-radio"),   reg.ReadString("buh-report-month-radio-3", "0"));
   }
+}
+//-------------------------------------------------------------------------
+void BuhReport_Month::ReportHeader(WordMacros& macros, string_t title, string_t date)
+{
+  __timeb64 tstruct;
+  _ftime64(&tstruct);
+  tm lTime = *_localtime64(&tstruct.time);
+  std::wostringstream nowDate;
+  nowDate << (1900+lTime.tm_year) << L"-"
+       << std::setiosflags(std::ios::right) << std::setfill(L'0')
+       << std::setw(2) << (1+lTime.tm_mon)
+       << L"-"
+       << std::setw(2) << lTime.tm_mday;
+  std::wostringstream nowTime;
+  nowTime << std::setw(2) << lTime.tm_hour << L":"
+          << std::setw(2) << lTime.tm_min  << L":"
+          << std::setw(2) << lTime.tm_sec;
+   
+  macros.InsertLine("ActiveDocument.PageSetup.TopMargin=70");
+  macros.InsertLine("ActiveDocument.PageSetup.BottomMargin=55");
+  macros.InsertLine("ActiveDocument.PageSetup.LeftMargin=55");
+  macros.InsertLine("ActiveDocument.PageSetup.RightMargin=55");
+
+  macros.SelectionParagraphFormat("LineSpacingRule = wdLineSpace1pt5");
+
+  macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
+  macros.SelectionFont("Bold=false");
+  macros.SelectionFont("Size=12");
+  macros.SelectionText("ќтчет \"\"" + title +"\"\"\n");
+  macros.SelectionText("диапазон: " + date + "\n");
+  macros.SelectionText("составлен: " + toRightDate(nowDate.str()) + " " + nowTime.str() + "\n");
+}
+//-------------------------------------------------------------------------
+string_t BuhReport_Month::toRightDate(string_t date)
+{
+  string_t year = date.subString(0, 4);
+  string_t month = date.subString(5, 2);
+  string_t day = date.subString(8, 2);
+  return day + "/" + month + "/" + year;
 }
