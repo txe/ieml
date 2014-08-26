@@ -44,7 +44,7 @@ private:
 	// обновляет строку состояния
 	void UpdateViewStatus(void);
 	// проверяет введенную оплату на корректность
-	bool CheckInputPay(void);
+	bool CheckInputPay(bool isEdit);
 	// возвращает текущиую категорию оплаты
 	element GetCurrentCat(void);
   // возвращает текущую оплату

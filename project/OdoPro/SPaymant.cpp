@@ -300,17 +300,17 @@ void SPayment::FillPayCombo(void)
 // добаляет оплату студента
 void SPayment::AddPay(void)
 {
-	if (!GetCurrentCat().is_valid())
+	if (!GetCurrentCat().is_valid() || GetCurrentPay().is_valid())
 	{
 		MessageBox(::GetActiveWindow(), L"Для занесения оплаты выберете категорию оплаты.", L"Ошибка", MB_OK | MB_ICONERROR | MB_APPLMODAL);
 		return;
 	}
-	if (!CheckInputPay())
+	if (!CheckInputPay(false))
 		return;
 
   string_t pay_order = json::v2t(LiteWnd::link_element(_root, "pay-order").get_value());
 	string_t pay_date	 = json::v2t(LiteWnd::link_element(_root, "pay-date").get_value()); 
-	string_t pay_pay	 = json::get_caption(LiteWnd::link_element(_root, "pay-pay"));//json::v2t(LiteWnd::link_element(_root, "pay-pay").get_value());
+	string_t pay_pay	 = json::get_caption(LiteWnd::link_element(_root, "pay-pay"));
 	string_t studid		 = aux::itow(theApp.GetCurrentStudentID());
 	string_t optid		 = GetCurrentCat().get_attribute("optid");
 	string_t period		 = GetCurrentCat().get_attribute("period");
@@ -337,52 +337,40 @@ void SPayment::AddPay(void)
 // добаляет оплату студента
 void SPayment::EditPay(void)
 {
-  return;
-  if (!GetCurrentCat().is_valid())
+  if (!GetCurrentPay().is_valid())
   {
-    MessageBox(::GetActiveWindow(), L"Для занесения оплаты выберете категорию оплаты.", L"Ошибка", MB_OK | MB_ICONERROR | MB_APPLMODAL);
+    MessageBox(::GetActiveWindow(), L"Для редактирования оплаты выберете оплату.", L"Ошибка", MB_OK | MB_ICONERROR | MB_APPLMODAL);
     return;
   }
-  if (!CheckInputPay())
+  if (!CheckInputPay(true))
     return;
 
+  string_t pay_id    = GetCurrentPay().get_attribute("idfact");
   string_t pay_order = json::v2t(LiteWnd::link_element(_root, "pay-order").get_value());
   string_t pay_date	 = json::v2t(LiteWnd::link_element(_root, "pay-date").get_value()); 
-  string_t pay_pay	 = json::get_caption(LiteWnd::link_element(_root, "pay-pay"));//json::v2t(LiteWnd::link_element(_root, "pay-pay").get_value());
-  string_t studid		 = aux::itow(theApp.GetCurrentStudentID());
-  string_t optid		 = GetCurrentCat().get_attribute("optid");
-  string_t period		 = GetCurrentCat().get_attribute("period");
+  string_t pay_pay	 = json::get_caption(LiteWnd::link_element(_root, "pay-pay"));
 
   string_t query = string_t() + 
-    "INSERT INTO payfactstest "
-    "(idstud,datepay,moneypay,idopts, ordernum) " 
-    " VALUES(" + studid +", '" + pay_date + "', " + pay_pay + ", " + optid + ", " + pay_order + ")";
+    "UPDATE payfactstest SET ordernum=" + pay_order + ", datepay='" + pay_date + "', moneypay=" + pay_pay +
+    " WHERE id = " + pay_id;
   theApp.GetCon().Query(query);
 
   UpdateView();
-
-  string_t msg = "Была произведена оплата."
-    "\nСтудент(ка):d\t\t" + theApp.GetFIO() + 
-    "\nГруппа:\t\t\t" + theApp.GetGroupName(theApp.GetCurrentGroupID()) + 
-    "\nПериод оплаты:\t\t" + period + 
-    "\nДата оплаты:\t\t" + pay_date + 
-    "\nСумма данной оплаты:\t" + pay_pay + " руб.";
-
-  MessageBox(::GetActiveWindow(), msg, 
-    L"Сообщение", MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
 }
 
 // проверяет введенную оплату на корректность
-bool SPayment::CheckInputPay(void)
+bool SPayment::CheckInputPay(bool isEdit)
 {
-	string_t pay_date = json::v2t(LiteWnd::link_element(_root, "pay-date").get_value()); 
-	string_t pay_pay  = json::get_caption(LiteWnd::link_element(_root, "pay-pay"));//json::v2t(LiteWnd::link_element(_root, "pay-pay").get_value());
-
+	string_t pay_date  = json::v2t(LiteWnd::link_element(_root, "pay-date").get_value()); 
+	string_t pay_pay   = json::get_caption(LiteWnd::link_element(_root, "pay-pay"));//json::v2t(LiteWnd::link_element(_root, "pay-pay").get_value());
+  string_t pay_order = json::v2t(LiteWnd::link_element(_root, "pay-order").get_value()); 
 	string_t msg;
 	if (pay_date.empty())
 		msg= "Введенная дата не валидна.\nИсправьте пожалуйста.";
 	if (aux::wtoi(pay_pay, -1) == -1)
 		msg = "Сумма оплаты должна задаваться как целое положительное число.\nИсправьте пожалуйста.";
+  if (aux::wtoi(pay_order, -1) == -1)
+    msg = "Ордер оплаты должна задаваться как целое положительное число.\nИсправьте пожалуйста.";
 	if (!msg.empty())
 	{
 		MessageBox(::GetActiveWindow(), msg, 
@@ -391,19 +379,28 @@ bool SPayment::CheckInputPay(void)
 	}
 	
 	element catpay	= GetCurrentCat(); // может ничего не вернуть, проверили в оплате
-	long	dolg	= catpay.get_attribute_int("dolg");
+  element oldPay  = GetCurrentPay();
+	long	dolg	    = catpay.get_attribute_int("dolg");
 
-	if (aux::wtoi(pay_pay) > dolg)
-		msg = string_t() + 
-			"Задолженность по оплате составляет " + aux::itow(dolg) + " руб.\n"
-			"Вы хотите произвести оплату в размере " + pay_pay + " руб.\n"
-			"Чтобы избежать дальнейшее непонимание, для погашения задолженности введите " + aux::itow(dolg) + 
-			" руб. в качестве суммы текущей и последней оплаты в этом периоде!";
+  if (isEdit)
+  {
+    long oldSumma = oldPay.get_attribute_int("summa");
+    if (dolg + oldSumma < aux::wtoi(pay_pay))
+      msg = string_t() + "Сумма слишком велика для покрытия задолжности";
+  }
+  else
+  {
+	  if (aux::wtoi(pay_pay) > dolg)
+		  msg = string_t() + 
+			      "Задолженность по оплате составляет " + aux::itow(dolg) + " руб.\n"
+			      "Вы хотите произвести оплату в размере " + pay_pay + " руб.\n"
+			      "Чтобы избежать дальнейшее непонимание, для погашения задолженности введите " + aux::itow(dolg) + 
+			      " руб. в качестве суммы текущей и последней оплаты в этом периоде!";
+  }
 
 	if (!msg.empty())
 	{
-		MessageBox(::GetActiveWindow(), msg, 
-			L"Ошибка", MB_OK | MB_ICONERROR | MB_APPLMODAL);
+		MessageBox(::GetActiveWindow(), msg, L"Ошибка", MB_OK | MB_ICONERROR | MB_APPLMODAL);
 		return false;
 	}
 	return true;
