@@ -14,6 +14,8 @@ public:
 private:
 	element	_root;
 	element	_payment_table; // список дисциплин
+  element _bt_pay_add;
+  element _bt_pay_edit;
 	element _cat_month;
 	element _cat_year;
 	element _cat_money;
@@ -31,17 +33,22 @@ public:
 	// обновляет на экране успеваимость студента
 	void UpdateView(void);
 	void UpdateViewPayment();
+
 private:
 	// переводит дату из формата sql в формат  требуемый в оплатах
 	string_t DateToPayFormat(const string_t& pay_date);
-	// сохраняет оплату студента
+	// добавляет оплату студента
 	void AddPay(void);
+  // изменяет оплату студента
+  void EditPay(void);
 	// обновляет строку состояния
 	void UpdateViewStatus(void);
 	// проверяет введенную оплату на корректность
 	bool CheckInputPay(void);
 	// возвращает текущиую категорию оплаты
 	element GetCurrentCat(void);
+  // возвращает текущую оплату
+  element GetCurrentPay(void);
 	// удалить оплату
 	void DeletePay(void);
 	// обновляет инфе о выбранной категории
@@ -59,7 +66,9 @@ private:
 	// задает для выбранной категории собственную оплату студента
 	void PersonalCat();
 	// заполняет поле оплаты разными вариантами оплаты
-	void InitPayPay(void);
+	void FillPayCombo(void);
+  // заполняется информация контролов оплаты
+  void UpdatePayControls();
 	// показать только оплаты
 	void ShowOnlyPay(void);
 };

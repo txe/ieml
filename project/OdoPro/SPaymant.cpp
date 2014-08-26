@@ -20,20 +20,23 @@ SPayment::~SPayment(void)
 // инициализирует дом объекты и все такое
 void SPayment::Init(htmlayout::dom::element root)
 {
-	_root			= root;
+	_root			      = root;
 	_payment_table	= LiteWnd::link_element(_root, "payment-table"); 
-	_cat_month		= LiteWnd::link_element(_root, "pay-cat-manth"); 
-	_cat_year		= LiteWnd::link_element(_root, "pay-cat-year"); 
-	_cat_money		= LiteWnd::link_element(_root, "pay-cat-money"); 
+  _bt_pay_add     = LiteWnd::link_element(_root, "bt-pay-add");
+  _bt_pay_edit     = LiteWnd::link_element(_root, "bt-pay-edit");
+	_cat_month		  = LiteWnd::link_element(_root, "pay-cat-manth"); 
+	_cat_year		    = LiteWnd::link_element(_root, "pay-cat-year"); 
+	_cat_money		  = LiteWnd::link_element(_root, "pay-cat-money"); 
 	_cat_half_year	= LiteWnd::link_element(_root, "pay-cat-half-year");
 	
 	// инициируем обработчики кнопок
-	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "pay-save"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
-	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "pay-del"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
-	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "pay-cat-add"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
-	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "pay-cat-del"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
-	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "pay-cat-save"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
-	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "pay-cat-per"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(_bt_pay_add,  ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+  HTMLayoutAttachEventHandlerEx(_bt_pay_edit, ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "pay-del"),           ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "pay-cat-add"),       ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "pay-cat-del"),       ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "pay-cat-save"),      ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
+	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "pay-cat-per"),       ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 	HTMLayoutAttachEventHandlerEx(LiteWnd::link_element(_root, "pay-show-only-pay"), ElementEventProcBt, this, HANDLE_BEHAVIOR_EVENT|DISABLE_INITIALIZATION);
 
 	// присоединяем процедуру, отвлавливающую выбор строки категории/оплаты
@@ -52,11 +55,16 @@ BOOL CALLBACK SPayment::ElementEventProcBt(LPVOID tag, HELEMENT he, UINT evtg, L
 	const wchar_t* id = htmlayout::dom::element(he).get_attribute("id");
 
 	
-	if (aux::wcseq(id, L"pay-save"))
+	if (aux::wcseq(id, L"bt-pay-add"))
 	{
 		dlg->AddPay();
 		return TRUE;
 	}
+  if (aux::wcseq(id, L"bt-pay-edit"))
+  {
+    dlg->EditPay();
+    return TRUE;
+  }
 	if (aux::wcseq(id, L"pay-del"))
 	{
 		dlg->DeletePay();
@@ -96,7 +104,7 @@ void SPayment::UpdateView(void)
 {
 	UpdateViewPayment();
 	UpdateViewCat();
-	InitPayPay();
+	UpdatePayControls();
 }
 
 void SPayment::UpdateViewPayment()
@@ -121,7 +129,8 @@ void SPayment::UpdateViewPayment()
     string_t orderNum = pay_row["ordernum"];
 
 		pay[optid] = pay[optid] + aux::wtoi(pay_row["moneypay"]);
-    string_t inf = "<option idfact=" + pay_row["id"] + "><caption>платеж: дата " + pay_row["datepay"] + 
+    string_t payAtr = " idfact=" + pay_row["id"] + " date=\"" + pay_row["datepay"] + "\" order=" + orderNum + " summa=\"" + pay_row["moneypay"] + "\"";
+    string_t inf = "<option " + payAtr + "><caption>платеж: дата " + pay_row["datepay"] + 
       " сумма " + pay_row["moneypay"] + " № " + orderNum + "</caption></option>";
 		info_pay[optid] = info_pay[optid] + inf; 
 	}
@@ -218,7 +227,7 @@ BOOL CALLBACK SPayment::ElementEventProcForPayTable(LPVOID tag, HELEMENT he, UIN
 
 	SPayment* dlg = static_cast<SPayment*>(tag);
 	dlg->UpdateViewCat();
-	dlg->InitPayPay();
+	dlg->UpdatePayControls();
 
 	return TRUE;
 }
@@ -235,7 +244,60 @@ string_t SPayment::DateToPayFormat(const string_t& pay_date)
 	throw wss::exception(wss::reason_message(FULL_LOCATION()));
 }
 
-// сохраняет оплату студента
+// заполняется информация контролов оплаты
+void SPayment::UpdatePayControls()
+{
+  FillPayCombo();
+  element cat	= GetCurrentCat();
+  element pay = GetCurrentPay();
+
+  bool addEnabled = cat.is_valid() && !pay.is_valid();
+  bool editEnabled = cat.is_valid() && pay.is_valid();
+  _bt_pay_add.set_state(addEnabled ? 0 : STATE_DISABLED, !addEnabled ? 0 : STATE_DISABLED);
+  _bt_pay_edit.set_state(editEnabled ? 0 : STATE_DISABLED, !editEnabled ? 0 : STATE_DISABLED);
+  
+  element payOrder = LiteWnd::link_element(_root, "pay-order");
+  element payDate	 = LiteWnd::link_element(_root, "pay-date"); 
+  element payPay   = LiteWnd::link_element(_root, "pay-pay");
+  if (addEnabled)
+  {
+    json::t2v(payOrder, "0");
+    json::t2v(payDate,  "");
+    json::t2v(payPay,   "0");
+  }
+  else if (editEnabled)
+  {
+    json::t2v(payOrder, pay.get_attribute("order"));
+    json::t2v(payPay,   pay.get_attribute("summa"));
+    json::t2v(payDate,  pay.get_attribute("date"));
+  }
+}
+
+// заполняет поле оплаты разными вариантами оплаты
+void SPayment::FillPayCombo(void)
+{
+  element cat	= GetCurrentCat();
+  int money	= cat.get_attribute_int("money", 0);
+
+  element option	= LiteWnd::link_element(_root, "pay-pay").find_first("popup");
+  assert(option.is_valid());
+
+  // удаляем все строки
+  t::ClearTable(option, 0);
+
+  string_t buf = "<option value=0>0</option>";;
+  for (int i = 4; i > 0; --i)
+    buf += string_t() + "<option value=" + aux::itow(money/i) + ">" + aux::itow(money/i) + "</option>";
+
+  assert(_mbslen(buf));
+  if (_mbslen(buf))
+    option.set_html(buf, _mbslen(buf), SIH_REPLACE_CONTENT);
+  option.update();
+
+  json::t2v(LiteWnd::link_element(_root, "pay-pay"), "0");
+}
+
+// добаляет оплату студента
 void SPayment::AddPay(void)
 {
 	if (!GetCurrentCat().is_valid())
@@ -270,6 +332,44 @@ void SPayment::AddPay(void)
 
 	MessageBox(::GetActiveWindow(), msg, 
 		L"Сообщение", MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
+}
+
+// добаляет оплату студента
+void SPayment::EditPay(void)
+{
+  return;
+  if (!GetCurrentCat().is_valid())
+  {
+    MessageBox(::GetActiveWindow(), L"Для занесения оплаты выберете категорию оплаты.", L"Ошибка", MB_OK | MB_ICONERROR | MB_APPLMODAL);
+    return;
+  }
+  if (!CheckInputPay())
+    return;
+
+  string_t pay_order = json::v2t(LiteWnd::link_element(_root, "pay-order").get_value());
+  string_t pay_date	 = json::v2t(LiteWnd::link_element(_root, "pay-date").get_value()); 
+  string_t pay_pay	 = json::get_caption(LiteWnd::link_element(_root, "pay-pay"));//json::v2t(LiteWnd::link_element(_root, "pay-pay").get_value());
+  string_t studid		 = aux::itow(theApp.GetCurrentStudentID());
+  string_t optid		 = GetCurrentCat().get_attribute("optid");
+  string_t period		 = GetCurrentCat().get_attribute("period");
+
+  string_t query = string_t() + 
+    "INSERT INTO payfactstest "
+    "(idstud,datepay,moneypay,idopts, ordernum) " 
+    " VALUES(" + studid +", '" + pay_date + "', " + pay_pay + ", " + optid + ", " + pay_order + ")";
+  theApp.GetCon().Query(query);
+
+  UpdateView();
+
+  string_t msg = "Была произведена оплата."
+    "\nСтудент(ка):d\t\t" + theApp.GetFIO() + 
+    "\nГруппа:\t\t\t" + theApp.GetGroupName(theApp.GetCurrentGroupID()) + 
+    "\nПериод оплаты:\t\t" + period + 
+    "\nДата оплаты:\t\t" + pay_date + 
+    "\nСумма данной оплаты:\t" + pay_pay + " руб.";
+
+  MessageBox(::GetActiveWindow(), msg, 
+    L"Сообщение", MB_OK | MB_ICONINFORMATION | MB_APPLMODAL);
 }
 
 // проверяет введенную оплату на корректность
@@ -314,12 +414,9 @@ element SPayment::GetCurrentCat(void)
 {
 	element find = _payment_table.find_first(":current");
 	if (!find.is_valid())
-	{
-		return find; // бедет невалидным
-		//assert(FALSE);
-		//throw wss::exception(wss::reason_message(FULL_LOCATION()));
-	}
-	// если оплата, то передем на категорию 
+		return find; // будет невалидным
+
+  // если оплата, то передем на категорию 
 	if (aux::streq(find.get_element_type(), "option"))
 		find = find.parent();
 	if (!aux::streq(find.get_element_type(), "options") 
@@ -330,6 +427,20 @@ element SPayment::GetCurrentCat(void)
 		throw wss::exception(wss::reason_message(FULL_LOCATION()));
 	}
 	return find;
+}
+
+// возвращает текущую оплату
+element SPayment::GetCurrentPay(void)
+{
+  element find = _payment_table.find_first(":current");
+  if (!find.is_valid())
+    return find; // будет невалидным
+
+  // была выделена именно оплата
+  if (aux::streq(find.get_element_type(), "option"))
+    return find;
+
+  return element();
 }
 
 // удалить оплату
@@ -572,30 +683,6 @@ void SPayment::PersonalCat()
 	}
 
 	UpdateView();
-}
-
-// заполняет поле оплаты разными вариантами оплаты
-void SPayment::InitPayPay(void)
-{
-	element cat	= GetCurrentCat();
-	int money	= cat.get_attribute_int("money", 0);
-
-	element option	= LiteWnd::link_element(_root, "pay-pay").find_first("popup");
-	assert(option.is_valid());
-
-	// удаляем все строки
-  t::ClearTable(option, 0);
-
-	string_t buf = "<option value=0>0</option>";;
-	for (int i = 4; i > 0; --i)
-		buf += string_t() + "<option value=" + aux::itow(money/i) + ">" + aux::itow(money/i) + "</option>";
-
-	assert(_mbslen(buf));
-	if (_mbslen(buf))
-		option.set_html(buf, _mbslen(buf), SIH_REPLACE_CONTENT);
-	option.update();
-
-	json::t2v(LiteWnd::link_element(_root, "pay-pay"), "0");
 }
 
 void SPayment::ShowOnlyPay(void)
