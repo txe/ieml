@@ -6,6 +6,7 @@
 #include "ActionBuhReport.h"
 #include "ActionBuhReport2.h"
 #include "ActionFastInputGak.h"
+#include "ActionAddStudents.h"
 #include "StatisticDlg.h"
 #include "json-aux-ext.h"
 #include "LiteWnd.h"
@@ -97,6 +98,12 @@ BOOL CALLBACK ManagerOfActions::ElementEventProcMenu( LPVOID tag, HELEMENT he, U
 		dlg.DoModal();
 		return TRUE;
 	}
+  if (aux::wcseq(id, L"add-students"))
+  {
+    CActionAddStudentsDlg dlg(main->_parent);
+    dlg.Run();
+    return TRUE;
+  }
 	if (aux::wcseq(id, L"buh-report")) // оплата подробно
 	{
 		CActionBuhReport dlg(main->_parent);
