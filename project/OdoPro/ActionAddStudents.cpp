@@ -54,7 +54,7 @@ void CActionAddStudentsDlg::Run()
     std::string secondName = line[2];
     std::string thirdName  = line[3];
     int groupId            = aux::atoi(line[6].c_str(), 0);
-    int zNum               = aux::atoi(line[7].c_str(), 0);
+    std::string zNum       = line[7];
     if (!CheckGroupExist(groupId))
     {
       std::wstring msg = L"Отсутствует группа в базе: " + std::wstring(aux::itow(groupId)); 
@@ -66,6 +66,7 @@ void CActionAddStudentsDlg::Run()
 
     CreateStudent(groupId, firstName, secondName, thirdName, zNum);
   }
+  MessageBox(::GetActiveWindow(), L"Готово" , L"", MB_OK | MB_ICONERROR | MB_APPLMODAL);
 }
 
 bool CActionAddStudentsDlg::CheckHeaderData(std::vector<std::string>& data)
@@ -105,8 +106,8 @@ bool CActionAddStudentsDlg::CheckStudentData(std::vector<std::string>& data)
   }  
   if (data[3].empty())
   {
-    MessageBox(::GetActiveWindow(), L"Колонка thirdname должна быть полной" , L"Ошибка", MB_OK | MB_ICONERROR | MB_APPLMODAL);
-    return false;
+    //MessageBox(::GetActiveWindow(), L"Колонка thirdname должна быть полной" , L"Ошибка", MB_OK | MB_ICONERROR | MB_APPLMODAL);
+    //return false;
   }  
   if (data[6].empty() || aux::atoi(data[6].c_str(), 0) == 0)
   {
@@ -128,7 +129,7 @@ bool CActionAddStudentsDlg::CheckGroupExist(int groupId)
 
 bool CActionAddStudentsDlg::CheckStudentExist(int groupId, std::string firstName, std::string secondName, std::string thirdName)
 {
-  string_t query = "SELECT id FROM students WHERE grpid = " + std::string(aux::itoa(groupId)) + " AND firstname = '" + firstName + "' AND secondname = '" + secondName + "' AND thirdname = '" + thirdName + "' LIMIT 1";
+  string_t query = "SELECT id FROM students WHERE grpid = " + std::string(aux::itoa(groupId)) + " AND firstname = '" + firstName + "' AND secondname = '" + secondName + "' AND thirdname = '" + thirdName + "' AND deleted = 0 LIMIT 1";
 
   mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
   if (!res.size())
@@ -136,11 +137,11 @@ bool CActionAddStudentsDlg::CheckStudentExist(int groupId, std::string firstName
   return true;
 }
 
-void CActionAddStudentsDlg::CreateStudent(int groupId, std::string firstName, std::string secondName, std::string thirdName, int znum)
+void CActionAddStudentsDlg::CreateStudent(int groupId, std::string firstName, std::string secondName, std::string thirdName, std::string znum)
 {
   string_t query = string_t() +
     " INSERT INTO students (grpid, firstname, secondname, thirdname, znum) "
-    " VALUES(" + aux::itoa(groupId) + ", '" + firstName +"', '" + secondName + "', '" + thirdName + "', " + aux::itoa(znum) + ")";
+    " VALUES(" + aux::itoa(groupId) + ", '" + firstName +"', '" + secondName + "', '" + thirdName + "', '" + znum + "')";
 
   try
   {

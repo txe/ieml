@@ -15,5 +15,5 @@ private:
   bool CheckStudentData(std::vector<std::string>& data);
   bool CheckGroupExist(int groupId);
   bool CheckStudentExist(int groupId, std::string firstName, std::string secondName, std::string thirdName);
-  void CreateStudent(int groupId, std::string firstName, std::string secondName, std::string thirdName, int znum);
+  void CreateStudent(int groupId, std::string firstName, std::string secondName, std::string thirdName, std::string znum);
 };
