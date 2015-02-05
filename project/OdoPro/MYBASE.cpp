@@ -73,7 +73,7 @@ bool mybase::MyBase::LoadSetting()
     sHost     = local::get(cfg_name, "link", "host",     "127.0.0.1");
 	sLogin    = local::get(cfg_name, "link", "login",    "app_user");
 	sPassword = local::get(cfg_name, "link", "password", "-Nu(q$j0Xnxk");
-	sBaseName = local::get(cfg_name, "link", "dbname",   "test");
+	sBaseName = local::get(cfg_name, "link", "dbname",   "odoportal");
 	sPort     = local::get(cfg_name, "link", "port",     "3306");
 
 	return true;

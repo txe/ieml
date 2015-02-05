@@ -13,7 +13,7 @@ void ReportDiplom::Run(int grpId, int studentId)
   std::vector<Discip> cursDiscip;
   std::vector<Discip> commonDiscip;
   std::vector<Discip> specDiscip;
-  bool useZe = privData.specOrProfilTag == "бак" || privData.specOrProfilTag == "бакус";
+  bool useZe = privData.specOrProfilTag == "бак" || privData.specOrProfilTag == "бакус";    // так же для расчета объема программы
   bool anotherEnd = privData.specOrProfilTag.empty() || privData.specOrProfilTag == "бак1";
   GetDiscipInfo(studentId, cursDiscip, commonDiscip, specDiscip, privData.lang, privData.vkrTitle, useZe, anotherEnd);
 
@@ -180,9 +180,9 @@ void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& priv
   dirData.bottomInfo += L"\nЧасть образовательной программы в объеме ? недель освоена в ?.";
 
   if (privData.direct.empty())
-    dirData.bottomInfo += L"\nСпециализация: " + privData.specializ.toLower() + L".";
+    dirData.bottomInfo += L"\nСпециализация: " + privData.specializ + L".";
   else if (tag == "бак" || tag == "бакус")
-    dirData.bottomInfo += L"\nНаправленность (профиль) образовательной программы: " + privData.specOrProfil.toLower() + L".";
+    dirData.bottomInfo += L"\nНаправленность (профиль) образовательной программы: " + privData.specOrProfil + L".";
 }
 //-------------------------------------------------------------------------
 void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip, std::vector<Discip>& commonDiscip, std::vector<Discip>& specDiscip, string_t lang, string_t vkrTitle, bool useZe, bool anotherEnd)
@@ -198,6 +198,7 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
   Discip              vkrWork("", "", "");  // ВКР
   int                 practicTime = 0;
   string_t            itogTime = "0";
+  int                 zeTimeCounter = 0;
 
   string_t query = string_t() +
     "SELECT di.fulltitle, di.num_hours, di.idclass, pr.estimation, pr.ball,di.zachet_edinica,pr.numplansemestr "
@@ -219,6 +220,7 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
     {
       if (title.toUpper().trim() == string_t(L"ИНОСТРАННЫЙ ЯЗЫК"))
         title += " (" + lang + ")";
+      zeTimeCounter += times.toInt();
       AddDiscip(commonDiscip, Discip(title, fun::ze_hours(useZe, times), ocenka, numPlan));
     }
     if (idclass == r::DT_PRACTICE)
@@ -249,7 +251,13 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
   if (!vkrWork.title.empty())
     specDiscip.push_back(vkrWork);
 
-  if (anotherEnd)
+  if (useZe)
+  {
+    string_t ze = fun::ze_weeks(true, toStr(zeTimeCounter));
+    specDiscip.push_back(Discip("Объем образовательной программы", ze, "x"));
+    specDiscip.push_back(Discip("в том числе объем работы обучающихся во взаимодействии с преподавателем:", "800 час.", "x"));
+  }
+  else if (anotherEnd)
   {
     specDiscip.push_back(Discip("Срок освоения образовательной программы", "260 недель", "x"));
     specDiscip.push_back(Discip("в том числе аудиторных часов:", "800 час.", "x"));
