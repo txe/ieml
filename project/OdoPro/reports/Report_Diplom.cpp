@@ -225,11 +225,15 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
     }
     if (idclass == r::DT_PRACTICE)
     {
+      zeTimeCounter += times.toInt();
       practicTime += times.toInt();
       practice.push_back(Discip(title, fun::ze_weeks(useZe, times), ocenka));
     }
     if (idclass == r::DT_ITOG_ATESTACIA)
+    {
+      zeTimeCounter += times.toInt();
       itog.push_back(Discip(title, "õ", ocenka));
+    }
     if (idclass == r::DT_KVALIFIC_WORK)
     {
       itogTime = times;
