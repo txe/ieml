@@ -220,8 +220,8 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
     {
       if (title.toUpper().trim() == string_t(L"ИНОСТРАННЫЙ ЯЗЫК"))
         title += " (" + lang + ")";
-      zeTimeCounter += times.toInt();
-      AddDiscip(commonDiscip, Discip(title, fun::ze_hours(useZe, times), ocenka, numPlan));
+      if (AddDiscip(commonDiscip, Discip(title, fun::ze_hours(useZe, times), ocenka, numPlan)))
+        zeTimeCounter += times.toInt();
     }
     if (idclass == r::DT_PRACTICE)
     {
@@ -231,11 +231,11 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
     }
     if (idclass == r::DT_ITOG_ATESTACIA)
     {
-      zeTimeCounter += times.toInt();
       itog.push_back(Discip(title, "х", ocenka));
     }
     if (idclass == r::DT_KVALIFIC_WORK)
     {
+      zeTimeCounter += times.toInt();
       itogTime = times;
       vkrWork = Discip("выпускная квалификационная работа – дипломная работа на тему «" + vkrTitle + "»", "х", ocenka);
     }
@@ -299,7 +299,7 @@ int ReportDiplom::PrepareDiscipTitle(string_t& title, int symbolMax)
   return lines.size();
 }
 //-------------------------------------------------------------------------
-void ReportDiplom::AddDiscip(std::vector<Discip>& disList, const Discip& discip)
+bool ReportDiplom::AddDiscip(std::vector<Discip>& disList, const Discip& discip)
 {
   // проверим что может это слишком старая оценка
   for (size_t i = 0; i < disList.size(); ++i)
@@ -307,7 +307,8 @@ void ReportDiplom::AddDiscip(std::vector<Discip>& disList, const Discip& discip)
     {
       if (discip.numPlan >= disList[i].numPlan)
         disList[i] = discip;
-      return;
+      return false;
     }
   disList.push_back(discip);
+  return true;
 }
