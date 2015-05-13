@@ -19,14 +19,19 @@
 
 
 // TODO: reference additional headers your program requires here
+
 #import "../office11/MSO.DLL" rename("RGB", "MSORGB")
 using namespace Office;
+
 #import "../office11/VBE6EXT.OLB"
 using namespace VBIDE;
+
 #import "../office11/MSWORD.OLB" \
 	rename("ExitWindows", "WordExitWindows") \
 	rename("FindText", "WordFindText") 
-// 	rename("DialogBox", "ExcelDialogBox") \
-// 	rename("RGB", "ExcelRGB") \
-// 	rename("CopyFile", "ExcelCopyFile") \
-// 	rename("ReplaceText", "ExcelReplaceText")
+
+#import "../office11/EXCEL.EXE" \
+  rename( "DialogBox", "ExcelDialogBox" ) \
+  rename( "RGB", "ExcelRGB" ) \
+  rename( "CopyFile", "ExcelCopyFile" ) \
+  rename( "ReplaceText", "ExcelReplaceText" )
