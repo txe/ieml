@@ -10,7 +10,7 @@ public:
 
 private:
   void IsLarge();
-  void CreateRunningMacros();
+  void CreateRunningMacros(string_t sheetName);
 
 public:
   void BeginMacros();

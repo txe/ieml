@@ -21,8 +21,7 @@ void ExcelMacro::RunMacros(string_t tempFile)
   _splitpath(path_buf, drive, dir, 0, 0);
   _makepath(path_buf, drive, dir, 0, 0);
 
-  if (tempFile != "")
-    tempFile = string_t(drive) + string_t(dir) + tempFile;
+  tempFile = string_t(drive) + string_t(dir) + tempFile;
 
   Excel::_ApplicationPtr app;
   if (FAILED(app.CreateInstance("Excel.Application")))
@@ -33,15 +32,16 @@ void ExcelMacro::RunMacros(string_t tempFile)
   }
   try
   {
-    _variant_t tamp = (const wchar_t*)tempFile;
-    Excel::_WorkbookPtr     doc  = app->Workbooks->Open((bstr_t)tamp);
+    _bstr_t tamp = (const wchar_t*)tempFile;
+    Excel::_WorkbookPtr     doc  = app->Workbooks->Open(tamp);
     VBIDE::_VBProjectPtr    vbp  = doc->VBProject;
     VBIDE::_VBComponentsPtr vbc  = vbp->VBComponents;
-    VBIDE::_VBComponentPtr  item = vbc->Item(1);
+    VBIDE::_VBComponentPtr  item = vbc->Item(2);
     VBIDE::_CodeModulePtr   cm   = item->CodeModule;
 
-    CreateRunningMacros();
-    string_t name = "M" + string_t(aux::itoa(m_MacroCounter));
+    string_t sheetName = (const wchar_t*)item->Name;
+    CreateRunningMacros(sheetName);
+    string_t name = sheetName + ".M" + string_t(aux::itoa(m_MacroCounter));
 
     cm->AddFromString((const wchar_t*)m_CurMacros);
     app->Run((const wchar_t*)name);
@@ -131,11 +131,11 @@ void ExcelMacro::IsLarge()
   BeginMacros();
 }
 //---------------------------------------------------------------------------
-void ExcelMacro::CreateRunningMacros()
+void ExcelMacro::CreateRunningMacros(string_t sheetName)
 {
   BeginMacros();
   for (int i = 1; i < m_MacroCounter; i++)
-    InsertLine("Application.Run \"M" + string_t(aux::itoa(i)) + "\"");
+    InsertLine("Application.Run \"" + sheetName + ".M" + string_t(aux::itoa(i)) + "\"");
   EndMacros();
 
 }
