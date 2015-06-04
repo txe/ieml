@@ -97,7 +97,7 @@ void r::GetPrivateData(PrivateData& data, int studentId)
   data.firstName = data.secondName = data.thirdName = data.bornDate = data.vkrTitle = data.prevEdu = data.prevDoc = data.prevDocYear = data.inYear = "???";
   data.inMonth = data.inMonth = "0";
   data.outYear = data.outMonth = data.outDay = data.exitDate = data.exitNum = "???";
-  data.specOrProfil = data.direct = data.specializ = data.qualific = data.lang = "???";
+  data.specOrProfil = data.direct = data.specializ = data.qualific = data.lang = data.gakNum = "???";
   data.diplomNum = "xxx 000000";
   data.regNum = data.dataVidachi = data.dataQualific = "00.00.0000";
   data.isMagister = false;
@@ -105,7 +105,7 @@ void r::GetPrivateData(PrivateData& data, int studentId)
   string_t  query = string_t() +
     "SELECT s.secondname,s.firstname,s.thirdname,s.grpid,s.bdate,s.vkr_title," \
     " s.educationid,s.edudocid,s.eduenddate,s.eduplace, s.specid,s.enterdate,s.exitdate, s.exitnum,s.sex,v.title as lang, s.edunumdiplom, " \
-    " s.edunumprilog, s.edunumreg, s.edudatediplom,s.edudatequalif,s.directid,s.edudiplomotl " \
+    " s.edunumprilog, s.edunumreg, s.edudatediplom,s.edudatequalif,s.directid,s.edudiplomotl, s.edunumprotgak " \
     " FROM students as s, "\
     " voc as v where s.deleted=0 and v.deleted=0 and s.id=" + aux::itow(studentId) + 
     " and s.languageid=v.num and v.vkey=\"language\"";
@@ -151,6 +151,7 @@ void r::GetPrivateData(PrivateData& data, int studentId)
       data.regNum = "<невалидный номер!>";
     data.dataVidachi  = row["edudatediplom"];
     data.dataQualific = to_str_date(row["edudatequalif"]);
+    data.gakNum = row["edunumprotgak"];
 
     if (data.direct.empty())
       data.shifrspec = theApp.GetTitleForKeyFromVoc(vok_key::VK_SHIFRSPEC, row["specid"].toInt(), true);

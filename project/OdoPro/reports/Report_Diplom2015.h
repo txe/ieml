@@ -8,29 +8,23 @@
 class ReportDiplom2015 : public ReportAbstract
 {
 private:
-  struct DirectData
+  struct ReportDiplim2015Data
   {
-    string_t title1;
-    string_t title2;
-    string_t title3;
-    string_t bottomInfo;
+    string_t fio1;
+    string_t fio2;
+    string_t spec;
+    string_t kvalif;
+    string_t gakNum;
+    string_t kvalifDay;
+    string_t kvalifMonth;
+    string_t kvalifYear;
+    string_t regNum;
+    string_t diplomDate;
   };
-  struct Discip
-  {
-    string_t title;
-    string_t period;
-    string_t ocenka;
-    int      numPlan;
-    Discip(string_t _title, string_t _period, string_t _ocenka, int _numPlan = 0) : title(_title), period(_period), ocenka(_ocenka), numPlan(_numPlan) {}
-  };
-
 public:
   ReportDiplom2015(string_t name) : ReportAbstract(name) {}
   virtual void Run(int grpId, int studentId);
 
 private:
-  void GetDirectData(DirectData& dirData, const r::PrivateData& privData);
-  void GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip, std::vector<Discip>& commonDiscip, std::vector<Discip>& specDiscip, string_t lang, string_t vkrTitle, bool useZe, bool anotherEnd);
-  int  PrepareDiscipTitle(string_t& title, int symbolMax);
-  bool AddDiscip(std::vector<Discip>& disList, const Discip& discip);
+  ReportDiplim2015Data GetData(int grpId, int studentId);
 };
