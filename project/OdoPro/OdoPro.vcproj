@@ -707,11 +707,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\reports\Report_Diplom2015.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\reports\Report_Diplom2015.h"
+				>
+			</File>
+			<File
 				RelativePath=".\reports\Report_Dogovor2014.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\reports\Report_Dogovor2014.h"
+				>
+			</File>
+			<File
+				RelativePath=".\reports\Report_Module.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\reports\Report_Module.h"
 				>
 			</File>
 			<File

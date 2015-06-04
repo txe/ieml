@@ -8,6 +8,8 @@
 #include "reports/Report_Diplom.h"
 #include "reports/Report_Dogovor2014.h"
 #include "reports/Report_Soglasovanie.h"
+#include "reports/Report_Diplom2015.h"
+#include "reports/Report_Module.h"
 
 typedef int   (__cdecl *TGetCountOfReportsInDLL)(void);
 typedef char* (__cdecl *TGetTitleOfReportByIndex)(int);
@@ -65,6 +67,8 @@ void ManagerReports::LoadReports(void)
   _reports.push_back(new ReportDiplom("Приложение к диплому 2014 (MS Word)"));
   _reports.push_back(new ReportDogovor("Договор 2014 (MS Word)"));
   _reports.push_back(new ReportSoglasovanie("Лист согласования (MS Word)"));
+  _reports.push_back(new ReportModule("Модуль (MS Excel)"));
+  _reports.push_back(new ReportDiplom2015("Диплом 2015 (MS Word)"));
 }
 
 // выгружает библиотеки отчетов
