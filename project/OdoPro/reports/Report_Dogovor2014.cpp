@@ -30,7 +30,7 @@ void ReportDogovor::Run(int grpId, int studentId)
   macros.Replace("$TEL$",      data.telefon);
 
   macros.EndMacros();
-  macros.RunMacros("dogovor-2014.dot");
+  macros.RunMacros(theApp.GetModuleDir() + "dogovor-2014.dot");
 }
 //---------------------------------------------------------------------------
 ReportDogovor::ReportDogovorData ReportDogovor::GetData(int grpId, int studentId)

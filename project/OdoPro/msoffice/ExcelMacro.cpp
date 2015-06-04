@@ -12,17 +12,6 @@ ExcelMacro::~ExcelMacro(void)
 //-------------------------------------------------------------------------
 void ExcelMacro::RunMacros(string_t tempFile)
 {
-  // получаем текущее положение
-  char path_buf[_MAX_PATH];
-  char drive[_MAX_DRIVE];
-  char dir[_MAX_DIR];
-
-  GetModuleFileNameA(NULL, path_buf, sizeof(path_buf)-1);
-  _splitpath(path_buf, drive, dir, 0, 0);
-  _makepath(path_buf, drive, dir, 0, 0);
-
-  tempFile = string_t(drive) + string_t(dir) + tempFile;
-
   Excel::_ApplicationPtr app;
   if (FAILED(app.CreateInstance("Excel.Application")))
   {

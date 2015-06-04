@@ -20,7 +20,7 @@ void ReportSoglasovanie::Run(int grpId, int studentId)
   macros.Replace("$YEAR$",       data.year);
  
   macros.EndMacros();
-  macros.RunMacros("soglasovanie.dot");
+  macros.RunMacros(theApp.GetModuleDir() + "soglasovanie.dot");
 }
 //---------------------------------------------------------------------------
 ReportSoglasovanie::ReportSoglasovanieData ReportSoglasovanie::GetData(int grpId, int studentId)

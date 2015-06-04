@@ -111,7 +111,7 @@ void ReportDiplom::Run(int grpId, int studentId)
   }
 
   macros.EndMacros();
-  macros.RunMacros("diplom-2014.dot");
+  macros.RunMacros(theApp.GetModuleDir() + "diplom-2014.dot");
 }
 //-------------------------------------------------------------------------
 void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& privData)

@@ -1,6 +1,6 @@
 #pragma once
 #include "Report_Abstract.h"
-#include "../msoffice/WordMacro.h"
+#include "../msoffice/ExcelMacro.h"
 
 /************************************************************************/
 /*                                                                      */
@@ -8,15 +8,22 @@
 class ReportModule: public ReportAbstract
 {
 private:
-  struct ReportSoglasovanieData
+  struct ReportModuleData
   {
-    string_t title;
-    string_t fio;
-    string_t diplomNum;
-    string_t prilNum;
-    string_t day;
-    string_t month;
-    string_t year;
+    string_t dimplomNum1;
+    string_t dimplomNum2;
+    string_t dimplomDate;
+    string_t regNum;
+    string_t shifrSpec;
+    string_t specOrDir;
+    string_t enterYear;
+    string_t exitYear;
+    string_t groupName;
+    string_t secondName;
+    string_t firstName;
+    string_t thirdName;
+    string_t birthDate;
+    string_t sex;
   };
 
 public:
@@ -24,5 +31,5 @@ public:
   virtual void Run(int grpId, int studentId);
 
 private:
-  ReportSoglasovanieData GetData(int grpId, int studentId);
+  std::vector<ReportModuleData> GetData(string_t exitDate);
 };

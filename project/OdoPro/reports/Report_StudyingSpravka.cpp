@@ -154,7 +154,7 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   macros.SelectionFont("Size=11");
 
   macros.EndMacros();
-  macros.RunMacros("spravka.dot");
+  macros.RunMacros(theApp.GetModuleDir() + "spravka.dot");
 }
 //-------------------------------------------------------------------------
 void ReportStudyingSpravka::GetDirectData(DirectData& data, const r::PrivateData& privData)

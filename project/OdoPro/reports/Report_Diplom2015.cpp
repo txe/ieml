@@ -24,7 +24,7 @@ void ReportDiplom2015::Run(int grpId, int studentId)
   macros.Replace("$DIPLOM_DATE$", data.diplomDate);
 
   macros.EndMacros();
-  macros.RunMacros("diplom-2015.dot");
+  macros.RunMacros(theApp.GetModuleDir() + "diplom-2015.dot");
 }
 //---------------------------------------------------------------------------
 ReportDiplom2015::ReportDiplim2015Data ReportDiplom2015::GetData(int grpId, int studentId)
