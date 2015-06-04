@@ -267,6 +267,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SelectYear.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SelectYear.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SingeltonApp.cpp"
 				>
 			</File>
@@ -553,6 +561,11 @@
 				</File>
 				<File
 					RelativePath=".\res\property.htm"
+					DeploymentContent="true"
+					>
+				</File>
+				<File
+					RelativePath=".\res\select-year.htm"
 					DeploymentContent="true"
 					>
 				</File>

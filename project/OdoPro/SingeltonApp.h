@@ -17,6 +17,7 @@ namespace vok_key
   enum VOK_KEY {VK_GRP, VK_EDUCATIONS, VK_EDUDOC, VK_EDUFORM, VK_SPECS, VK_SPEZIALIZ, VK_QUALIFIC, VK_DIRECT, VK_DISCIPCLASSIFIC, VK_SHIFRSPEC, VK_DOG_YEAR, VK_DOG_SHIFR, VK_DOG_FAST, VK_DOG_EXTRA, VK_FACULTY};
 }
 
+class LiteWnd;
 class SingeltonApp
 {
 public:
@@ -29,6 +30,7 @@ private:
 	ManagerSetting	_setting;		// различные установки
 	UpdateManager	_updater;		// управляет обновлениями
     std::vector<ReportAbstract*> _reposts;
+  LiteWnd*     _mainWnd;
 // Overrides
 public:
 	virtual BOOL InitInstance();
@@ -40,7 +42,11 @@ public:
 	mybase::MyBase& GetCon(void);					// возвращает базу данных
 	const ManagerSetting&	GetSetting() { return _setting; }
 	UpdateManager&			GetUpdater() { return _updater; }
-	// возвращает ФИО текущего студента
+
+  void SetMainWnd(LiteWnd* wnd) { _mainWnd = wnd; }
+  LiteWnd* GetMainWnd()         { return _mainWnd; }
+  
+  // возвращает ФИО текущего студента
 	string_t GetFIO(void);
 	// возвращает описание для индефикатора и ключа из таблицы VOC
   string_t GetTitleForKeyFromVoc(vok_key::VOK_KEY vkey, int num, bool no_throw = false, string_t* get_tag = NULL);

@@ -5,13 +5,18 @@
 #include <sys/timeb.h>
 #include <sstream>
 #include <iomanip>
+#include "../SelectYear.h"
 
 //-------------------------------------------------------------------------
 void ReportModule::Run(int grpId, int studentId)
 {
-  std::vector<ReportModuleData> dataLst = GetData("2015");
+  CSelectYearDlg dlg(theApp.GetMainWnd(), "2015");
+  dlg.DoModal();
+  if (dlg._year.empty())
+    return;
+
+  std::vector<ReportModuleData> dataLst = GetData(dlg._year);
   string_t text;
- // text = "Серия документа;Номер документа;Дата выдачи;Регистрационный номер;Код специальности/направление подготовки;Наименование специальности/направление обучения;Год поступления;Год окончания;Группа;Фамилия получателя;Имя получателя;Отчество получателя;Дата рождения получателя;Пол получателя\n";
   string_t dlm = "\t";
   for (size_t i = 0; i < dataLst.size(); ++i)
   {
@@ -83,9 +88,7 @@ std::vector<ReportModule::ReportModuleData> ReportModule::GetData(string_t exitD
   mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
   while (mybase::MYFASTROW	row = res.fetch_row())
   {
-    ReportModuleData data;
-    data.dimplomNum1 = row["edunumdiplom"];
-    data.dimplomNum2 = row["edunumdiplom"];
+    ReportModuleData data;    
     data.regNum      = row["edunumreg"];
     data.enterYear   = row["enterdate"];
     data.exitYear    = row["exitdate"];
@@ -96,9 +99,11 @@ std::vector<ReportModule::ReportModuleData> ReportModule::GetData(string_t exitD
     data.birthDate   = row["bdate"];
     data.sex         = row["sex"];
 
-    data.dimplomNum1 = data.dimplomNum1.subString(0, 6);
-    if (data.dimplomNum2.indexOf(L" ") != -1)
-      data.dimplomNum2 = data.dimplomNum2.subString(data.dimplomNum2.indexOf(L" ") + 1, -1);
+    string_t diplomNum = row["edunumdiplom"].trim();
+    data.dimplomNum1 = diplomNum.subString(0, 6);
+    if (diplomNum.indexOf(L" ") != -1)
+      data.dimplomNum2 = diplomNum.subString(diplomNum.indexOf(L" ") + 1, -1);
+ 
     data.dimplomNum1 = "\"" + data.dimplomNum1 + "\"";
     data.dimplomNum2 = "\"" + data.dimplomNum2 + "\"";
 

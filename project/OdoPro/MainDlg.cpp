@@ -44,6 +44,7 @@ BOOL CMainDlg::PreCreateWindow(CREATESTRUCT& cs)
 int CMainDlg::OnCreate()
 {
 	CenterWindow();
+  theApp.SetMainWnd(this);
 
 	PBYTE pb; DWORD cb;
 	if (GetHtmlResource(L"IDR_HTML_MAIN", pb, cb))
