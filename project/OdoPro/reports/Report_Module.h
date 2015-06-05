@@ -1,6 +1,7 @@
 #pragma once
 #include "Report_Abstract.h"
 #include "../msoffice/ExcelMacro.h"
+#include <map>
 
 /************************************************************************/
 /*                                                                      */
@@ -25,6 +26,29 @@ private:
     string_t birthDate;
     string_t sex;
   };
+  
+  struct voc_data
+  {
+    struct voc_value
+    {
+      string_t title;
+      string_t tag;
+      voc_value(string_t _title, string_t _tag) : title(_title), tag(_tag) {}
+    };
+    std::map<int, voc_value> data;
+
+    void add(string_t key, string_t title, string_t tag)
+    {
+      data.insert(std::make_pair(key.toInt(), voc_value(title, tag)));
+    }
+    voc_value find(string_t key) 
+    {
+      std::map<int, voc_value>::iterator it = data.find(key.toInt());
+      if (it == data.end())
+        return voc_value("", "");
+      return it->second;
+    }
+  };
 
 public:
   ReportModule(string_t name) : ReportAbstract(name) {}
@@ -32,4 +56,5 @@ public:
 
 private:
   std::vector<ReportModuleData> GetData(string_t exitDate);
+  voc_data GetVocData(string_t vkey);
 };

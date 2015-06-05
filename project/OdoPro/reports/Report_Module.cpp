@@ -61,6 +61,10 @@ void ReportModule::Run(int grpId, int studentId)
   macros.InsertLine("Selection.NumberFormat = \"@\"");
   macros.Cells(2, 2, dataLst.size() + 1, 2, "Select");
   macros.InsertLine("Selection.NumberFormat = \"@\"");
+  macros.Cells(2, 4, dataLst.size() + 1, 4, "Select");
+  macros.InsertLine("Selection.NumberFormat = \"@\"");
+  macros.Cells(2, 5, dataLst.size() + 1, 5, "Select");
+  macros.InsertLine("Selection.NumberFormat = \"@\"");
 
   macros.InsertLine("Range(\"A2\").Select");
   macros.InsertLine("ActiveSheet.Paste");
@@ -77,11 +81,16 @@ void ReportModule::Run(int grpId, int studentId)
 //---------------------------------------------------------------------------
 std::vector<ReportModule::ReportModuleData> ReportModule::GetData(string_t exitDate)
 {
+  voc_data vocShifr = GetVocData("shifrspec");
+  voc_data vocDirect = GetVocData("direct");
+  voc_data vocSpecOrProfile = GetVocData("spec");
+
+
   std::vector<ReportModuleData> dataLst;
   dataLst.reserve(400);
 
   string_t query = string_t() +
-    "SELECT st.edunumdiplom, st.edudatediplom, st.edunumreg, YEAR(st.enterdate) as enterdate, YEAR(st.exitdate) as exitdate, voc.title as grp, st.secondname, st.firstname, st.thirdname, st.bdate, st.sex "
+    "SELECT st.edunumdiplom, st.edudatediplom, st.edunumreg, YEAR(st.enterdate) as enterdate, YEAR(st.exitdate) as exitdate, voc.title as grp, st.secondname, st.firstname, st.thirdname, st.bdate, st.sex, st.directid, st.specid "
     "FROM students as st, voc "
     "WHERE st.deleted = 0 AND YEAR(st.exitdate) = '" + exitDate + "' AND voc.deleted = 0 AND voc.vkey = 'grp' AND voc.num = st.grpid AND voc.title not like '%отчис%' "
     "ORDER BY voc.title, st.secondname, st.firstname, st.thirdname";
@@ -103,11 +112,35 @@ std::vector<ReportModule::ReportModuleData> ReportModule::GetData(string_t exitD
     data.dimplomNum1 = diplomNum.subString(0, 6);
     if (diplomNum.indexOf(L" ") != -1)
       data.dimplomNum2 = diplomNum.subString(diplomNum.indexOf(L" ") + 1, -1);
- 
-    data.dimplomNum1 = "\"" + data.dimplomNum1 + "\"";
-    data.dimplomNum2 = "\"" + data.dimplomNum2 + "\"";
+
+    // более сложные вычисления
+    string_t direct = vocDirect.find(row["directid"]).title;
+    if (direct.empty())
+      data.shifrSpec = vocShifr.find(row["specid"]).title;
+    else
+      data.shifrSpec = vocShifr.find(row["directid"]).title;
+  
+    string_t specOrProfileTag = vocSpecOrProfile.find(row["specid"]).tag.toLower();
+    if (specOrProfileTag == "бак" || specOrProfileTag == "маг")
+      data.specOrDir = direct;
+    else
+      data.specOrDir = vocSpecOrProfile.find(row["specid"]).title;
 
     dataLst.push_back(data);
   }
   return dataLst;
+}
+//-------------------------------------------------------------------------
+ReportModule::voc_data ReportModule::GetVocData(string_t vkey)
+{
+  string_t query = string_t() +
+    "SELECT num, title, tag FROM voc "
+    "WHERE deleted = 0 AND vkey = '" + vkey + "'";
+ 
+  voc_data data;
+  mybase::MYFASTRESULT res = theApp.GetCon().Query(query);
+  while (mybase::MYFASTROW	row = res.fetch_row())
+    data.add(row["num"], row["title"], row["tag"]);
+
+  return data;
 }
