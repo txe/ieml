@@ -23,6 +23,7 @@ public:
   void Text(const string_t& text);
   void MergeCell();
   void Cells(int row1, int col1, int row2, int col2, const string_t& text);
+  void Border(string_t& range);
 
   void FilterText(string_t& text);
 

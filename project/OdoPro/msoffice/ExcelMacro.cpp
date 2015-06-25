@@ -140,3 +140,41 @@ void ExcelMacro::Cells(int row1, int col1, int row2, int col2, const string_t& t
     "Cells(" + string_t(aux::itow(row2)) + ", " + string_t(aux::itow(col2)) + "))." + text + "\n";
   IsLarge();
 }
+//-------------------------------------------------------------------------
+void ExcelMacro::Border(string_t& range)
+{
+  m_Macros += "Range(\"" + range + "\").Select\n"
+              "Selection.Borders(xlDiagonalDown).LineStyle = xlNone\n"
+              "Selection.Borders(xlDiagonalUp).LineStyle = xlNone\n"
+              "With Selection.Borders(xlEdgeLeft)\n"
+              "   .LineStyle = xlContinuous\n"
+              "   .Weight = xlThin\n"
+              "   .ColorIndex = xlAutomatic\n"
+              "End With\n"
+              "With Selection.Borders(xlEdgeTop)\n"
+              "    .LineStyle = xlContinuous\n"
+              "    .Weight = xlThin\n"
+              "    .ColorIndex = xlAutomatic\n"
+              "End With\n"
+              "With Selection.Borders(xlEdgeBottom)\n"
+              "    .LineStyle = xlContinuous\n"
+              "    .Weight = xlThin\n"
+              "    .ColorIndex = xlAutomatic\n"
+              "End With\n"
+              "With Selection.Borders(xlEdgeRight)\n"
+              "    .LineStyle = xlContinuous\n"
+              "    .Weight = xlThin\n"
+              "    .ColorIndex = xlAutomatic\n"
+              "End With\n"
+              "With Selection.Borders(xlInsideVertical)\n"
+              "    .LineStyle = xlContinuous\n"
+              "    .Weight = xlThin\n"
+              "    .ColorIndex = xlAutomatic\n"
+              "End With\n"
+              "With Selection.Borders(xlInsideHorizontal)\n"
+              "    .LineStyle = xlContinuous\n"
+              "    .Weight = xlThin\n"
+              "    .ColorIndex = xlAutomatic\n"
+              "End With\n";
+  IsLarge();
+}

@@ -65,9 +65,11 @@ void ReportModule::Run(int grpId, int studentId)
   macros.InsertLine("Selection.NumberFormat = \"@\"");
   macros.Cells(2, 5, dataLst.size() + 1, 5, "Select");
   macros.InsertLine("Selection.NumberFormat = \"@\"");
+  macros.Border("A1:N" + toStr(dataLst.size() + 1));
 
   macros.InsertLine("Range(\"A2\").Select");
   macros.InsertLine("ActiveSheet.Paste");
+  macros.InsertLine("Range(\"A2\").Select");
 
   macros.EndMacros();
   macros.RunMacros(theApp.GetModuleDir() + "module.xlt");
@@ -99,6 +101,7 @@ std::vector<ReportModule::ReportModuleData> ReportModule::GetData(string_t exitD
   {
     ReportModuleData data;    
     data.regNum      = row["edunumreg"];
+    data.dimplomDate = row["edudatediplom"];
     data.enterYear   = row["enterdate"];
     data.exitYear    = row["exitdate"];
     data.groupName   = row["grp"];
