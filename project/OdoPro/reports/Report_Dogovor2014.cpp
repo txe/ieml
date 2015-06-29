@@ -82,9 +82,17 @@ ReportDogovor::ReportDogovorData ReportDogovor::GetData(int grpId, int studentId
   mybase::MYFASTRESULT moneyRes = theApp.GetCon().Query(moneyQuery);
   while (mybase::MYFASTROW row = moneyRes.fetch_row())
     moneyYear[r::GetYear(row["datestart"]).toInt()] = row["commoncountmoney"].toInt();
+  
+  int firstYear = -1;
+  for (std::map<int, int>::iterator it = moneyYear.begin(); it != moneyYear.end(); ++it)
+    if (firstYear == -1 || it->first < firstYear)
+      firstYear = it->first;
+  if (firstYear == -1)
+    firstYear = 2014;
+  
   int allMoney = 0;
   for (int yearNum = 0; yearNum < 6; ++yearNum) 
-    if (int money = moneyYear[yearNum + 2014])
+    if (int money = moneyYear[yearNum + firstYear])
     {
       allMoney += money;
       data.oplata[yearNum] = aux::itow(money);
