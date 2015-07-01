@@ -21,7 +21,10 @@ void ReportDogovor::Run(int grpId, int studentId)
   macros.Replace("$SUM_STR$",   data.strSum);
 
   for (int i = 0; i < 6; ++i)
+  {
     macros.Replace("$OPLATA" + string_t(aux::itow(i+1)) + "$", data.oplata[i]);
+    macros.Replace("$YEAR" + string_t(aux::itow(i+1)) + "$", data.oplataYears[i]);
+  }
 
   macros.Replace("$EXTRA$",    data.extra);
   macros.Replace("$PASSPORT$", data.passport);
@@ -30,7 +33,11 @@ void ReportDogovor::Run(int grpId, int studentId)
   macros.Replace("$TEL$",      data.telefon);
 
   macros.EndMacros();
-  macros.RunMacros(theApp.GetModuleDir() + "dogovor-2014.dot");
+  if (m_IsDopSoglashenie)
+    macros.RunMacros(theApp.GetModuleDir() + "dogovor(dop.sog.)-2014.dot");
+  else
+    macros.RunMacros(theApp.GetModuleDir() + "dogovor-2014.dot");
+
 }
 //---------------------------------------------------------------------------
 ReportDogovor::ReportDogovorData ReportDogovor::GetData(int grpId, int studentId)
@@ -77,12 +84,17 @@ ReportDogovor::ReportDogovorData ReportDogovor::GetData(int grpId, int studentId
 
   // разберемся с деньгами
   std::map<int, int> moneyYear; // год -> деньги
+  bool isFeb = false;           // февраль
   string_t moneyQuery = string_t() + 
     "SELECT opts.id, opts.datestart, opts.commoncountmoney, opts.half_year FROM payoptstest as opts WHERE opts.deleted = 0 AND opts.idgroup = "  + aux::itow(grpId);
   mybase::MYFASTRESULT moneyRes = theApp.GetCon().Query(moneyQuery);
   while (mybase::MYFASTROW row = moneyRes.fetch_row())
+  { 
     moneyYear[r::GetYear(row["datestart"]).toInt()] = row["commoncountmoney"].toInt();
-  
+    isFeb = r::GetMonth(row["datestart"]).toInt() == 2;
+  }
+
+  // найдем начальный год 
   int firstYear = -1;
   for (std::map<int, int>::iterator it = moneyYear.begin(); it != moneyYear.end(); ++it)
     if (firstYear == -1 || it->first < firstYear)
@@ -90,6 +102,14 @@ ReportDogovor::ReportDogovorData ReportDogovor::GetData(int grpId, int studentId
   if (firstYear == -1)
     firstYear = 2014;
   
+  // заполним какие у нас даты
+  for (int yearNum = 0; yearNum < 6; ++yearNum)
+    if (isFeb) // если оплата 2015 фев, то год будет как 2014-2015
+      data.oplataYears[yearNum] = string_t(aux::itow(yearNum + (firstYear - 1))) + L"-" + aux::itow(yearNum + (firstYear - 1) + 1);
+    else
+      data.oplataYears[yearNum] = string_t(aux::itow(yearNum + firstYear)) + L"-" + aux::itow(yearNum + firstYear + 1);  
+   
+  // заполним какие у нас деньги для дат
   int allMoney = 0;
   for (int yearNum = 0; yearNum < 6; ++yearNum) 
     if (int money = moneyYear[yearNum + firstYear])

@@ -65,7 +65,8 @@ void ManagerReports::LoadReports(void)
 	_reports.push_back(new ReportStudyingSpravka("Справка об обучении (MS Word)"));
   _reports.push_back(new ReportCharacteristic("Характеристика студента (MS Word)"));
   _reports.push_back(new ReportDiplom("Приложение к диплому 2014 (MS Word)"));
-  _reports.push_back(new ReportDogovor("Договор 2014 (MS Word)"));
+  _reports.push_back(new ReportDogovor("Договор 2014 (MS Word)", false));
+  _reports.push_back(new ReportDogovor("Договор 2014 Доп. соглашение (MS Word)", true));
   _reports.push_back(new ReportSoglasovanie("Лист согласования (MS Word)"));
   _reports.push_back(new ReportModule("Модуль (MS Excel)"));
   _reports.push_back(new ReportDiplom2015("Диплом 2015 (MS Word)"));
