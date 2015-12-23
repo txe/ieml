@@ -13,7 +13,7 @@ void ReportDiplom::Run(int grpId, int studentId)
   std::vector<Discip> cursDiscip;
   std::vector<Discip> commonDiscip;
   std::vector<Discip> specDiscip;
-  bool useZe = privData.specOrProfilTag == "бак" || privData.specOrProfilTag == "бакус";    // так же для расчета объема программы
+  bool useZe = privData.specOrProfilTag == "бак" || privData.specOrProfilTag == "бакус" || privData.specOrProfilTag == "маг";    // так же для расчета объема программы
   bool anotherEnd = privData.specOrProfilTag.empty() || privData.specOrProfilTag == "бак1";
   GetDiscipInfo(studentId, cursDiscip, commonDiscip, specDiscip, privData.lang, privData.vkrTitle, useZe, anotherEnd);
 
