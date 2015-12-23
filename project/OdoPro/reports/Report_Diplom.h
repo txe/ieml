@@ -24,6 +24,16 @@ private:
     Discip(string_t _title, string_t _period, string_t _ocenka, int _numPlan = 0) : title(_title), period(_period), ocenka(_ocenka), numPlan(_numPlan) {}
   };
 
+  struct Practice
+  {
+    string_t title;
+    string_t period;
+    int      ocenka;
+    int      practice_amount;
+    Practice(string_t _title, string_t _period, int _ocenka) : title(_title), period(_period), ocenka(_ocenka), practice_amount(1) {}
+  };
+
+
 public:
   ReportDiplom(string_t name) : ReportAbstract(name) {}
   virtual void Run(int grpId, int studentId);

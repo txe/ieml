@@ -193,8 +193,8 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
     static string_t ze_weeks(bool useZe, string_t val) { return useZe ? (val + "  з.е.") : r::weeks_to_str(val); }
   };
 
-  std::vector<Discip> practice; // практики
-  std::vector<Discip> itog;     // гос. аттестации
+  std::vector<Practice> practice; // практики
+  std::vector<Discip> itog;       // гос. аттестации
   Discip              vkrWork("", "", "");  // ВКР
   int                 practicTime = 0;
   string_t            itogTime = "0";
@@ -225,9 +225,21 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
     }
     if (idclass == r::DT_PRACTICE)
     {
-      zeTimeCounter += times.toInt();
-      practicTime += times.toInt();
-      practice.push_back(Discip(title, fun::ze_weeks(useZe, times), ocenka));
+      Practice* find = NULL;
+      for (size_t i = 0; i < practice.size() && !find; ++i)
+        if (practice[i].title == title)
+          find = &practice[i];
+      if (find)
+      {
+        find->ocenka += (5 - row["estimation"].toInt()); // обратная оценка, что бы округление работало правильно
+        find->practice_amount += 1;
+      }
+      else
+      {
+        zeTimeCounter += times.toInt();
+        practicTime += times.toInt();
+        practice.push_back(Practice(title, fun::ze_weeks(useZe, times), 5 - row["estimation"].toInt()));
+      }
     }
     if (idclass == r::DT_ITOG_ATESTACIA)
     {
@@ -246,7 +258,12 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
   specDiscip.push_back(Discip("Практики", fun::ze_weeks(useZe, toStr(practicTime)), "x"));
   specDiscip.push_back(Discip("в том числе:", "", ""));
   for (size_t i = 0; i < practice.size(); ++i)
-    specDiscip.push_back(practice[i]);
+  {
+    int ocenka = (int)(double(practice[i].ocenka) / double(practice[i].practice_amount) + 0.5);
+    ocenka = 5 - ocenka; // оценка была на оборот для правильного округления в лучшую сторону
+    specDiscip.push_back(Discip(practice[i].title, practice[i].period, r::toOcenka(ocenka)));
+  }
+
   // гос. аттестация
   specDiscip.push_back(Discip("Государственная итоговая аттестация", fun::ze_weeks(useZe, itogTime), "x"));
   specDiscip.push_back(Discip("в том числе:", "", ""));
