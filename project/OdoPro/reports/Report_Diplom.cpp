@@ -68,46 +68,56 @@ void ReportDiplom::Run(int grpId, int studentId)
      macros.CellCell(1, 3, 2, i + 1, 2, "Select");
      macros.SelectionText(cursDiscip[i].ocenka);
   }
+  
+  struct local
+  {
+    static void table_text(WordMacros& macros, bool secondTable, int row, int col, string_t text) { 
+      if (secondTable)
+        macros.CellCell(2, 2, 7, row, col, "Select");
+      else
+        macros.CellCell(2, 3, 2, row, col, "Select");
+      macros.SelectionText(text); 
+    }
+  };
 
   // обычные дисциплины на первой таблице
-  int rowCount = 56;  // всего строк в первой таблице
-  int usedDiscip = 0; // сколько на самом деле добавили дисциплин в первую таблицу
-  for (int i = 0; i < (int)commonDiscip.size() && rowCount > 0; ++i)
+  int table1RowCount = 56;  // всего осталось строк в первой таблице
+  int usedDiscip = 0;       // сколько на самом деле добавили дисциплин в первую таблицу
+  for (int i = 0; i < (int)commonDiscip.size() && table1RowCount > 0; ++i)
   {
-    rowCount -= PrepareDiscipTitle(commonDiscip[i].title, 63);
-    if (rowCount < 0) // если строка не уберется в конце таблицы, то сразу нечего продолжать
+    table1RowCount -= PrepareDiscipTitle(commonDiscip[i].title, 63);
+    if (table1RowCount < 0) // если строка не уберется в конце таблицы, то сразу нечего продолжать
       break;
 
     usedDiscip++;
-    macros.CellCell(2, 3, 2, i + 1, 1, "Select");
-    macros.SelectionText(toQuate(commonDiscip[i].title));
-    macros.CellCell(2, 3, 2, i + 1, 2, "Select");
-    macros.SelectionText(commonDiscip[i].period);
-    macros.CellCell(2, 3, 2, i + 1, 3, "Select");
-    macros.SelectionText(commonDiscip[i].ocenka);
+    local::table_text(macros, false, i+1, 1, toQuate(commonDiscip[i].title));
+    local::table_text(macros, false, i+1, 2, commonDiscip[i].period);
+    local::table_text(macros, false, i+1, 3, commonDiscip[i].ocenka);
   }
-  // обычные дисциплины во второй таблице
-  int curRow = 1;
-  for (int i = usedDiscip; i < (int)commonDiscip.size(); ++i)
-  {
-    macros.CellCell(2, 2, 7, curRow, 1, "Select");
-    macros.SelectionText(toQuate(commonDiscip[i].title));
-    macros.CellCell(2, 2, 7, curRow, 2, "Select");
-    macros.SelectionText(commonDiscip[i].period);
-    macros.CellCell(2, 2, 7, curRow, 3, "Select");
-    macros.SelectionText(commonDiscip[i].ocenka);
-    ++curRow;
-  }
-  // остальные данные
+  
+  int table2CurRow = 1;
+  bool need_second_table = usedDiscip < (int)commonDiscip.size();
+  // обычные дисциплины во второй таблице если не хватило места на первой
+  if (need_second_table)
+    for (int i = usedDiscip; i < (int)commonDiscip.size(); ++i)
+    {
+      local::table_text(macros, true, table2CurRow, 1, toQuate(commonDiscip[i].title));
+      local::table_text(macros, true, table2CurRow, 2, commonDiscip[i].period);
+      local::table_text(macros, true, table2CurRow, 3, commonDiscip[i].ocenka);
+      ++table2CurRow;
+    }
+  
+  // остальные данные могут или убраться на первой таблице или надо перенести на вторую
+  if (!need_second_table)
+    if (table1RowCount <= (int)specDiscip.size())
+      need_second_table = true;
+
+  int rowPos = need_second_table ? table2CurRow : usedDiscip + 1;
   for (int i = 0; i < (int)specDiscip.size(); ++i)
   {
-    macros.CellCell(2, 2, 7, curRow, 1, "Select");
-    macros.SelectionText(toQuate(specDiscip[i].title));
-    macros.CellCell(2, 2, 7, curRow, 2, "Select");
-    macros.SelectionText(specDiscip[i].period);
-    macros.CellCell(2, 2, 7, curRow, 3, "Select");
-    macros.SelectionText(specDiscip[i].ocenka);
-    ++curRow;
+    local::table_text(macros, need_second_table, rowPos+i, 1, toQuate(specDiscip[i].title));
+    local::table_text(macros, need_second_table, rowPos+i, 2, specDiscip[i].period);
+    local::table_text(macros, need_second_table, rowPos+i, 2, specDiscip[i].ocenka);
   }
 
   macros.EndMacros();
