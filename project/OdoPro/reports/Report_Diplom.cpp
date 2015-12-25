@@ -117,7 +117,7 @@ void ReportDiplom::Run(int grpId, int studentId)
   {
     local::table_text(macros, need_second_table, rowPos+i, 1, toQuate(specDiscip[i].title));
     local::table_text(macros, need_second_table, rowPos+i, 2, specDiscip[i].period);
-    local::table_text(macros, need_second_table, rowPos+i, 2, specDiscip[i].ocenka);
+    local::table_text(macros, need_second_table, rowPos+i, 3, specDiscip[i].ocenka);
   }
 
   macros.EndMacros();
