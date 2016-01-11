@@ -20,6 +20,9 @@ void ReportCharacteristic::Run(int grpId, int studentId)
   if (privData.grpName.subString(0,3) == "ПГС")   cafedra = "архитектуры/технологии строительного производства";
   if (privData.grpName.subString(0,3) == "ТГВ")   cafedra = "теплогазоснабжения";
   if (privData.grpName.subString(0,1) == "Ю")     cafedra = "предпринимательского права";
+  if (cafedra == "???" && privData.direct == "Экономика")
+    cafedra = "экономического анализа и управления недвижимостью";
+
 
   // хотя для некоторых групп не включено направление, но оно будет
   bool hackGroup = 
