@@ -96,9 +96,9 @@ void ReportCharacteristic::Run(int grpId, int studentId)
   macros.SelectionText("vbTab");
 
   if (privData.direct != "")
-    macros.SelectionText("Характеристика дана для предоставления в Государственную аттестационную комиссию по направлению \"\"" + privData.direct + "\"\".\n");
+    macros.SelectionText("Характеристика дана для предоставления в Государственную экзаменационную комиссию по направлению \"\"" + privData.direct + "\"\".\n");
   else
-    macros.SelectionText("Характеристика дана для предоставления в Государственную аттестационную комиссию по специальности \"\"" + privData.specOrProfil + "\"\".\n");
+    macros.SelectionText("Характеристика дана для предоставления в Государственную экзаменационную комиссию по специальности \"\"" + privData.specOrProfil + "\"\".\n");
  
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.SelectionText("\n");
