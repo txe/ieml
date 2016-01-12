@@ -20,8 +20,10 @@ void ReportCharacteristic::Run(int grpId, int studentId)
   if (privData.grpName.subString(0,3) == "ПГС")   cafedra = "архитектуры/технологии строительного производства";
   if (privData.grpName.subString(0,3) == "ТГВ")   cafedra = "теплогазоснабжения";
   if (privData.grpName.subString(0,1) == "Ю")     cafedra = "предпринимательского права";
-  if (cafedra == "???" && privData.direct == "Экономика")
-    cafedra = "экономического анализа и управления недвижимостью";
+  if (cafedra == "???")
+    if (privData.direct == "Экономика")          cafedra = "экономического анализа и управления недвижимостью";
+    else if (privData.direct == "Юриспруденция") cafedra = "предпринимательского права";
+    else if (privData.direct == "Менеджмент")    cafedra = "инновационного менеджмента";
 
 
   // хотя для некоторых групп не включено направление, но оно будет
