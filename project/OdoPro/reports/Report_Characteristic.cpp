@@ -22,6 +22,7 @@ void ReportCharacteristic::Run(int grpId, int studentId)
   if (privData.grpName.subString(0,1) == "Ю")     cafedra = "предпринимательского права";
   if (cafedra == "???")
     if (privData.direct == "Экономика")          cafedra = "экономического анализа и управления недвижимостью";
+    else if (privData.direct == "Юриспруденция" && privData.specOrProfilTag == "маг") cafedra = "гражданского права и гражданского процесса";
     else if (privData.direct == "Юриспруденция") cafedra = "предпринимательского права";
     else if (privData.direct == "Менеджмент")    cafedra = "инновационного менеджмента";
 
