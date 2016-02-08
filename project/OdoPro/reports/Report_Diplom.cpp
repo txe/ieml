@@ -261,7 +261,7 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
     {
       zeTimeCounter += times.toInt();
       itogTime = times;
-      vkrWork = Discip("выпускна€ квалификационна€ работа Ц дипломна€ работа на тему Ђ" + vkrTitle + "ї", "х", ocenka);
+      vkrWork = Discip(title.toLower() + " на тему Ђ" + vkrTitle + "ї", "х", ocenka);
     }
   }
 
