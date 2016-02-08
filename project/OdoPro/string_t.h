@@ -105,6 +105,8 @@ public:
   }
   string_t toUpperFirst() const
   {
+    if (empty())
+      return "";
     return subString(0, 1).toUpper() + subString(1, -1);
   }
   string_t toLower() const
