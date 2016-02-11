@@ -92,6 +92,10 @@ public:
 	{
     return _str.substr(begin, count < 0 ? _str.size() + count : count);
 	}
+  bool startsWith(const string_t& str)
+  {
+    return indexOf(str._str) == 0;
+  }
 	int toInt() const
 	{
 		return aux::wtoi(_str.c_str());

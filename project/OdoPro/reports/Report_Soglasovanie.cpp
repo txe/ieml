@@ -31,7 +31,7 @@ ReportSoglasovanie::ReportSoglasovanieData ReportSoglasovanie::GetData(int grpId
   ReportSoglasovanieData data;
   
   data.title = "института экономики, управления и права, обучающегося по образовательной программе ";
-  if (privData.specOrProfilTag == "бак")
+  if (privData.specOrProfilTag.startsWith("бак"))
     data.title += "\"\"" + privData.direct + "\"\"";
   else
     data.title += "\"\"" + privData.specOrProfil + "\"\"";

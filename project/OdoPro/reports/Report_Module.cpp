@@ -124,7 +124,7 @@ std::vector<ReportModule::ReportModuleData> ReportModule::GetData(string_t exitD
       data.shifrSpec = vocShifr.find(row["directid"]).title;
   
     string_t specOrProfileTag = vocSpecOrProfile.find(row["specid"]).tag.toLower();
-    if (specOrProfileTag == "бак" || specOrProfileTag == "маг")
+    if (specOrProfileTag.startsWith("бак") || specOrProfileTag == "маг")
       data.specOrDir = direct;
     else
       data.specOrDir = vocSpecOrProfile.find(row["specid"]).title;

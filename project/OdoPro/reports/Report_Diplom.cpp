@@ -13,7 +13,7 @@ void ReportDiplom::Run(int grpId, int studentId)
   std::vector<Discip> cursDiscip;
   std::vector<Discip> commonDiscip;
   std::vector<Discip> specDiscip;
-  bool useZe = privData.specOrProfilTag == "бак" || privData.specOrProfilTag == "бакус" || privData.specOrProfilTag == "маг";    // так же для расчета объема программы
+  bool useZe = privData.specOrProfilTag.startsWith("бак") || privData.specOrProfilTag == "маг";    // так же для расчета объема программы
   bool anotherEnd = privData.specOrProfilTag.empty() || privData.specOrProfilTag == "бак1";
   GetDiscipInfo(studentId, cursDiscip, commonDiscip, specDiscip, privData.lang, privData.vkrTitle, useZe, anotherEnd);
 
@@ -173,12 +173,10 @@ void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& priv
   }
 
   string_t tag = privData.specOrProfilTag.toLower();
-  if (tag.empty())       dirData.title3 = "5 лет";
-  else if (tag == "бак1" 
-    || tag == "бак" 
-    || tag == "бакус")   dirData.title3 = "4 года";
-  else if (tag == "маг") dirData.title3 = "2 года";
-  else                   dirData.title3 = "xxxx лет";
+  if (tag.empty())                dirData.title3 = "5 лет";
+  else if (tag.startsWith("бак")) dirData.title3 = "4 года";
+  else if (tag == "маг")          dirData.title3 = "2 года";
+  else                            dirData.title3 = "xxxx лет";
 
   // дополнительная информация
   bool renameUniver = privData.inYear.toInt() < 2011 || (privData.inYear.toInt() == 2011 && (privData.inMonth.toInt() < 7 || (privData.inMonth.toInt() == 7 && privData.inDay.toInt() < 8)));
@@ -193,7 +191,7 @@ void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& priv
 
   if (privData.direct.empty())
     dirData.bottomInfo += L"\nСпециализация: " + privData.specializ + L".";
-  else if (tag == "бак" || tag == "бакус")
+  else if (tag.startsWith("бак"))
     dirData.bottomInfo += L"\nНаправленность (профиль) образовательной программы: " + privData.specOrProfil + L".";
 }
 //-------------------------------------------------------------------------
