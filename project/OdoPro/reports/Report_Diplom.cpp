@@ -191,7 +191,7 @@ void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& priv
 
   if (privData.direct.empty())
     dirData.bottomInfo += L"\nСпециализация: " + privData.specializ + L".";
-  else if (tag.startsWith("бак"))
+  else if (tag.startsWith("бак") || tag == "маг")
     dirData.bottomInfo += L"\nНаправленность (профиль) образовательной программы: " + privData.specOrProfil + L".";
 }
 //-------------------------------------------------------------------------
