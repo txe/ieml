@@ -126,12 +126,13 @@ void ReportDiplom::Run(int grpId, int studentId)
 //-------------------------------------------------------------------------
 void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& privData)
 {
-  bool isBachelor = privData.specOrProfilTag != "";
+  // экст идут как специалисты
+  bool isBachelor = privData.specOrProfilTag != "" && privData.specOrProfilTag != "экст";
   
   // специалиста, специалиста с отличием, бакалавра, бакалавра с отличием
-  if (privData.specOrProfilTag == "маг")   dirData.title1 = L"магистра";
-  else if (privData.specOrProfilTag != "") dirData.title1 = L"бакалавра";
-  else                                     dirData.title1 = L"специалиста";
+  if (privData.specOrProfilTag == "маг")                                          dirData.title1 = L"магистра";
+  else if (privData.specOrProfilTag != "" && privData.specOrProfilTag != "экст") dirData.title1 = L"бакалавра";
+  else                                                                            dirData.title1 = L"специалиста";
   
   if (privData.isOtlDiplom)
     dirData.title1 += L" с отличием";
@@ -173,10 +174,10 @@ void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& priv
   }
 
   string_t tag = privData.specOrProfilTag.toLower();
-  if (tag.empty())                dirData.title3 = "5 лет";
-  else if (tag.startsWith("бак")) dirData.title3 = "4 года";
-  else if (tag == "маг")          dirData.title3 = "2 года";
-  else                            dirData.title3 = "xxxx лет";
+  if (tag.empty() || tag == "экст") dirData.title3 = "5 лет";
+  else if (tag.startsWith("бак"))   dirData.title3 = "4 года";
+  else if (tag == "маг")            dirData.title3 = "2 года";
+  else                              dirData.title3 = "xxxx лет";
 
   // дополнительная информация
   bool renameUniver = privData.inYear.toInt() < 2011 || (privData.inYear.toInt() == 2011 && (privData.inMonth.toInt() < 7 || (privData.inMonth.toInt() == 7 && privData.inDay.toInt() < 8)));
@@ -189,7 +190,7 @@ void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& priv
   dirData.bottomInfo += L"Форма обучения: заочная.";
   dirData.bottomInfo += L"\nЧасть образовательной программы в объеме ? недель освоена в ?.";
 
-  if (privData.direct.empty())
+  if (privData.direct.empty() || privData.specOrProfilTag == "экст")
     dirData.bottomInfo += L"\nСпециализация: " + privData.specializ + L".";
   else if (tag.startsWith("бак") || tag == "маг")
     dirData.bottomInfo += L"\nНаправленность (профиль) образовательной программы: " + privData.specOrProfil + L".";
