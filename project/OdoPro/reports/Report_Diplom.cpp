@@ -225,7 +225,7 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
     string_t       times   = useZe ? row["zachet_edinica"] : row["num_hours"];
 
     if (idclass == r::DT_CURSE_WORK || idclass == r::DT_CURSE_PRACTICE)
-      cursDiscip.push_back(Discip(title, "", ocenka));
+      cursDiscip.push_back(Discip(title.double_quote(), "", ocenka));
     if (idclass == r::DT_COMMON)
     {
       if (title.toUpper().trim() == string_t(L"»ÕŒ—“–¿ÕÕ€… ﬂ«€ "))

@@ -154,6 +154,22 @@ public:
       start_pos += to.size(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
     }
   }
+  string_t& double_quote()
+  {
+    if (empty())
+      return *this;
+
+    size_t start_pos = 0;
+    bool direct_quote = true;
+    while ((start_pos = _str.find(L"\"", start_pos)) != std::wstring::npos) 
+    {
+      std::wstring quote = direct_quote ? L"«" : L"»";
+      _str.replace(start_pos, 1, quote);
+      start_pos += quote.size();
+      direct_quote = !direct_quote;
+    }
+    return *this;
+  }
 };
 
 //-------------------------------------------------------------------------
