@@ -60,7 +60,7 @@ void ReportCharacteristic::Run(int grpId, int studentId)
   macros.SelectionFont("Size=12");
   macros.SelectionText("Минобрнауки России\n");
   macros.SelectionText("Федеральное государственное бюджетное образовательное учреждение\n");
-  macros.SelectionText("высшего профессионального образования\n");
+  macros.SelectionText("высшего образования\n");
   macros.SelectionText("\"\"Нижегородский государственный архитектурно-строительный университет\"\" (ННГАСУ)\n\n");
   macros.InsertLine("Selection.MoveUp Unit:=wdLine, Count:=2");
   macros.SelectionParagraphFormat("Borders.Item(wdBorderBottom).LineStyle = wdLineStyleSingle");
@@ -81,9 +81,9 @@ void ReportCharacteristic::Run(int grpId, int studentId)
   macros.SelectionText("vbTab");
 
   if (privData.direct != "")
-    macros.SelectionText("В " + privData.inYear + " году поступил" + _A + " в ННГАСУ на места, не финансируемые из федерального бюджета, для обучения по направлению \"\"" + privData.direct + "\"\" по заочной форме с применением дистанционных технологий.\n");
+    macros.SelectionText("В " + privData.inYear + " году поступил" + _A + " в ННГАСУ на места, не финансируемые из федерального бюджета, для обучения по направлению \"\"" + privData.direct + "\"\" по заочной форме.\n");
   else
-    macros.SelectionText("В " + privData.inYear + " году поступил" + _A + " в ННГАСУ на места, не финансируемые из федерального бюджета, для обучения по специальности \"\"" + privData.specOrProfil + "\"\" по заочной форме с применением дистанционных технологий.\n");
+    macros.SelectionText("В " + privData.inYear + " году поступил" + _A + " в ННГАСУ на места, не финансируемые из федерального бюджета, для обучения по специальности \"\"" + privData.specOrProfil + "\"\" по заочной форме.\n");
  
   macros.SelectionText("vbTab");
   macros.SelectionText("За время обучения в университете показал" + _A + " следующую успеваемость:\n");
