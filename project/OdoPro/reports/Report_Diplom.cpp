@@ -264,7 +264,7 @@ void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip,
     {
       zeTimeCounter += times.toInt();
       itogTime = times;
-      vkrWork = Discip(title.toLower() + " на тему «" + vkrTitle + "»", "х", ocenka);
+      vkrWork = Discip(title.toLower() + " «" + vkrTitle + "»", "х", ocenka);
     }
   }
 
