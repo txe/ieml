@@ -267,6 +267,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SelectGroups.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SelectGroups.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SelectYear.cpp"
 				>
 			</File>
@@ -741,6 +749,14 @@
 			</File>
 			<File
 				RelativePath=".\reports\Report_Module.h"
+				>
+			</File>
+			<File
+				RelativePath=".\reports\Report_ReleaseDoc.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\reports\Report_ReleaseDoc.h"
 				>
 			</File>
 			<File

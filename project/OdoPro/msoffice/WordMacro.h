@@ -25,6 +25,7 @@ public:
   void Replace(const string_t& text, const string_t& repl);
   //---------------------------------------------------------------------------
   void TablesAdd(int rowCount, int colCount);
+  void Tables(int tableNum, const string_t& param);
   void TablesColumns(int tableNum, int colNum, const string_t& param);
   void Cell(int tableNum, int x, int y, const string_t& param);
   void CellCell(int tableNum, int x1, int y1, int x2, int y2, const string_t& param);

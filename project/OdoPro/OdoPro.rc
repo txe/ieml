@@ -112,8 +112,8 @@ END
 
 IDR_HTML_BUH_REPORT     HTML                    "res\\buh-report.htm"
 IDR_HTML_BUH_REPORT_2   HTML                    "res\\buh-report2.htm"
-IDR_HTML_BUH_REPORT_MONTH HTML                  "res\\buh-report-month.htm"
-IDR_HTML_BUH_REPORT_SALDO HTML                  "res\\buh-report-saldo.htm"
+IDR_HTML_BUH_REPORT_MONTH HTML                    "res\\buh-report-month.htm"
+IDR_HTML_BUH_REPORT_SALDO HTML                    "res\\buh-report-saldo.htm"
 IDR_HTML_STAT           HTML                    "res\\statistic.htm"
 IDR_HTML_MAIN           HTML                    "res\\main.htm"
 IDR_HTML_CHANGE_SEM     HTML                    "res\\change-sem.htm"
@@ -148,6 +148,7 @@ ARROW-RIGHT.PNG         HTML                    "res\\arrow-right.png"
 ARROW-LEFT.PNG          HTML                    "res\\arrow-left.png"
 IDR_HTML_FAST_INPUT_GAK HTML                    "res\\fast-input-gak.htm"
 IDR_HTML_SELECT_YEAR    HTML                    "res\\select-year.htm"
+IDR_HTML_SELECT_GROUPS  HTML                    "res\\select-groups.htm"
 #endif    // Russian resources
 /////////////////////////////////////////////////////////////////////////////
 
