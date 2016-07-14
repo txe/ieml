@@ -82,6 +82,14 @@ ReportDogovor::ReportDogovorData ReportDogovor::GetData(int grpId, int studentId
     data.telefon = "Тел. " + row["phones"];
   }
 
+  // сперва найдем персональные оплаты
+  std::map<int, int> personalCat;
+  string_t personalMoneyQuery = string_t() + 
+    "SELECT idopts, commoncountmoney FROM paypersonaltest WHERE idstud = " + aux::itow(studentId) + " AND deleted = 0";
+  mybase::MYFASTRESULT persMoneyRes = theApp.GetCon().Query(personalMoneyQuery);
+  while (mybase::MYFASTROW row = persMoneyRes.fetch_row())
+    personalCat[row["idopts"].toInt()] = row["commoncountmoney"].toInt();
+
   // разберемся с деньгами
   std::map<int, int> moneyYear; // год -> деньги
   bool isFeb = false;           // февраль
@@ -90,7 +98,14 @@ ReportDogovor::ReportDogovorData ReportDogovor::GetData(int grpId, int studentId
   mybase::MYFASTRESULT moneyRes = theApp.GetCon().Query(moneyQuery);
   while (mybase::MYFASTROW row = moneyRes.fetch_row())
   { 
-    moneyYear[r::GetYear(row["datestart"]).toInt()] = row["commoncountmoney"].toInt();
+    int money = row["commoncountmoney"].toInt();
+    std::map<int,int>::iterator it = personalCat.find(row["id"].toInt());
+    if (it != personalCat.end())
+      money = it->second;
+    if (money == 0)
+      continue;
+
+    moneyYear[r::GetYear(row["datestart"]).toInt()] = money;
     isFeb = r::GetMonth(row["datestart"]).toInt() == 2;
   }
 
