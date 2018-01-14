@@ -82,7 +82,7 @@ void ManagerReports::UnLoadReports(void)
 	FreeLibrary(_hinstRepLib); 
 	for (size_t i = 0; i < _reports.size(); ++i)
 		delete _reports[i];
-	_reports.size();
+	_reports.clear();
 }
 
 // создание меню
@@ -103,6 +103,19 @@ void ManagerReports::CreateMenu(void)
 		string_t title	= GetTitle(i);
 		string_t id		= aux::itow(i);
 
+    if (title == "Ведомость на группу (Quick)"
+      || title == "Договор new (Quick)"
+      || title == "Договор old (Quick)"
+      || title == "Экзаменационный (зачетный) лист (Quick)"
+      || title == "Протокол заседания экз. комиссии - гос. экзамены (Quick)"
+      || title == "Справка (Quick)"
+      || title == "Справочная карточка (Quick)"
+      || title == "Документ о допуске к вступительным испытаниям (MS Word)"
+      || title == "Академическая справка (MS Word)"
+      || title == "Приложение к диплому (MS Word)"
+      || title == "Статистика (old)")
+        continue;
+
     if (title == "Характеристика студента (MS Word)")
       id = "-1";
 
@@ -114,6 +127,7 @@ void ManagerReports::CreateMenu(void)
 	for (size_t i = 0; i < _reports.size(); ++i)
 	{
 		string_t title	= _reports[i]->GetName();
+    // вставлено в коде выше, чтобы позиция отчета оставалось прежней
     if (title == "Характеристика студента (MS Word)")
       continue;
 
