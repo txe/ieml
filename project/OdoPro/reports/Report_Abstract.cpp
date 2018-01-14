@@ -101,11 +101,12 @@ void r::GetPrivateData(PrivateData& data, int studentId)
   data.diplomNum = "xxx 000000";
   data.regNum = data.dataVidachi = data.dataQualific = "00.00.0000";
   data.isMagister = false;
+  data.eduformid = "???";
 
   string_t  query = string_t() +
     "SELECT s.secondname,s.firstname,s.thirdname,s.grpid,s.bdate,s.vkr_title," \
     " s.educationid,s.edudocid,s.eduenddate,s.eduplace, s.specid,s.enterdate,s.exitdate, s.exitnum,s.sex,v.title as lang, s.edunumdiplom, " \
-    " s.edunumprilog, s.edunumreg, s.edudatediplom,s.edudatequalif,s.directid,s.edudiplomotl, s.edunumprotgak " \
+    " s.eduformid, s.edunumprilog, s.edunumreg, s.edudatediplom,s.edudatequalif,s.directid,s.edudiplomotl, s.edunumprotgak " \
     " FROM students as s, "\
     " voc as v where s.deleted=0 and v.deleted=0 and s.id=" + aux::itow(studentId) + 
     " and s.languageid=v.num and v.vkey=\"language\"";
@@ -143,6 +144,7 @@ void r::GetPrivateData(PrivateData& data, int studentId)
     data.isMale     = row["sex"] != string_t("Æ") && row["sex"] != string_t("æ");
     data.lang       = row["lang"];
     data.isOtlDiplom = row["edudiplomotl"] == "1";
+    data.eduformid  = row["eduformid"];
 
     data.diplomNum    = row["edunumdiplom"];
     data.prilNum      = row["edunumprilog"];

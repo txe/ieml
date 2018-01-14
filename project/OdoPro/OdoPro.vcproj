@@ -752,6 +752,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\reports\Report_Pril4.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\reports\Report_Pril4.h"
+				>
+			</File>
+			<File
 				RelativePath=".\reports\Report_ReleaseDoc.cpp"
 				>
 			</File>

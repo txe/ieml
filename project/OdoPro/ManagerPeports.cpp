@@ -11,6 +11,7 @@
 #include "reports/Report_Diplom2015.h"
 #include "reports/Report_Module.h"
 #include "reports/Report_ReleaseDoc.h"
+#include "reports/Report_Pril4.h"
 
 typedef int   (__cdecl *TGetCountOfReportsInDLL)(void);
 typedef char* (__cdecl *TGetTitleOfReportByIndex)(int);
@@ -63,7 +64,7 @@ void ManagerReports::LoadReports(void)
 		throw wss::exception(wss::reason_message(FULL_LOCATION(), "неверная структура библиотеки"));
 	}
 	
-	_reports.push_back(new ReportStudyingSpravka("Справка об обучении (MS Word)"));
+  _reports.push_back(new ReportStudyingSpravka("Справка об обучении (MS Word)"));
   _reports.push_back(new ReportCharacteristic("Характеристика студента (MS Word)"));
   _reports.push_back(new ReportDiplom("Приложение к диплому 2014 (MS Word)"));
   _reports.push_back(new ReportDogovor("Договор 2014 (MS Word)", false));
@@ -72,6 +73,7 @@ void ManagerReports::LoadReports(void)
   _reports.push_back(new ReportModule("Модуль (MS Excel)"));
   _reports.push_back(new ReportDiplom2015("Диплом 2015 (MS Word)"));
   _reports.push_back(new ReportReleaseDoc("Докладная на выпуск (MS Word)"));
+  _reports.push_back(new ReportPril4("Приложение 4 к акту 1 (MS Word)"));
 }
 
 // выгружает библиотеки отчетов

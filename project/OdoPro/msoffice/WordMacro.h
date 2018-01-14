@@ -17,6 +17,7 @@ public:
   //---------------------------------------------------------------------------
   void PageSetup(const string_t& param);
   void SelectionParagraphFormat(const string_t& param);
+  void SelectionBorderLine();
   void SelectionFont(const string_t& param);
   void SelectionText(const string_t& text);
   void SelectionUnderlineText(const string_t& text, bool underline); 

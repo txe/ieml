@@ -50,6 +50,7 @@ namespace r
     string_t inYear, inMonth, inDay, outYear, outMonth, outDay, exitDate, exitNum;
     string_t vkrTitle, specOrProfil, specializ, qualific, lang, shifrspec;
     string_t diplomNum, prilNum, regNum, dataVidachi, dataQualific, direct, gakNum;
+    string_t eduformid;
     bool     isMale, isMagister;
     bool     isOtlDiplom;
     string_t specOrProfilTag;
