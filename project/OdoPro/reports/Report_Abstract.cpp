@@ -96,7 +96,7 @@ void r::GetPrivateData(PrivateData& data, int studentId)
 {
   data.firstName = data.secondName = data.thirdName = data.bornDate = data.vkrTitle = data.prevEdu = data.prevDoc = data.prevDocYear = data.inYear = "???";
   data.inMonth = data.inMonth = "0";
-  data.outYear = data.outMonth = data.outDay = data.exitDate = data.exitNum = "???";
+  data.outYear = data.outMonth = data.outDay = data.exitDate = data.exitDateFull = data.exitNum = "???";
   data.specOrProfil = data.direct = data.specializ = data.qualific = data.lang = data.gakNum = "???";
   data.diplomNum = "xxx 000000";
   data.regNum = data.dataVidachi = data.dataQualific = "00.00.0000";
@@ -140,6 +140,7 @@ void r::GetPrivateData(PrivateData& data, int studentId)
     data.outMonth   = GetMonth(row["exitdate"]);
     data.outDay     = GetDay(row["exitdate"]);
     data.exitDate   = to_digital_date(row["exitdate"]);
+    data.exitDateFull = to_str_date(row["exitdate"]);
     data.exitNum    = row["exitnum"];
     data.isMale     = row["sex"] != string_t("Æ") && row["sex"] != string_t("æ");
     data.lang       = row["lang"];

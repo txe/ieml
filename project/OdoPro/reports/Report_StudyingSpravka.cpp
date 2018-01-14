@@ -17,32 +17,33 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
 
   bool renameUniver2011 = privData.inYear.toInt() < 2011 || (privData.inYear.toInt() == 2011 && (privData.inMonth.toInt() < 7 || (privData.inMonth.toInt() == 7 && privData.inDay.toInt() < 8)));
   bool stillStudying = privData.exitNum.empty();
+  string_t maleEnd = privData.isMale ? "" : "а";
 
   // поступил
-  string_t inInfo = "Поступил(а) в " + privData.inYear;    
+  string_t inInfo = "Поступил" + maleEnd + " в " + privData.inYear;    
   if (renameUniver2011)
     inInfo += " году в государственное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет» (заочная форма)";
   else
     inInfo += " году в федеральное государственное бюджетное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет» (заочная форма)";
 
   // выпустился или продолжает обучение
-  string_t outInfo = "Завершил(а) обучение в " + privData.outYear + " году в федеральном государственном бюджетном образовательном учреждении высшего образования «Нижегородский государственный архитектурно-строительный университет» (заочная форма)";
+  string_t outInfo = "Прекратил" + maleEnd + " обучение в " + privData.outYear + " году в федеральном государственном бюджетном образовательном учреждении высшего образования «Нижегородский государственный архитектурно-строительный университет» (заочная форма)";
   if (stillStudying)
-    outInfo = "Завершил(а) обучение в\nПродолжает обучение";
+    outInfo = "Прекратил" + maleEnd + " обучение в\nПродолжает обучение";
 
   // дополнительниые сведения
   string_t bottomInfo;
   if (renameUniver2011)
   {
-    bottomInfo += "Образовательная организация переименована в 2011 году.\nСтарое полное официальное наименование образовательной организации – государственное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет».";
+    bottomInfo += "Наименование образовательной организации изменилось в 2011 году.\nПрежнее наименование образовательной организации – государственное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет».";
     bottomInfo += "\n";
   }
-  bottomInfo += "Образовательная организация переименована в 2016 году.\nСтарое полное официальное наименование образовательной организации – федеральное государственное бюджетное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет».";
+  bottomInfo += "Наименование образовательной организации изменилось в 2016 году.\nПрежнее наименование образовательной организации – федеральное государственное бюджетное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет».";
 
-  if (stillStudying)
-    bottomInfo.addAsParagraph("Справка выдана по требованию");
-  else
-    bottomInfo.addAsParagraph("Приказ об отчислении от " + privData.exitDate + " г. № " + privData.exitNum);
+  //if (stillStudying)
+  //  bottomInfo.addAsParagraph("Справка выдана по требованию");
+  //else
+  bottomInfo.addAsParagraph("Приказ об отчислении от " + privData.exitDateFull + " года № " + privData.exitNum);
 
 
   WordMacros macros;
@@ -69,7 +70,7 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   // дата рождения
   macros.SelectionText("Дата рождения " + r::to_str_date(privData.bornDate, "года"));
   macros.SelectionTypeParagraph(2);
-  macros.SelectionText("Документ об уровне образования, на основании которого поступил(а) на обучение:\n");
+  macros.SelectionText("Документ об уровне образования, на основании которого поступил" + maleEnd + " на обучение:\n");
   macros.SelectionText(privData.prevDoc + " " + privData.prevDocYear + " год");
   macros.SelectionTypeParagraph(2);
 
@@ -81,14 +82,15 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   macros.SelectionText(outInfo);
   macros.SelectionTypeParagraph(2);
 
-  macros.SelectionText("Нормативный срок обучения по очной форме 4 года");
-  macros.SelectionTypeParagraph(2);
+  //macros.SelectionText("Нормативный срок обучения по очной форме 4 года");
+  //macros.SelectionTypeParagraph(2);
 
   // Направление подготовки/специальность:
-  macros.SelectionUnderlineText("Направление подготовки", naprData.stroka1 == DirectData::S1_DIRECT);
-  macros.SelectionText("/");
-  macros.SelectionUnderlineText("специальность", naprData.stroka1 == DirectData::S1_SPEC);
-  macros.SelectionText(":");
+  string_t maleStudy = privData.isMale ? "Обучался" : "Обучалась";
+  if (privData.isMagister)
+    macros.SelectionText(maleStudy + " по программе магистратуры по направлению подготовки:");
+  else
+    macros.SelectionText(maleStudy + " по программе бакалавриата по направлению подготовки:");
   macros.SelectionTypeParagraph();
 
   // значение предыдущей строки
@@ -96,16 +98,17 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   macros.SelectionTypeParagraph(2);
 
   // Специализация/профиль/профильная направленность (программа):
-  macros.SelectionUnderlineText("Специализация", naprData.stroka2 == DirectData::S2_SPECIAL);
-  macros.SelectionText("/");
-  macros.SelectionUnderlineText("профиль", naprData.stroka2 == DirectData::S2_PROFIL);
-  macros.SelectionText("/");
-  macros.SelectionUnderlineText("профильная направленность (программа)", naprData.stroka2 == DirectData::S2_MAGISTR);
-  macros.SelectionText(":");
+  macros.SelectionText("Направленность (профиль) образовательной программы:");
   macros.SelectionTypeParagraph();
 
   // значение предыдущей строки
   macros.SelectionText(naprData.stroka2Value);
+  macros.SelectionTypeParagraph(2);
+
+  if (privData.isMagister)
+      macros.SelectionText("Срок освоения программы магистратуры в очной форме обучения\n2 года");
+  else
+      macros.SelectionText("Срок освоения программы бакалавриата в очной форме обучения\n4 года");
   macros.SelectionTypeParagraph(2);
 
   // курсовые
@@ -123,11 +126,11 @@ void ReportStudyingSpravka::Run(int grpId, int studentId)
   macros.SelectionTypeParagraph(2);
 
   // научные работы
-  macros.SelectionText("Научно-исследовательская работа:\n");
-  macros.SelectionFont("Size=9");
-  macros.SelectionText(toQuate(studyData.sci));
-  macros.SelectionFont("Size=11");
-  macros.SelectionTypeParagraph(2);
+  //macros.SelectionText("Научно-исследовательская работа:\n");
+  //macros.SelectionFont("Size=9");
+  //macros.SelectionText(toQuate(studyData.sci));
+  //macros.SelectionFont("Size=11");
+  //macros.SelectionTypeParagraph(2);
 
   // госы
   macros.SelectionText("Государственная итоговая аттестация:\n");
@@ -172,6 +175,7 @@ void ReportStudyingSpravka::GetDirectData(DirectData& data, const r::PrivateData
     data.stroka1Value = privData.direct;
   else
     data.stroka1Value = privData.specOrProfil;
+  data.stroka1Value = privData.shifrspec + " " + data.stroka1Value;
 
   // Специализация/профиль/профильная направленность (программа):
   // если было направление то это профиль, иначе Специализация, а если тег (маг) то профильная направленность
@@ -194,7 +198,7 @@ void ReportStudyingSpravka::GetStudyData(StudyData& data, int studentId, bool is
   string_t vkrGos;
 
   string_t query = string_t() +
-    "SELECT di.fulltitle, di.num_hours, di.idclass, pr.estimation, pr.ball "
+    "SELECT di.fulltitle, di.num_hours, di.idclass, di.zachet_edinica, pr.estimation, pr.ball "
     "FROM disciplines as di, progress as pr "
     "WHERE di.deleted=0 and pr.deleted=0 and pr.idstud=" + aux::itow(studentId) + " and pr.iddiscip=di.id "
     "ORDER BY di.scan_number";
@@ -205,13 +209,14 @@ void ReportStudyingSpravka::GetStudyData(StudyData& data, int studentId, bool is
     string_t title   = row["fulltitle"];
     string_t hours   = row["num_hours"];
     string_t ocenka  = r::toOcenka(row["estimation"].toInt());
+    string_t ze      = row["zachet_edinica"];
 
     if (idclass == 2 || idclass == 3) // курсовые работы и проекты
-      data.kur.addAsParagraph(title + ", " + ocenka);
+      data.kur.addAsParagraph(title.double_quote() + ", " + ocenka);
     else if (idclass == 4) // практика
-      data.practic.addAsParagraph(title + " " + r::hours_to_str(hours) + ", " + ocenka);
+      data.practic.addAsParagraph(title.double_quote() + " " + ze + " з.е. (" + r::hours_to_str(hours) + "), " + ocenka);
     else if (idclass == 8) // научно исследовательская работа
-      data.sci.addAsParagraph(title);
+      data.sci.addAsParagraph(title.double_quote());
     else if (idclass == 5) // итоговая аттестация
       data.gos.addAsParagraph(title + ", " + ocenka);
     else if (idclass == 6) // выпускная квалиф. работа
@@ -223,7 +228,7 @@ void ReportStudyingSpravka::GetStudyData(StudyData& data, int studentId, bool is
   if (data.kur.empty())     data.kur     = isMale ? "не выполнял" : "не выполняла";
   if (data.practic.empty()) data.practic = isMale ? "не проходил" : "не проходила";
   if (data.sci.empty())     data.sci     = isMale ? "не выполнял" : "не выполняла";
-  if (data.gos.empty())     data.gos     = isMale ? "не сдавал"   : "не сдавала";
+  if (data.gos.empty())     data.gos     = isMale ? "не проходил"   : "не проходила";
 }
 //-------------------------------------------------------------------------
 void ReportStudyingSpravka::GetDiscipData(std::vector<DiscipData>& data, int studentId)
