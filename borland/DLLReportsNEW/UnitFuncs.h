@@ -29,7 +29,7 @@ enum TTypeKeyVoc{
 AnsiString ToStr(AnsiString str);
 bool WCConnect(void);
 void WCDisconnect(void);
-AnsiString WCGetTitleForKeyNum(TTypeKeyVoc tkey,int num);
+AnsiString WCGetTitleForKeyNum(TTypeKeyVoc tkey,int num, AnsiString * tag = 0);
 int WCGetNumForKeyTitle(TTypeKeyVoc tkey, AnsiString title);
 void WCUpdateComboBox(TComboBox* cmb,TTypeKeyVoc tkey);
 TStringList* WCGetAllGroupTitles(void);

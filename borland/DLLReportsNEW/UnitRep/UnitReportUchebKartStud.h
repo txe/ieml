@@ -59,7 +59,7 @@ public:		// User declarations
     void    __fastcall  GetInfoStudent(AnsiString& NumZ, AnsiString& SN, AnsiString& FN, AnsiString& TN,
         AnsiString& Adres, AnsiString& NumPricas, AnsiString& InDate, AnsiString& spec,
         AnsiString& VipQualifWork, AnsiString& OutDate, AnsiString& Qualific,
-        AnsiString& nGak, AnsiString perevodInfo[5]);
+        AnsiString& nGak, AnsiString perevodInfo[5], AnsiString& direct, AnsiString& profil);
     void    __fastcall  CreateWordDocument(void);
     int GetCountLine(const AnsiString& text, const int& max_len);
     AnsiString GetDateAsString(const AnsiString& str, bool isYear=true);
@@ -67,6 +67,7 @@ public:		// User declarations
     bool __fastcall FileExists(const AnsiString& fname);
     void __fastcall StringToAudHours(AnsiString  h[21], AnsiString& str_hours);
     void __fastcall StringToPerevodInfo(AnsiString info[5], AnsiString str);
+    void __fastcall GetDirectInfo(AnsiString& direct, AnsiString& profil, int specid, int directid);
 
 };
 //---------------------------------------------------------------------------

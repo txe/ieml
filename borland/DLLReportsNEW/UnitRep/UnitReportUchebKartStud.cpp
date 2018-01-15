@@ -170,13 +170,13 @@ int    __fastcall  TFormReportUchebKartStud::GetIDGroup(void)
 void    __fastcall  TFormReportUchebKartStud::CreateWordDocument(void)
 {
     AnsiString NumZ, SecondName, FirstName, ThirdName, Adres, NumPricas, InDate,
-        spec, VipQualifWork, OutDate, Qualific, nGak;
+        spec, VipQualifWork, OutDate, Qualific, nGak, direct, profil;
     AnsiString perevodInfo[5];
 
     GetOchenkiStudenta();
     UpdateView();
     GetInfoStudent(NumZ, SecondName, FirstName, ThirdName, Adres, NumPricas, InDate,
-        spec, VipQualifWork, OutDate, Qualific, nGak, perevodInfo);
+        spec, VipQualifWork, OutDate, Qualific, nGak, perevodInfo, direct, profil);
 
     ExcelMacros macros;
     macros.BeginMacros();
@@ -194,7 +194,9 @@ void    __fastcall  TFormReportUchebKartStud::CreateWordDocument(void)
     macros.Select("A11");
     macros.Formula("от   " + GetDateAsString(InDate));
     macros.Select("A16");
-    macros.Formula("по специальности   " + spec);
+    macros.Formula("по направлению   " + direct);
+    macros.Select("A17");
+    macros.Formula("с профилем   " + profil);
     macros.Select("H21");
     macros.FilterText(VipQualifWork);
     macros.Formula("  " + VipQualifWork);
@@ -203,7 +205,7 @@ void    __fastcall  TFormReportUchebKartStud::CreateWordDocument(void)
     if (OutDate.Length() > 0)
     {
         macros.Select("H26");
-        macros.Formula("от " + GetDateAsString(OutDate, true));
+        macros.Formula("от " + GetDateAsString(OutDate, true) + ")");
         macros.Select("H23");
         macros.Formula("и защитил " + GetDateAsString(OutDate, true));
     }
@@ -372,7 +374,8 @@ void    __fastcall  TFormReportUchebKartStud::GetOchenkiStudenta(void)
 //---------------------------------------------------------------------------
 void __fastcall TFormReportUchebKartStud::GetInfoStudent(AnsiString& NumZ, AnsiString& SN, AnsiString& FN, AnsiString& TN,
         AnsiString& Adres, AnsiString& NumPricas, AnsiString& InDate, AnsiString& spec,
-        AnsiString& VipQualifWork, AnsiString& OutDate, AnsiString& Qualific, AnsiString& nGak, AnsiString perevodInfo[5])
+        AnsiString& VipQualifWork, AnsiString& OutDate, AnsiString& Qualific, AnsiString& nGak, AnsiString perevodInfo[5],
+        AnsiString& direct, AnsiString& profil)
 {
     NumZ = "???";
     SN = "???";
@@ -386,11 +389,15 @@ void __fastcall TFormReportUchebKartStud::GetInfoStudent(AnsiString& NumZ, AnsiS
     OutDate = "???";
     Qualific = "???";
 
+    direct = "???";
+    profil = "???";
+
     MYSQL_RES *result;
     MYSQL_ROW row;
 
     AnsiString myquery = "select s.secondname,s.firstname,s.thirdname, s.addr," \
-        "s.enternum,s.enterdate,s.specid, s.vkr_title, s.znum, s.edudatequalif, s.edunumprotgak, s.perevod_na_kurs from "+opts.DBStudTable+" as s "\
+        "s.enternum,s.enterdate,s.specid, s.vkr_title, s.znum, s.edudatequalif, s.edunumprotgak, s.perevod_na_kurs, " \
+        "s.directid from "+opts.DBStudTable+" as s "\
         "where s.deleted=0 and s.id=" + ToStr(AnsiString(idstudent));
 
     mysql_query(mysql,myquery.c_str());
@@ -415,6 +422,8 @@ void __fastcall TFormReportUchebKartStud::GetInfoStudent(AnsiString& NumZ, AnsiS
                 OutDate = AnsiString(row[9]);
                 nGak =  AnsiString(row[10]);
                 StringToPerevodInfo(perevodInfo, AnsiString(row[11]));
+
+                GetDirectInfo(direct, profil, AnsiString(row[6]).ToInt(), AnsiString(row[12]).ToInt());
             }
         }
         mysql_free_result(result);
@@ -498,10 +507,30 @@ void __fastcall TFormReportUchebKartStud::StringToPerevodInfo(AnsiString info[5]
               try
               {
                 date = GetDateAsString(date, true);
-                info[i/2] = "Распоряжение № " + number + "  от  " + date;
+                info[i/2] = "Приказ № " + number + "  от  " + date;
               } catch (...) {}
              }
 
         }
 }
+//---------------------------------------------------------------------------
+void __fastcall TFormReportUchebKartStud::GetDirectInfo(AnsiString& direct, AnsiString& profil, int specid, int directid)
+{
+  // смотри ReportStudyingSpravka::GetDirectData
+  AnsiString specOrProfileTag;
+  AnsiString specOrProfile = WCGetTitleForKeyNum(SPECS, specid, &specOrProfileTag);
+  AnsiString specializ = WCGetTitleForKeyNum(SPEZIALIZS, specid);
+  AnsiString dbDirect = WCGetTitleForKeyNum(DIRECTS, directid);
+  bool isMagister = specOrProfileTag.LowerCase().Trim() == "маг";
+
+  if (dbDirect != "")
+    direct = dbDirect;
+  else
+    direct = specOrProfile;
+  if (dbDirect != "" || isMagister)
+    profil = specOrProfile;
+  else
+    profil = specializ;
+}
+
 

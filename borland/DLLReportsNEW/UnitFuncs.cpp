@@ -80,14 +80,14 @@ void WCDisconnect(void)
   }
 }
 //---------------------------------------------------------------------------
-AnsiString WCGetTitleForKeyNum(TTypeKeyVoc tkey,int num)
+AnsiString WCGetTitleForKeyNum(TTypeKeyVoc tkey,int num, AnsiString* tag)
 {
   MYSQL_RES *result;
   MYSQL_ROW row;
 
   AnsiString resStr="";
   AnsiString myquery;
-  myquery="SELECT title FROM "+opts.DBVocTable+" WHERE deleted=0 AND vkey="+ToStr(keys[tkey])+" AND num="+ToStr(AnsiString(num));
+  myquery="SELECT title, tag FROM "+opts.DBVocTable+" WHERE deleted=0 AND vkey="+ToStr(keys[tkey])+" AND num="+ToStr(AnsiString(num));
 
   mysql_query(mysql,myquery.c_str());
   if (mysql_field_count(mysql))
@@ -98,6 +98,8 @@ AnsiString WCGetTitleForKeyNum(TTypeKeyVoc tkey,int num)
       row = mysql_fetch_row(result);
 
       resStr=AnsiString(row[0]);
+      if (tag)
+        *tag = AnsiString(row[1]);
     }
     mysql_free_result(result);
   }
