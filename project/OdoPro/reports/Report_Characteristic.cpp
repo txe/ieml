@@ -66,7 +66,7 @@ void ReportCharacteristic::Run(int grpId, int studentId)
   macros.SelectionParagraphFormat("Borders.Item(wdBorderBottom).LineStyle = wdLineStyleSingle");
   macros.SelectionParagraphFormat("Borders.Item(wdBorderBottom).LineWidth = wdLineWidth050pt");
   macros.InsertLine("Selection.MoveDown Unit:=wdLine, Count:=2");
-  macros.SelectionText("ИНСТИТУТ ЭКОНОМИКИ, УПРАВЛЕНИЯ И ПРАВА\n\n");
+  macros.SelectionText("МЕЖДУНАРОДНЫЙ ИНСТИТУТ ТЕХНОЛОГИЙ БИЗНЕСА\n\n");
   macros.SelectionFont("Bold=true");
   macros.SelectionText("ХАРАКТЕРИСТИКА\n\n");
   macros.SelectionFont("Bold=false");
@@ -92,11 +92,11 @@ void ReportCharacteristic::Run(int grpId, int studentId)
   macros.SelectionText("- \"\"хорошо\"\" - " + horPercent + " %;\n");
   macros.SelectionText("- \"\"удовлетворительно\"\" - " + udlPercent + " %.\n");
  
-  macros.SelectionText("vbTab");
-  macros.SelectionText(itog);
+  //macros.SelectionText("vbTab");
+  //macros.SelectionText(itog);
 
-  macros.SelectionText("vbTab");
-  macros.SelectionText("Выполнил" + _A + " выпускную квалификационную работу по кафедре " + cafedra + ".\n");
+  //macros.SelectionText("vbTab");
+  //macros.SelectionText("Выполнил" + _A + " выпускную квалификационную работу по кафедре " + cafedra + ".\n");
   macros.SelectionText("vbTab");
   macros.SelectionText(fio + " административных взысканий за время обучения не имеет, пользуется уважением студентов и преподавателей.\n");
   macros.SelectionText("vbTab");
@@ -109,7 +109,7 @@ void ReportCharacteristic::Run(int grpId, int studentId)
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.SelectionText("\n");
   macros.SelectionText("vbTab");
-  macros.SelectionText("Директор ИЭУП, профессор");
+  macros.SelectionText("Директор МИТБ, профессор");
   macros.SelectionText("vbTab");
   macros.SelectionText("vbTab");
   macros.SelectionText("vbTab");
