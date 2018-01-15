@@ -183,21 +183,20 @@ void ReportDiplom::GetDirectData(DirectData& dirData, const r::PrivateData& priv
   bool renameUniver = privData.inYear.toInt() < 2011 || (privData.inYear.toInt() == 2011 && (privData.inMonth.toInt() < 7 || (privData.inMonth.toInt() == 7 && privData.inDay.toInt() < 8)));
   if (renameUniver)
   {
-    dirData.bottomInfo =  L"Образовательная организация переименована в 2011 году.";
-    dirData.bottomInfo += L"\nСтарое полное официальное наименование образовательной организации – государственное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет».";
+    dirData.bottomInfo =  L"Наименование образовательной организации изменилось в 2011 году.";
+    dirData.bottomInfo += L"\nПрежнее наименование образовательной организации – государственное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет».";
     dirData.bottomInfo += L"\n";
   }
-  dirData.bottomInfo +=  L"Образовательная организация переименована в 2016 году.";
-  dirData.bottomInfo += L"\nСтарое полное официальное наименование образовательной организации – федеральное государственное бюджетное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет».";
-  dirData.bottomInfo += L"\n";
-
-  dirData.bottomInfo += L"Форма обучения: заочная.";
-  dirData.bottomInfo += L"\nЧасть образовательной программы в объеме ? недель освоена в ?.";
+  dirData.bottomInfo +=  L"Наименование образовательной организации изменилось в 2016 году.";
+  dirData.bottomInfo += L"\nПрежнее наименование образовательной организации – федеральное государственное бюджетное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет».";
 
   if (privData.direct.empty() || privData.specOrProfilTag == "экст")
     dirData.bottomInfo += L"\nСпециализация: " + privData.specializ + L".";
   else if (tag.startsWith("бак") || tag == "маг")
     dirData.bottomInfo += L"\nНаправленность (профиль) образовательной программы: " + privData.specOrProfil + L".";
+  dirData.bottomInfo += L"\n";
+  dirData.bottomInfo += L"Форма обучения: заочная.";
+  dirData.bottomInfo += L"\nЧасть образовательной программы в объеме ? недель освоена в ?.";
 }
 //-------------------------------------------------------------------------
 void ReportDiplom::GetDiscipInfo(int studentId, std::vector<Discip>& cursDiscip, std::vector<Discip>& commonDiscip, std::vector<Discip>& specDiscip, string_t lang, string_t vkrTitle, bool useZe, bool anotherEnd)
