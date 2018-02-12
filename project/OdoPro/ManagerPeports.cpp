@@ -4,6 +4,7 @@
 #include "json-aux-ext.h"
 #include "logger.h"
 #include "reports/Report_StudyingSpravka.h"
+#include "reports/Report_PeriodSpravka.h"
 #include "reports/Report_Characteristic.h"
 #include "reports/Report_Diplom.h"
 #include "reports/Report_Dogovor2014.h"
@@ -65,6 +66,7 @@ void ManagerReports::LoadReports(void)
 	}
 	
   _reports.push_back(new ReportStudyingSpravka("Справка об обучении (MS Word)"));
+  _reports.push_back(new ReportPeriodSpravka("Справка об периоде обучении (MS Word)"));
   _reports.push_back(new ReportCharacteristic("Характеристика студента (MS Word)"));
   _reports.push_back(new ReportDiplom("Приложение к диплому 2014 (MS Word)"));
   _reports.push_back(new ReportDogovor("Договор 2014 (MS Word)", false));

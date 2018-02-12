@@ -31,6 +31,7 @@ public:
   void Cell(int tableNum, int x, int y, const string_t& param);
   void CellCell(int tableNum, int x1, int y1, int x2, int y2, const string_t& param);
   void TableStyle(const EStyleBorder& style);
+  void TableRange(int tableNum, int x1, int y1, int x2, int y2, const string_t& param);
   //---------------------------------------------------------------------------
   void Lock();    // реализуется для избежания некоторых глюков IsLarge
   void UnLock();  // 
