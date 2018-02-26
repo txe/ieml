@@ -18,15 +18,21 @@ void ReportPeriodSpravka::Run(int grpId, int studentId)
   bool stillStudying = privData.exitNum.empty();
   string_t maleEnd = privData.isMale ? "" : "а";
 
+  string_t formaObuch;
+  if (theApp.GetTitleForKeyFromVoc(vok_key::VK_EDUFORM, privData.eduformid.toInt(), true).toLower().indexOf(L"заочн") != -1)
+    formaObuch = "заочн";
+  else
+    formaObuch = "очн";
+
   // поступил
   string_t inInfo = "Поступил" + maleEnd + " в " + privData.inYear;    
   if (renameUniver2011)
-    inInfo += " году в государственное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет» (заочная форма)";
+    inInfo += " году в государственное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет» (" + formaObuch + "ая форма)";
   else
-    inInfo += " году в федеральное государственное бюджетное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет» (заочная форма)";
+    inInfo += " году в федеральное государственное бюджетное образовательное учреждение высшего профессионального образования «Нижегородский государственный архитектурно-строительный университет» (" + formaObuch + "ая форма)";
 
   // выпустился или продолжает обучение
-  string_t outInfo = "Прекратил" + maleEnd + " обучение в " + privData.outYear + " году в федеральном государственном бюджетном образовательном учреждении высшего образования «Нижегородский государственный архитектурно-строительный университет» (заочная форма)";
+  string_t outInfo = "Прекратил" + maleEnd + " обучение в " + privData.outYear + " году в федеральном государственном бюджетном образовательном учреждении высшего образования «Нижегородский государственный архитектурно-строительный университет» (" + formaObuch + "ая форма)";
   if (stillStudying)
     outInfo = "Прекратил" + maleEnd + " обучение в\nПродолжает обучение";
 
@@ -48,28 +54,25 @@ void ReportPeriodSpravka::Run(int grpId, int studentId)
 
   // insert page number
   macros.InsertLine("Selection.Sections(1).Footers(1).PageNumbers.Add PageNumberAlignment:= _");
-  macros.InsertLine("      wdAlignPageNumberLeft, FirstPage:=True");
-  
-  // insert text before page number
-  macros.InsertLine("ActiveWindow.ActivePane.View.SeekView = wdSeekCurrentPageFooter");
-  macros.InsertLine("Selection.MoveLeft Unit:=wdCharacter, Count:=2");
-  macros.InsertLine("Application.Keyboard (1049)");
-  macros.InsertLine("Selection.TypeText Text:=\"Страница \"");
-  macros.InsertLine("ActiveWindow.ActivePane.View.SeekView = wdSeekMainDocument");
-
+  macros.InsertLine("      wdAlignPageNumberOutside, FirstPage:=True");
   
   // ПЕРВАЯ СТОРОНА
-  macros.InsertLine("ActiveDocument.PageSetup.TopMargin=70");
-  macros.InsertLine("ActiveDocument.PageSetup.BottomMargin=55");
-  macros.InsertLine("ActiveDocument.PageSetup.LeftMargin=55");
-  macros.InsertLine("ActiveDocument.PageSetup.RightMargin=55");
+  macros.InsertLine("ActiveDocument.PageSetup.TopMargin=CentimetersToPoints(1.5)");
+  macros.InsertLine("ActiveDocument.PageSetup.BottomMargin=CentimetersToPoints(1.5)");
+  macros.InsertLine("ActiveDocument.PageSetup.LeftMargin=CentimetersToPoints(2)");
+  macros.InsertLine("ActiveDocument.PageSetup.RightMargin=CentimetersToPoints(1)");
+  macros.InsertLine("ActiveDocument.PageSetup.OddAndEvenPagesHeaderFooter=True");
+  macros.InsertLine("ActiveDocument.PageSetup.MirrorMargins=True");
+  macros.InsertLine("ActiveDocument.PageSetup.HeaderDistance = CentimetersToPoints(1.25)");
+  macros.InsertLine("ActiveDocument.PageSetup.FooterDistance = CentimetersToPoints(1)");
+
   macros.SelectionFont("Bold=false");
   macros.SelectionFont("Size=11");
   macros.SelectionParagraphFormat("LineSpacingRule = wdLineSpace1pt5");
 
   // TITLE
   macros.SelectionParagraphFormat("LineSpacingRule = wdLineSpaceSingle");
-  macros.SelectionText("\n\n\n\n\n\n\n\n\n\n\n");
+  macros.SelectionText("\n\n\n\n\n\nИТОГОВЫЙ ОТЧЕТ\n\n\n\n\n");
   macros.SelectionText("в федеральном государственном бюджетном образовательном учреждении высшего образования «Нижегородский государственный архитектурно-строительный университет» (Минобрнауки России), город Нижний Новгород");
   macros.SelectionFont("Size=6");
   macros.SelectionText("\n\n");
@@ -117,9 +120,9 @@ void ReportPeriodSpravka::Run(int grpId, int studentId)
   // Направление подготовки/специальность:
   macros.SelectionParagraphFormat("LineSpacingRule = wdLineSpaceSingle");
   if (privData.isMagister)
-    macros.SelectionText("Обучается по программе магистратуры (по очной форме) по направлению подготовки:");
+    macros.SelectionText("Обучается по программе магистратуры (по " + formaObuch + "ой форме) по направлению подготовки:");
   else
-    macros.SelectionText("Обучается по программе бакалавриата (по очной форме) по направлению подготовки:");
+    macros.SelectionText("Обучается по программе бакалавриата (по " + formaObuch + "ой форме) по направлению подготовки:");
   macros.SelectionTypeParagraph();
 
   // значение предыдущей строки
@@ -138,9 +141,9 @@ void ReportPeriodSpravka::Run(int grpId, int studentId)
   macros.SelectionTypeParagraph(1);
 
   if (privData.isMagister)
-      macros.SelectionText("Срок освоения программы магистратуры в очной форме обучения 2 года");
+      macros.SelectionText("Срок освоения программы магистратуры в " + formaObuch + "ой форме обучения 2 года");
   else
-      macros.SelectionText("Срок освоения программы бакалавриата в очной форме обучения 4 года");
+      macros.SelectionText("Срок освоения программы бакалавриата в " + formaObuch + "ой форме обучения 4 года");
   macros.SelectionTypeParagraph(1);
 
   
@@ -181,6 +184,29 @@ void ReportPeriodSpravka::Run(int grpId, int studentId)
   macros.InsertLine("Selection.MoveDown Unit:=wdLine, Count:=100");
 
   macros.SelectionText("\nНастоящий документ содержит 2 страницы");
+
+  // insert text before page number
+  macros.InsertLine("Selection.MoveUp Unit:=wdParagraph, Count:=500");
+
+  macros.InsertLine("ActiveWindow.ActivePane.View.SeekView = wdSeekCurrentPageFooter");
+  macros.InsertLine("Selection.MoveLeft Unit:=wdCharacter, Count:=2");
+  macros.InsertLine("Application.Keyboard (1049)");
+  macros.InsertLine("Selection.TypeText Text:=\"Страница \"");
+  
+  macros.InsertLine("ActiveWindow.ActivePane.View.NextHeaderFooter");
+  macros.InsertLine("Selection.MoveLeft Unit:=wdCharacter, Count:=2");
+  macros.InsertLine("Application.Keyboard (1049)");
+  macros.InsertLine("Selection.TypeText Text:=\"Страница \"");
+
+  macros.InsertLine("ActiveWindow.ActivePane.View.SeekView = wdSeekMainDocument");
+  
+  /*macros.InsertLine("ActiveWindow.ActivePane.View.SeekView = wdSeekCurrentPageFooter");
+  macros.InsertLine("ActiveWindow.ActivePane.View.NextHeaderFooter");
+  macros.InsertLine("Selection.MoveLeft Unit:=wdCharacter, Count:=2");
+  macros.InsertLine("Application.Keyboard (1049)");
+  macros.InsertLine("Selection.TypeText Text:=\"Страница \"");
+  macros.InsertLine("ActiveWindow.ActivePane.View.SeekView = wdSeekMainDocument");
+*/
 
   macros.EndMacros();
   macros.RunMacros("");
@@ -226,7 +252,7 @@ int ReportPeriodSpravka::AddProgramTable(WordMacros& macros, const std::vector<D
   };
 
   macros.SelectionParagraphFormat("LineSpacingRule = wdLineSpaceSingle");
-  macros.SelectionFont("Size=11");
+  macros.SelectionFont("Size=10");
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphCenter");
   macros.SelectionText("СВЕДЕНИЯ О СОДЕРЖАНИИ И РЕЗУЛЬТАТАХ ОСВОЕНИЯ ОБРАЗОВАТЕЛЬНОЙ ПРОГРАММЫ");
   macros.SelectionTypeParagraph(1);
