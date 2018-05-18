@@ -67,7 +67,7 @@ public:		// User declarations
     bool __fastcall FileExists(const AnsiString& fname);
     void __fastcall StringToAudHours(AnsiString  h[21], AnsiString& str_hours);
     void __fastcall StringToPerevodInfo(AnsiString info[5], AnsiString str);
-    void __fastcall GetDirectInfo(AnsiString& direct, AnsiString& profil, int specid, int directid);
+    static void GetDirectInfo(AnsiString& direct, AnsiString& profil, int specid, int directid);
 
 };
 //---------------------------------------------------------------------------

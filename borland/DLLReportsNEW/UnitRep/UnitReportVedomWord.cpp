@@ -6,6 +6,7 @@
 #include "UnitReportVedomWord.h"
 #include "UnitFuncs.h"
 #include "MacroWord.h"
+#include "UnitReportUchebKartStud.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 
@@ -89,6 +90,9 @@ void __fastcall TFormReportVedomWord::CreateWordDocument(void)
             numspec=ZMySqlQuery->Fields->FieldByNumber(4)->AsString.ToInt();
             directid = ZMySqlQuery->Fields->FieldByNumber(7)->AsString.ToInt();
             AnsiString naprav = WCGetTitleForKeyNum(DIRECTS,directid);
+            //// новый код, направление
+            AnsiString _direct, _profil;
+            TFormReportUchebKartStud::GetDirectInfo(_direct, _profil, numspec, directid);
 
             //Заголовок
             macros.SelectionParagraphFormat("Alignment = wdAlignParagraphCenter");
@@ -107,29 +111,36 @@ void __fastcall TFormReportVedomWord::CreateWordDocument(void)
             macros.SelectionText("Международный институт технологий бизнеса");
             macros.SelectionTypeParagraph();
             macros.SelectionTypeParagraph();
+
             macros.SelectionFont("Size=10");
             macros.SelectionFont("Bold=false");
             macros.SelectionText(naprav != "" ? "Направление " : "Специальность ");
             macros.SelectionFont("Bold=true");
             macros.SelectionFont("Underline=wdUnderlineSingle");
-            if (naprav != "")
-              macros.SelectionText("  "+naprav+"  ");
-            else
-              macros.SelectionText("  "+WCGetTitleForKeyNum(SPECS,numspec)+"  ");
+            macros.SelectionText("  "+_direct+"  ");
+            macros.SelectionTypeParagraph();
+            macros.SelectionFont("Bold=false");
+            macros.SelectionFont("Underline=wdUnderlineNone");
+            macros.SelectionText("Направленность (профиль) ");
+            macros.SelectionFont("Bold=true");
+            macros.SelectionFont("Underline=wdUnderlineSingle");
+            macros.SelectionText("  "+_profil+"  ");
+
+            macros.SelectionTypeParagraph();
             macros.SelectionTypeParagraph();
             macros.SelectionFont("Underline=wdUnderlineNone");
             macros.SelectionFont("Bold=false");
             macros.SelectionText("Группа ");
             macros.SelectionFont("Underline=wdUnderlineSingle");
             macros.SelectionFont("Bold=true");
-            macros.SelectionText("___"+GroupStr+"__");
+            macros.SelectionText("  "+GroupStr+"  ");
             macros.SelectionFont("Underline=wdUnderlineNone");
             macros.SelectionFont("Bold=false");
-            macros.SelectionText(" Уровень __________ Курс _______ Семестр _______ Полусеместр _______");
+            macros.SelectionText(" Курс _______ Семестр _______ Кол-во часов _______ Кол-во з.е. _______");
             macros.SelectionTypeParagraph();
             macros.SelectionText("Дисциплина _____________________________________________________________________");
             macros.SelectionTypeParagraph();
-            macros.SelectionText("Преподаватель ___________________________________________ Дата ________________");
+            macros.SelectionText("Преподаватель ______________________________________________ Дата ________________");
             macros.SelectionTypeParagraph();
 
             macros.SelectionParagraphFormat("Alignment = wdAlignParagraphLeft");

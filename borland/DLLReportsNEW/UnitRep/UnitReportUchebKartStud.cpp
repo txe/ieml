@@ -514,7 +514,7 @@ void __fastcall TFormReportUchebKartStud::StringToPerevodInfo(AnsiString info[5]
         }
 }
 //---------------------------------------------------------------------------
-void __fastcall TFormReportUchebKartStud::GetDirectInfo(AnsiString& direct, AnsiString& profil, int specid, int directid)
+void TFormReportUchebKartStud::GetDirectInfo(AnsiString& direct, AnsiString& profil, int specid, int directid)
 {
   // смотри ReportStudyingSpravka::GetDirectData
   AnsiString specOrProfileTag;
