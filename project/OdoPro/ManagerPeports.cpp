@@ -193,9 +193,13 @@ void ManagerReports::CallOldReport(string_t id)
 {
 	std::string com_line = theApp.GetModuleDir() + "bin\\RunReport.exe .\\ReportsDLL.dll " + id + 
 		" " + aux::itow(theApp.GetCurrentGroupID()) + " " + aux::itow(theApp.GetCurrentStudentID());
-	
-	HANDLE hFile;
 
+  com_line += " \"" + theApp.GetCon().GetParam(mybase::PR_HOST) + "\"";
+  com_line += " \"" + theApp.GetCon().GetParam(mybase::PR_BD) + "\"";
+	com_line += " \"" + theApp.GetCon().GetParam(mybase::PR_LOGIN) + "\"";
+  com_line += " \"" + theApp.GetCon().GetParam(mybase::PR_PASS) + "\"";
+
+	HANDLE hFile;
 	SECURITY_ATTRIBUTES sa;
 
 	sa.nLength = sizeof(sa);

@@ -8,6 +8,7 @@
 #include "UnitMainRepDLL.h"
 #include <utilcls.h>
 
+extern EDRegOpts opts;
 //---------------------------------------------------------------------------
 struct forreport
 {
@@ -47,6 +48,17 @@ char* GetHintOfReportByIndex(int index)
   else
         Str=arrHintsOfReports[index];
   return Str.c_str();
+}
+//---------------------------------------------------------------------------
+void SetupDB(const char* host, const char* name, const char* user, const char* pass)
+{
+   opts.DBHost = host;
+   opts.DBLogin = user;
+   opts.DBPasswd = pass;
+   opts.DBName = name;
+   //AnsiString msg="server = " + opts.DBHost+",  name = "+opts.DBName+", login = "
+   //+ opts.DBLogin + ", pass = " + opts.DBPasswd;
+   //MessageBox(0,msg.c_str(),"Ошибка",MB_OK|MB_ICONERROR);
 }
 //---------------------------------------------------------------------------
 void PreviewReportByIndex(int index, int _IDGroup, int _IDStudent)

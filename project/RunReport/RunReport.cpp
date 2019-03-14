@@ -5,110 +5,63 @@
 #include <windows.h>
 #include <iostream>
 #include <fstream>
-#include "..\\ODOPro\logger.h"
-#include <json-aux.h>
+#include "..\dev\HTMLayoutSDK\include\json-aux.h"
 
 using namespace std;
 
 typedef void  (__cdecl *TPreviewReportByIndex)(int, int, int);
+typedef void  (__cdecl *TSetupDB)(const char*, const char*, const char*, const char*);
 
-char		command[MAX_PATH];	// путь до библиотеки с отчетом
-int			report_id;	// номер отчета
-long		group_id;
-long		stud_id;
-HINSTANCE	hinstRepLib; // библиотека отчетов
-
-
-
-bool load()
+int main(int argc,char*argv[],char*envp[])
 {
-	return (hinstRepLib = LoadLibraryA(command)) != NULL;
-}
+	if (argc < 5)
+		return 0;
+	
+  char  lib_path[MAX_PATH];	// путь до библиотеки с отчетом
+  int	  report_id;        	// номер отчета
+  long	group_id;
+  long	stud_id;
 
-void unload()
-{
-	FreeLibrary(hinstRepLib);
-}
+  std::string db_host;
+  std::string db_port;
+  std::string db_name;
+  std::string db_user;
+  std::string db_pass;
 
-void view()
-{
-	TPreviewReportByIndex call = (TPreviewReportByIndex)GetProcAddress(hinstRepLib, "_PreviewReportByIndex");
+	strcpy(lib_path, argv[1]);
+	report_id	= aux::atoi(argv[2]);
+	group_id	= aux::atoi(argv[3]);
+	stud_id		= aux::atoi(argv[4]);
+
+  db_host = argv[5];
+  db_name = argv[6];
+  db_user = argv[7];
+  db_pass = argv[8];
+
+  /*
+  cout << db_host.c_str() << "\n";
+  cout << db_name.c_str() << "\n";
+  cout << db_user.c_str() << "\n";
+  cout << db_pass.c_str() << "\n";
+  */
+  HINSTANCE	hinstRepLib = LoadLibraryA(lib_path); // библиотека отчетов
+  TSetupDB setup_db = (TSetupDB)GetProcAddress(hinstRepLib, "_SetupDB");
+  TPreviewReportByIndex call_report = (TPreviewReportByIndex)GetProcAddress(hinstRepLib, "_PreviewReportByIndex");
+ 
 	try
-	{
-		if (call) 
-			call(report_id, group_id, stud_id);
+	{    
+		if (setup_db && call_report) 
+    {
+      setup_db(db_host.c_str(), db_name.c_str(), db_user.c_str(), db_pass.c_str());
+      call_report(report_id, group_id, stud_id);
+    }
 		else
 			cout << "fail";
 	}
 	catch(...)
 	{
-		//theApp.ExceptionManage();
 	}
-}
+  FreeLibrary(hinstRepLib);
 
-int run_from_pipe(void)
-{
-	// делаем цикл запроса
-	
-	while(1)
-	{
-		cout << "enter path report or 'exit':";
-		cin >> command;
-		// выход
-		if (aux::streq(command, "exit"))
-			break;
-		// загрузка отчета
-		if (!load())
-		{
-			cout << "fail";
-			continue;
-		}
-		cout << "enter report id:";
-		cin >> report_id;
-		cout << "enter group id:";
-		cin >> group_id;
-		cout << "enter student id:";
-		cin >> stud_id;
-
-		view();
-		// выгружаем библиотеку
-		unload();
-	}
-	return -1;
-}
-
-void run_from_command_line(int argc, char* argv[])
-{
-	
-}
-
-int main(int argc,char*argv[],char*envp[])
-{
-	LOG_PREFIX("log-runreport");
-
-#if defined(_DEBUG)
-	LOG_LEVEL(logger::Debug); // уровень лога в рантайме (например, берём из командной строки)
-#else
-	LOG_LEVEL(logger::Warning);
-#endif
-
-	LOG_DEBUG << "argc = " << argc;
-
-	if (argc < 5)
-		return 0;
-	
-	strcpy(command, argv[1]);
-	report_id	= aux::atoi(argv[2]);
-	LOG_DEBUG << "report = " << report_id;
-	group_id	= aux::atoi(argv[3]);
-	LOG_DEBUG << "group = " << group_id;
-	stud_id		= aux::atoi(argv[4]);
-	LOG_DEBUG << "stud = " << stud_id;
-	LOG_DEBUG << "good = " << argc;
-	load();
-	view();
-	unload();
-	
-	cin >> group_id;
 	return 0;
 }
