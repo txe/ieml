@@ -72,7 +72,7 @@ void ReportPeriodSpravka::Run(int grpId, int studentId)
 
   // TITLE
   macros.SelectionParagraphFormat("LineSpacingRule = wdLineSpaceSingle");
-  macros.SelectionText("\n\n\n\n\n\nИТОГОВЫЙ ОТЧЕТ\n\n\n\n\n");
+  macros.SelectionText("\n\n\n\n\n\n\n\n\n\n\n");
   macros.SelectionText("в федеральном государственном бюджетном образовательном учреждении высшего образования «Нижегородский государственный архитектурно-строительный университет» (Минобрнауки России), город Нижний Новгород");
   macros.SelectionFont("Size=6");
   macros.SelectionText("\n\n");
@@ -141,9 +141,9 @@ void ReportPeriodSpravka::Run(int grpId, int studentId)
   macros.SelectionTypeParagraph(1);
 
   if (privData.isMagister)
-      macros.SelectionText("Срок освоения программы магистратуры в " + formaObuch + "ой форме обучения 2 года");
+      macros.SelectionText("Срок освоения программы магистратуры в " + /*formaObuch*/ string_t("очн")+ "ой форме обучения 2 года");
   else
-      macros.SelectionText("Срок освоения программы бакалавриата в " + formaObuch + "ой форме обучения 4 года");
+      macros.SelectionText("Срок освоения программы бакалавриата в " + /*formaObuch*/ string_t("очн")+ "ой форме обучения 4 года");
   macros.SelectionTypeParagraph(1);
 
   
