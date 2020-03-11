@@ -52,10 +52,16 @@ char* GetHintOfReportByIndex(int index)
 //---------------------------------------------------------------------------
 void SetupDB(const char* host, const char* name, const char* user, const char* pass)
 {
-   opts.DBHost = host;
-   opts.DBLogin = user;
-   opts.DBPasswd = pass;
-   opts.DBName = name;
+  // реест может быть заблокирован, поэтому сохраним в статике
+   opts.g_host() = host;
+   opts.g_login() = user;
+   opts.g_pass() = pass;
+   opts.g_db() = name;
+   // сохраним в реестре для отладки
+   //opts.DBHost = host;
+   //opts.DBLogin = user;
+   //opts.DBPasswd = pass;
+   //opts.DBName = name;
    //AnsiString msg="server = " + opts.DBHost+",  name = "+opts.DBName+", login = "
    //+ opts.DBLogin + ", pass = " + opts.DBPasswd;
    //MessageBox(0,msg.c_str(),"Ошибка",MB_OK|MB_ICONERROR);

@@ -19,6 +19,12 @@ const HKEY MyRootKey=HKEY_CURRENT_USER;
 
 class EDRegOpts: public EDOpts
 {
+  public:
+    AnsiString g_host() { static AnsiString host; return host; }
+    AnsiString g_db() { static AnsiString db; return db; }
+    AnsiString g_login() { static AnsiString login; return login; }
+    AnsiString g_pass() { static AnsiString pass; return pass; }
+
    private:
      TRegIniFile* MyRegIniFile;
 
@@ -74,6 +80,8 @@ class EDRegOpts: public EDOpts
 
 AnsiString EDRegOpts::GetDBHost(void)
 {
+  if (!g_host().IsEmpty())
+    return g_host();
   AnsiString Str;
   MyRegIniFile=new TRegIniFile(DefPath);
   MyRegIniFile->RootKey=MyRootKey;
@@ -92,6 +100,8 @@ void EDRegOpts::SetDBHost(const AnsiString& Str)
 }
 AnsiString EDRegOpts::GetDBLogin(void)
 {
+  if (!g_login().IsEmpty())
+    return g_login();
   AnsiString Str;
   MyRegIniFile=new TRegIniFile(DefPath);
   MyRegIniFile->RootKey=MyRootKey;
@@ -111,6 +121,8 @@ void EDRegOpts::SetDBLogin(const AnsiString& Str)
 }
 AnsiString EDRegOpts::GetDBPasswd(void)
 {
+  if (!g_pass().IsEmpty())
+    return g_pass();
   AnsiString Str;
   MyRegIniFile=new TRegIniFile(DefPath);
   MyRegIniFile->RootKey=MyRootKey;
@@ -130,6 +142,8 @@ void EDRegOpts::SetDBPasswd(const AnsiString& Str)
 }
 AnsiString EDRegOpts::GetDBName(void)
 {
+  if (!g_db.IsEmpty())
+    return g_db();
   AnsiString Str;
   MyRegIniFile=new TRegIniFile(DefPath);
   MyRegIniFile->RootKey=MyRootKey;
