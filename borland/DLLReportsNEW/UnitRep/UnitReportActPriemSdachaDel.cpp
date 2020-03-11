@@ -95,11 +95,11 @@ void __fastcall TFormReportActPriemSdachaDel::CreateWordDocument(void)
     macros.SelectionParagraphFormat("Alignment = wdAlignParagraphCenter");
     macros.SelectionText("АКТ ПРИЕМА-СДАЧИ");
     macros.SelectionTypeParagraph();
-    macros.SelectionText("личных дел студентов 1 курса института экономики, управления и права");
+    macros.SelectionText("личных дел студентов 1 курса Института технологий бизнеса");
     macros.SelectionTypeParagraph();
-    macros.SelectionText("Мною, методистом института экономики, управления и права __________________________ , сданы специалисту по кадровой работе");
+    macros.SelectionText("Мною, методистом Института технологий бизнеса __________________________ , сданы специалисту по кадровой работе");
     macros.SelectionTypeParagraph();
-    macros.SelectionText("1 категории __________________________ следующие дела вновь принятых на 1 курс студентов института экономики, управления и права.");
+    macros.SelectionText("1 категории __________________________ следующие дела вновь принятых на 1 курс студентов Института технологий бизнеса.");
     macros.SelectionTypeParagraph();
     macros.SelectionTypeParagraph();
     macros.SelectionText("Прием 20__г.");

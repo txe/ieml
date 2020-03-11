@@ -66,7 +66,7 @@ void __fastcall TFormReportDocDopuskVstupIspit::CreateWordDocument(void)
     macros.SelectionTypeParagraph();
     macros.SelectionParagraphFormat("Alignment = wdAlignParagraphCenter");
     macros.SelectionFont("Bold = true");
-    macros.SelectionText("в институт экономики, управления и права");
+    macros.SelectionText("в Институт технологий бизнеса");
     macros.SelectionTypeParagraph();
     macros.SelectionFont("Bold = false");
 

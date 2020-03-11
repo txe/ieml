@@ -20,10 +20,10 @@ const HKEY MyRootKey=HKEY_CURRENT_USER;
 class EDRegOpts: public EDOpts
 {
   public:
-    AnsiString g_host() { static AnsiString host; return host; }
-    AnsiString g_db() { static AnsiString db; return db; }
-    AnsiString g_login() { static AnsiString login; return login; }
-    AnsiString g_pass() { static AnsiString pass; return pass; }
+    AnsiString& g_host() { static AnsiString host; return host; }
+    AnsiString& g_db() { static AnsiString db; return db; }
+    AnsiString& g_login() { static AnsiString login; return login; }
+    AnsiString& g_pass() { static AnsiString pass; return pass; }
 
    private:
      TRegIniFile* MyRegIniFile;
@@ -142,7 +142,7 @@ void EDRegOpts::SetDBPasswd(const AnsiString& Str)
 }
 AnsiString EDRegOpts::GetDBName(void)
 {
-  if (!g_db.IsEmpty())
+  if (!g_db().IsEmpty())
     return g_db();
   AnsiString Str;
   MyRegIniFile=new TRegIniFile(DefPath);

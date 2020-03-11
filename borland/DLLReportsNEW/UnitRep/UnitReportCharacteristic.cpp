@@ -198,7 +198,7 @@ void __fastcall TFormReportCharacteristic::CreateWordDocument(void)
     macros.SelectionParagraphFormat("Borders.Item(wdBorderBottom).LineStyle = wdLineStyleSingle");
     macros.SelectionParagraphFormat("Borders.Item(wdBorderBottom).LineWidth = wdLineWidth050pt");
     macros.InsertLine("Selection.MoveDown Unit:=wdLine, Count:=2");
-    macros.SelectionText("хмярхрср щйнмнлхйх, сопюбкемхъ х опюбю\n\n");
+    macros.SelectionText("хмярхрср реумнкнцхи ахгмеяю\n\n");
     macros.SelectionFont("Bold=true");
     macros.SelectionText("уюпюйрепхярхйю\n\n");
     macros.SelectionFont("Bold=false");
@@ -288,7 +288,7 @@ void __fastcall TFormReportCharacteristic::CreateWordDocument(void)
     macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
     macros.SelectionText("\n");
     macros.SelectionText("vbTab");
-    macros.SelectionText("дХПЕЙРНП хщсо, ОПНТЕЯЯНП");
+    macros.SelectionText("дХПЕЙРНП хра");
     macros.SelectionText("vbTab");
     macros.SelectionText("vbTab");
     macros.SelectionText("vbTab");

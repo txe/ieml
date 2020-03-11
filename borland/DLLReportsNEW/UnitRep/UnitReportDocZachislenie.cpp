@@ -71,7 +71,7 @@ void __fastcall TFormReportDocZachislenie::CreateWordDocument(void)
     macros.SelectionText("Зачислить студентами 1-го курса с 01 сентября 20__ года на места с оплатой стоимости обучения на договорной основе следующих абитуриентов:");
     macros.SelectionTypeParagraph();
     macros.SelectionFont("Bold = true");
-    macros.SelectionText(" в институт экономики, управления и права");
+    macros.SelectionText(" в Институт технологий бизнеса");
     macros.SelectionTypeParagraph();
     macros.SelectionFont("Bold = false");
 

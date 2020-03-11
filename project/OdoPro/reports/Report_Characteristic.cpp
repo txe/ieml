@@ -66,7 +66,7 @@ void ReportCharacteristic::Run(int grpId, int studentId)
   macros.SelectionParagraphFormat("Borders.Item(wdBorderBottom).LineStyle = wdLineStyleSingle");
   macros.SelectionParagraphFormat("Borders.Item(wdBorderBottom).LineWidth = wdLineWidth050pt");
   macros.InsertLine("Selection.MoveDown Unit:=wdLine, Count:=2");
-  macros.SelectionText("лефдсмюпндмши хмярхрср реумнкнцхи ахгмеяю\n\n");
+  macros.SelectionText("хмярхрср реумнкнцхи ахгмеяю\n\n");
   macros.SelectionFont("Bold=true");
   macros.SelectionText("уюпюйрепхярхйю\n\n");
   macros.SelectionFont("Bold=false");
@@ -109,7 +109,7 @@ void ReportCharacteristic::Run(int grpId, int studentId)
   macros.SelectionParagraphFormat("Alignment=wdAlignParagraphLeft");
   macros.SelectionText("\n");
   macros.SelectionText("vbTab");
-  macros.SelectionText("дХПЕЙРНП лхра, ОПНТЕЯЯНП");
+  macros.SelectionText("дХПЕЙРНП хра");
   macros.SelectionText("vbTab");
   macros.SelectionText("vbTab");
   macros.SelectionText("vbTab");

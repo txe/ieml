@@ -108,7 +108,7 @@ void __fastcall TFormReportVedomWord::CreateWordDocument(void)
             macros.SelectionTypeParagraph();
             macros.SelectionFont("Size=12");
             macros.SelectionFont("Bold=false");
-            macros.SelectionText("Международный институт технологий бизнеса");
+            macros.SelectionText("Институт технологий бизнеса");
             macros.SelectionTypeParagraph();
             macros.SelectionTypeParagraph();
 
