@@ -5,7 +5,7 @@
 class CSelectYearDlg :	public LiteWnd
 {
 public:
-	CSelectYearDlg(LiteWnd* pParent, string_t year);
+	CSelectYearDlg(LiteWnd* pParent);
 	~CSelectYearDlg(void);
 
 public:

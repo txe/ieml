@@ -2,10 +2,18 @@
 #include "SingeltonApp.h"
 #include "SelectYear.h"
 #include "json-aux-ext.h"
+#include <time.h>
 
 using namespace htmlayout::dom;
-CSelectYearDlg::CSelectYearDlg(LiteWnd* pParent, string_t year) : LiteWnd(pParent), _year(year)
+CSelectYearDlg::CSelectYearDlg(LiteWnd* pParent) : LiteWnd(pParent)
 {
+  time_t     now = time(0);
+  struct tm  tstruct;
+  char       buf[80];
+  tstruct = *localtime(&now);
+  strftime(buf, sizeof(buf), "%Y", &tstruct);
+
+  _year = buf;
 }
 
 CSelectYearDlg::~CSelectYearDlg(void)

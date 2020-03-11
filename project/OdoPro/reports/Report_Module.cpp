@@ -10,7 +10,7 @@
 //-------------------------------------------------------------------------
 void ReportModule::Run(int grpId, int studentId)
 {
-  CSelectYearDlg dlg(theApp.GetMainWnd(), "2015");
+  CSelectYearDlg dlg(theApp.GetMainWnd());
   dlg.DoModal();
   if (dlg._year.empty())
     return;
