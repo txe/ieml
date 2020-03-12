@@ -7,6 +7,13 @@
 
 //***  для служебных целей  ***//
 
+  ALTER TABLE `students` ADD `zakaz_fio` TEXT NULL;
+  ALTER TABLE `students` ADD `zakaz_by` TEXT NULL;
+  ALTER TABLE `students` ADD `zakaz_doc` TEXT NULL;
+  ALTER TABLE `students` ADD `zakaz_details` TEXT NULL;
+
+
+
 ALTER TABLE `payfactstest` ADD COLUMN `ordernum` int(11) NULL DEFAULT 0 AFTER `moneypay`;
 
 CREATE TABLE `group_info` (                                                  

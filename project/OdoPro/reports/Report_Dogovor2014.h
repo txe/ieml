@@ -25,6 +25,12 @@ private:
     string_t adres1;
     string_t adres2;
     string_t telefon;
+    string_t details;
+
+    string_t zakaz_fio;
+    string_t zakaz_by;
+    string_t zakaz_doc;
+    string_t zakaz_details;
   };
 
 public:

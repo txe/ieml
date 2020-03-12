@@ -26,11 +26,17 @@ void ReportDogovor::Run(int grpId, int studentId)
     macros.Replace("$YEAR" + string_t(aux::itow(i+1)) + "$", data.oplataYears[i]);
   }
 
+  macros.Replace("$DETAILS$",  data.details);
   macros.Replace("$EXTRA$",    data.extra);
   macros.Replace("$PASSPORT$", data.passport);
   macros.Replace("$ADRES1$",   data.adres1);
   macros.Replace("$ADRES2$",   data.adres2);
   macros.Replace("$TEL$",      data.telefon);
+
+  macros.Replace("$ZAKAZ_FIO$",     data.zakaz_fio);
+  macros.Replace("$ZAKAZ_BY$",      data.zakaz_by);
+  macros.Replace("$ZAKAZ_DOC$",     data.zakaz_doc);
+  macros.Replace("$ZAKAZ_DETAILS$", data.zakaz_details);
 
   macros.EndMacros();
   if (m_IsDopSoglashenie)
@@ -57,7 +63,8 @@ ReportDogovor::ReportDogovorData ReportDogovor::GetData(int grpId, int studentId
     data.kod = "по направлению подготовки " + privData.shifrspec + " " + privData.direct + " (аккредитованная образовательная программа) c профилем " + privData.specOrProfil;
 
   string_t dogovorQuery = string_t() +
-    "SELECT s.dogextra, s.dogyearid,s.dogshifrid,s.dogfastid,s.dognum,s.eduformid,s.passseries,s.passnum,s.passkod,s.passdate,s.passplace,s.addr,s.liveaddr,s.phones " \
+    "SELECT s.dogextra, s.dogyearid,s.dogshifrid,s.dogfastid,s.dognum,s.eduformid,s.passseries,s.passnum,s.passkod,s.passdate,s.passplace,s.addr,s.liveaddr,s.phones, " \
+    " s.zakaz_fio, s.zakaz_by, s.zakaz_doc, s.zakaz_details "\
     " FROM students as s WHERE s.deleted=0 and s.id=" + aux::itow(studentId);
   mybase::MYFASTRESULT dogovorRes = theApp.GetCon().Query(dogovorQuery);
   if (mybase::MYFASTROW	row = dogovorRes.fetch_row())
@@ -80,6 +87,19 @@ ReportDogovor::ReportDogovorData ReportDogovor::GetData(int grpId, int studentId
     data.adres1 = "Адрес по месту регистрации: " + row["addr"];
     data.adres2 = "Адрес по месту фактического проживания: " + row["liveaddr"];
     data.telefon = "Тел. " + row["phones"];
+
+    data.details = data.fio + "\n" + data.passport + "\n" + data.adres1 + "\n" + data.adres2 + "\n" + data.telefon;
+
+    data.zakaz_fio = row["zakaz_fio"];
+    data.zakaz_by = row["zakaz_by"];
+    data.zakaz_doc = row["zakaz_doc"];
+    data.zakaz_details = data.zakaz_fio + "\n" + row["zakaz_details"];
+
+    if (data.zakaz_fio.empty())
+    {
+      data.zakaz_fio = data.fio;
+      data.zakaz_details = data.details;
+    }
   }
 
   // сперва найдем персональные оплаты

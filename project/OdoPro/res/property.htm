@@ -329,6 +329,8 @@
                 <u>Л</u>ичные данные</div>
             <div panel="panel-id2" accesskey="I">
                 <u>О</u>бразование</div>
+            <div panel="panel-id8" accesskey="I">
+                <u>З</u>аказчик</div>
             <div panel="panel-id7" accesskey="I">
                 <u>Е</u>гэ</div>
             <div panel="panel-id3" accesskey="P">
@@ -472,6 +474,25 @@
                     <select id="languageid" class="my" style="width: 100%%; text-align: center;">
                     </select>
                 </div>
+            </div>
+        </div>
+        <!-- -- --  --  --  --  --  -- TAB 2+ Заказчик   --  --  --  --  --  --  --  --   -->
+        <div name="panel-id8">
+            <div style="padding: 4px">
+                Заказчик:<br>
+                <input type="text" class="my" maxlength="255" id="zakaz_fio" novalue="<Совпадает с обучающимся!>">
+            </div>
+            <div style="padding: 4px">
+                В лице:<br>
+                <input type="text" class="my" maxlength="255" id="zakaz_by" novalue="<нет значения!>">
+            </div>
+            <div style="padding: 4px">
+                Действующего на основании:<br>
+                <input type="text" class="my" maxlength="255" id="zakaz_doc" novalue="<нет значения!>">
+            </div>
+            <div style="padding: 4px">
+                Реквизиты
+                <widget id="zakaz_details" class="my" style="padding: 4px;height:150px" type="textarea"></widget>
             </div>
         </div>
         <!-- -- --  --  --  --  --  -- TAB 3 Еге  --  --  --  --  --  --  --  --   -->

@@ -522,6 +522,9 @@ void CMainDlg::ShowFindResult()
 				" OR liveaddr	LIKE '%" + find + "%'"
 				" OR edudocinfo LIKE '%" + find + "%'"
 				" OR eduplace	LIKE '%" + find + "%'"
+        " OR zakaz_fio	LIKE '%" + find + "%'"
+        " OR zakaz_by	LIKE '%" + find + "%'"
+        " OR zakaz_details	LIKE '%" + find + "%'"
 				" OR eduspec	LIKE '%" + find + "%' ) ";
 	}
 
