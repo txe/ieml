@@ -121,7 +121,7 @@ namespace t
 		int month = aux::wtoi((result.size() > 1) ? result[1].c_str() : L"0", 0);
 		int day   = aux::wtoi((result.size() > 2) ? result[2].c_str() : L"0", 0);
 
-		if (year > 2020)
+		if (year > 2045)
 			year = 0;
 		if (month > 12)
 			month = 0;
