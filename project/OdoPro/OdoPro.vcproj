@@ -736,6 +736,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\reports\Report_Diplom2023.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\reports\Report_Diplom2023.h"
+				>
+			</File>
+			<File
 				RelativePath=".\reports\Report_Dogovor2014.cpp"
 				>
 			</File>

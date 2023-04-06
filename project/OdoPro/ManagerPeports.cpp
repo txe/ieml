@@ -10,6 +10,7 @@
 #include "reports/Report_Dogovor2014.h"
 #include "reports/Report_Soglasovanie.h"
 #include "reports/Report_Diplom2015.h"
+#include "reports/Report_Diplom2023.h"
 #include "reports/Report_Module.h"
 #include "reports/Report_ReleaseDoc.h"
 #include "reports/Report_Pril4.h"
@@ -76,6 +77,7 @@ void ManagerReports::LoadReports(void)
   _reports.push_back(new ReportDiplom2015("Диплом 2015 (MS Word)"));
   _reports.push_back(new ReportReleaseDoc("Докладная на выпуск (MS Word)"));
   _reports.push_back(new ReportPril4("Приложение 4 к акту 1 (MS Word)"));
+  _reports.push_back(new ReportDiplom2023("Приложение к диплому 2023 (MS Word)"));
 }
 
 // выгружает библиотеки отчетов
